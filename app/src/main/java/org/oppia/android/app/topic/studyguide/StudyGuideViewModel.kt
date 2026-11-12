@@ -98,6 +98,7 @@ class StudyGuideViewModel private constructor(
       }
       listOf(
         StudyGuideSectionHeadingViewModel(
+          index,
           translationController.extractString(section.heading, writtenTranslationContext),
           isExpanded
         ),

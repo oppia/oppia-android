@@ -57,6 +57,7 @@ class StudyGuideFragmentPresenter @Inject constructor(
   private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
   private lateinit var viewModel: StudyGuideViewModel
+  private lateinit var bindingAdapter: BindableAdapter<StudyGuideItemViewModel>
 
   /** Handles the [Fragment.onAttach] portion of [StudyGuideFragment]'s lifecycle. */
   fun handleAttach(context: Context) {
@@ -92,7 +93,8 @@ class StudyGuideFragmentPresenter @Inject constructor(
 
     logStudyGuideEvent(topicId, subtopicIndex)
 
-    binding.studyGuideSectionRecyclerView.adapter = createRecyclerViewAdapter()
+    bindingAdapter = createRecyclerViewAdapter()
+    binding.studyGuideSectionRecyclerView.adapter = bindingAdapter
 
     binding.let {
       it.viewModel = viewModel
@@ -139,7 +141,7 @@ class StudyGuideFragmentPresenter @Inject constructor(
       .registerViewDataBinder(
         viewType = ViewType.SECTION_HEADING,
         inflateDataBinding = StudyGuideSectionHeadingBinding::inflate,
-        setViewModel = StudyGuideSectionHeadingBinding::setViewModel,
+        setViewModel = this::bindSectionHeading,
         transformViewModel = { it as StudyGuideSectionHeadingViewModel }
       )
       .registerViewDataBinder(
@@ -149,6 +151,17 @@ class StudyGuideFragmentPresenter @Inject constructor(
         transformViewModel = { it as StudyGuideSectionContentViewModel }
       )
       .build()
+  }
+
+  private fun bindSectionHeading(
+    binding: StudyGuideSectionHeadingBinding,
+    headingViewModel: StudyGuideSectionHeadingViewModel
+  ) {
+    binding.viewModel = headingViewModel
+    headingViewModel.setExpansionToggleListener { sectionIndex ->
+      val contentPosition = sectionIndex * 2 + 1
+      bindingAdapter.notifyItemChanged(contentPosition)
+    }
   }
 
   private fun bindSectionContent(
