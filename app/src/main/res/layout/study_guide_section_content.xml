@@ -3,6 +3,8 @@
 
   <data>
 
+    <import type="android.view.View" />
+
     <variable
       name="viewModel"
       type="org.oppia.android.app.topic.studyguide.StudyGuideSectionContentViewModel" />
@@ -13,8 +15,8 @@
     android:id="@+id/study_guide_section_content_text"
     style="@style/Body"
     android:layout_marginStart="28dp"
-    android:layout_marginTop="8dp"
     android:layout_marginEnd="28dp"
-    android:minHeight="48dp"
-    android:textColorLink="@color/component_color_shared_link_text_color" />
+    android:paddingTop="8dp"
+    android:textColorLink="@color/component_color_shared_link_text_color"
+    android:visibility="@{viewModel.isExpanded ? View.VISIBLE : View.GONE}" />
 </layout>

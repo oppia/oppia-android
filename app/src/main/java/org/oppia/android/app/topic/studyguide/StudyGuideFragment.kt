@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.StudyGuideFragmentArguments
+import org.oppia.android.app.model.StudyGuideFragmentStateBundle
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -21,6 +22,9 @@ class StudyGuideFragment : InjectableDialogFragment() {
   companion object {
     /** Arguments key for StudyGuideFragment. */
     const val STUDY_GUIDE_FRAGMENT_ARGUMENTS_KEY = "StudyGuideFragment.arguments"
+
+    /** Saved state key for StudyGuideFragment. */
+    const val STUDY_GUIDE_FRAGMENT_SAVED_STATE_KEY = "StudyGuideFragment.saved_state"
 
     /**
      * Returns a new [StudyGuideFragment] to display the specific subtopic for the given topic &
@@ -78,9 +82,24 @@ class StudyGuideFragment : InjectableDialogFragment() {
     val subtopicIndex = args.subtopicIndex
     val profileId = arguments.extractCurrentUserProfileId()
     val subtopicListSize = args.subtopicListSize
+    val expandedSectionIndices = savedInstanceState?.getProto(
+      STUDY_GUIDE_FRAGMENT_SAVED_STATE_KEY,
+      StudyGuideFragmentStateBundle.getDefaultInstance()
+    )?.expandedSectionIndicesList
     return studyGuideFragmentPresenter.handleCreateView(
-      inflater, container, topicId, subtopicIndex, profileId, subtopicListSize
+      inflater,
+      container,
+      topicId,
+      subtopicIndex,
+      profileId,
+      subtopicListSize,
+      expandedSectionIndices
     )
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    studyGuideFragmentPresenter.handleSaveInstanceState(outState)
   }
 
   /** Dismisses the concept card fragment if it's currently active in this fragment. */
