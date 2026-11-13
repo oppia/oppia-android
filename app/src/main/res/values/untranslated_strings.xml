@@ -18,6 +18,21 @@
   <string name="logcat_unavailable" translatable="false">Logcat output is unavailable on this device.</string>
   <string name="performance_metrics_error" translatable="false">Unable to load performance metrics.</string>
   <string name="developer_options_loading" translatable="false">Loading…</string>
+  <string name="logcat_search_hint" translatable="false">Search Logcat</string>
+  <string name="logcat_filter_label" translatable="false">Minimum level</string>
+  <string name="logcat_filter_verbose" translatable="false">Verbose (V)</string>
+  <string name="logcat_filter_debug" translatable="false">Debug (D)</string>
+  <string name="logcat_filter_info" translatable="false">Info (I)</string>
+  <string name="logcat_filter_error" translatable="false">Error (E)</string>
+  <string name="logcat_refresh" translatable="false">Refresh</string>
+  <string name="performance_metric_timestamp" translatable="false">Recorded at %1$s</string>
+  <string name="performance_metric_apk_size" translatable="false">APK size: %1$s bytes</string>
+  <string name="performance_metric_storage_usage" translatable="false">Storage usage: %1$s bytes</string>
+  <string name="performance_metric_startup_latency" translatable="false">Startup latency: %1$s ms</string>
+  <string name="performance_metric_memory_usage" translatable="false">Memory usage (PSS): %1$s bytes</string>
+  <string name="performance_metric_cpu_usage" translatable="false">CPU usage: %1$s</string>
+  <string name="performance_metric_network_usage" translatable="false">Network usage: %1$s bytes sent, %2$s bytes received</string>
+  <string name="performance_metric_unavailable" translatable="false">Metric unavailable</string>
   <string name="developer_options_override_app_behaviors_label" translatable="false">Override App Behaviors</string>
   <string name="developer_options_show_all_hints_solution" translatable="false">Show all hints/solution</string>
   <string name="developer_options_force_network_type" translatable="false">Force network type</string>

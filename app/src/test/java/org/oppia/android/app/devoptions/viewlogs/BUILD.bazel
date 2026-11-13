@@ -1,0 +1,33 @@
+"""
+Tests for the developer options log viewers.
+"""
+
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "ViewLogcatViewModelTest",
+    srcs = ["ViewLogcatViewModelTest.kt"],
+    custom_package = "org.oppia.android.app.devoptions.viewlogs",
+    test_class = "org.oppia.android.app.devoptions.viewlogs.ViewLogcatViewModelTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        "//app",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+    ],
+)
+
+oppia_android_test(
+    name = "ViewPerformanceMetricsViewModelTest",
+    srcs = ["ViewPerformanceMetricsViewModelTest.kt"],
+    custom_package = "org.oppia.android.app.devoptions.viewlogs",
+    test_class = "org.oppia.android.app.devoptions.viewlogs.ViewPerformanceMetricsViewModelTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        "//app",
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_mockito_mockito-core",
+    ],
+)
