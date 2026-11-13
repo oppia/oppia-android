@@ -753,6 +753,32 @@ class ExplorationProgressControllerTest {
     assertThat(hintAndSolution.hintContent.html).contains("Remember that two halves")
   }
 
+  /**
+   * Tests that when answer classification fails with an internal exception during exploration progress,
+   * [ExplorationProgressController.submitAnswer] fails and propagates the classification exception.
+   */
+  @Test
+  fun testSubmitAnswer_classifierThrowsException_failsWithClassificationException() {
+    restartExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToPrototypeFractionInputState()
+
+    val mismatchedAnswer = UserAnswer.newBuilder()
+      .setAnswer(InteractionObject.newBuilder().setBoolValue(true).build())
+      .build()
+
+    val resultProvider = explorationProgressController.submitAnswer(mismatchedAnswer)
+
+    val error = monitorFactory.waitForNextFailureResult(resultProvider)
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Failed when classifying answer")
+    assertThat(error).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasCauseThat().hasMessageThat()
+      .contains("Expected answer to be of type FRACTION")
+  }
+
   @Test
   fun testRevealHint_forWrongAnswers_showHint_returnHintIsRevealed() {
     restartExploration(

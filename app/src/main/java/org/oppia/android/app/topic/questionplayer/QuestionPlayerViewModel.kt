@@ -69,12 +69,12 @@ class QuestionPlayerViewModel @Inject constructor(
 
   fun getPendingAnswer(
     retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
-  ): UserAnswer {
+  ): UserAnswer? {
     return getPendingAnswerWithoutError(
       retrieveAnswerHandler(
         getAnswerItemList()
       )
-    ) ?: UserAnswer.getDefaultInstance()
+    )
   }
 
   private fun computeQuestionProgressText(
