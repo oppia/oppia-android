@@ -97,4 +97,22 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
     // so that ProcessState can be reinitialised on the fresh restart.
     exitProcess(0)
   }
+
+  /**
+   * Called when the user clicks the 'create one profile' or 'create three profiles' button.
+   * This function invokes profile creation for the specified count.
+   *
+   * @param count The number of profiles to create (either 1 or 3).
+   */
+  fun createProfile(count: Int) {
+    getDeveloperOptionsFragment()?.createProfile(count)
+  }
+
+  /**
+   * Called when the user clicks the 'delete all non-admin profiles' button.
+   * This function deletes all non-admin profiles.
+   */
+  fun deleteAllNonAdminProfiles() {
+    getDeveloperOptionsFragment()?.deleteAllNonAdminProfiles()
+  }
 }
