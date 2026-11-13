@@ -210,13 +210,13 @@ class DeveloperOptionsFragmentTest {
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 1)
       verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 3,
+        itemPosition = 1,
         targetView = R.id.view_logs_text_view
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 3,
+        itemPosition = 1,
         targetViewId = R.id.event_logs_text_view,
         stringIdToMatch = R.string.developer_options_event_logs
       )
@@ -230,13 +230,13 @@ class DeveloperOptionsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 1)
       verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 3,
+        itemPosition = 1,
         targetView = R.id.view_logs_text_view
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 3,
+        itemPosition = 1,
         targetViewId = R.id.event_logs_text_view,
         stringIdToMatch = R.string.developer_options_event_logs
       )
@@ -249,23 +249,23 @@ class DeveloperOptionsFragmentTest {
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 1,
+        itemPosition = 2,
         targetView = R.id.override_app_behaviors_text_view
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 1,
+        itemPosition = 2,
         targetViewId = R.id.show_all_hints_solution_text_view,
         stringIdToMatch = R.string.developer_options_show_all_hints_solution
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 1,
+        itemPosition = 2,
         targetViewId = R.id.force_network_type_text_view,
         stringIdToMatch = R.string.developer_options_force_network_type
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 1,
+        itemPosition = 2,
         targetViewId = R.id.force_crash_text_view,
         stringIdToMatch = R.string.developer_options_force_crash
       )
@@ -279,23 +279,23 @@ class DeveloperOptionsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 1,
+        itemPosition = 2,
         targetView = R.id.override_app_behaviors_text_view
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 1,
+        itemPosition = 2,
         targetViewId = R.id.show_all_hints_solution_text_view,
         stringIdToMatch = R.string.developer_options_show_all_hints_solution
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 1,
+        itemPosition = 2,
         targetViewId = R.id.force_network_type_text_view,
         stringIdToMatch = R.string.developer_options_force_network_type
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 1,
+        itemPosition = 2,
         targetViewId = R.id.force_crash_text_view,
         stringIdToMatch = R.string.developer_options_force_crash
       )
@@ -308,11 +308,11 @@ class DeveloperOptionsFragmentTest {
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.developer_options_list,
-          position = 1,
+          position = 2,
           targetViewId = R.id.show_all_hints_solution_switch
         )
       ).check(matches(not(isChecked())))
@@ -325,12 +325,12 @@ class DeveloperOptionsFragmentTest {
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       onView(withId(R.id.show_all_hints_solution_constraint_layout)).perform(click())
       onView(
         atPositionOnView(
           recyclerViewId = R.id.developer_options_list,
-          position = 1,
+          position = 2,
           targetViewId = R.id.show_all_hints_solution_switch
         )
       ).check(matches(isChecked()))
@@ -343,14 +343,14 @@ class DeveloperOptionsFragmentTest {
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       onView(withId(R.id.show_all_hints_solution_constraint_layout)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.developer_options_list,
-          position = 1,
+          position = 2,
           targetViewId = R.id.show_all_hints_solution_switch
         )
       ).check(matches(isChecked()))
@@ -363,11 +363,11 @@ class DeveloperOptionsFragmentTest {
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.developer_options_list,
-          position = 1,
+          position = 2,
           targetViewId = R.id.show_all_hints_solution_switch
         )
       ).check(matches(not(isChecked())))
@@ -381,13 +381,13 @@ class DeveloperOptionsFragmentTest {
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       onView(withId(R.id.show_all_hints_solution_constraint_layout)).perform(click())
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.developer_options_list,
-          position = 1,
+          position = 2,
           targetViewId = R.id.show_all_hints_solution_switch
         )
       ).check(matches(isChecked()))
@@ -402,7 +402,7 @@ class DeveloperOptionsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       val exception = assertThrows<RuntimeException>() {
-        scrollToPosition(position = 1)
+        scrollToPosition(position = 2)
         onView(withId(R.id.force_crash_text_view)).perform(click())
       }
       assertThat(exception.cause).hasMessageThat().contains("Force crash occurred")
@@ -417,7 +417,7 @@ class DeveloperOptionsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       val exception = assertThrows<RuntimeException>() {
-        scrollToPosition(position = 1)
+        scrollToPosition(position = 2)
         onView(withId(R.id.force_crash_text_view)).perform(click())
       }
       assertThat(exception.cause).hasMessageThat().contains("Force crash occurred")
@@ -430,7 +430,7 @@ class DeveloperOptionsFragmentTest {
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       onView(withId(R.id.force_network_type_text_view)).perform(click())
       intended(hasComponent(ForceNetworkTypeActivity::class.java.name))
     }
@@ -443,7 +443,7 @@ class DeveloperOptionsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       onView(withId(R.id.force_network_type_text_view)).perform(click())
       intended(hasComponent(ForceNetworkTypeActivity::class.java.name))
     }
@@ -455,7 +455,7 @@ class DeveloperOptionsFragmentTest {
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 1)
       onView(withId(R.id.event_logs_text_view)).perform(click())
       intended(hasComponent(ViewEventLogsActivity::class.java.name))
     }
@@ -468,7 +468,7 @@ class DeveloperOptionsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 1)
       onView(withId(R.id.event_logs_text_view)).perform(click())
       intended(hasComponent(ViewEventLogsActivity::class.java.name))
     }
@@ -556,7 +556,7 @@ class DeveloperOptionsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 3)
       onView(withId(R.id.math_expressions_text_view)).perform(click())
 
       intended(hasComponent(MathExpressionParserActivity::class.java.name))
@@ -572,7 +572,7 @@ class DeveloperOptionsFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 3)
       onView(withId(R.id.math_expressions_text_view)).perform(click())
 
       intended(hasComponent(MathExpressionParserActivity::class.java.name))
@@ -586,7 +586,7 @@ class DeveloperOptionsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       onView(withId(R.id.force_download_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -607,7 +607,7 @@ class DeveloperOptionsFragmentTest {
       ).use {
         testCoroutineDispatchers.runCurrent()
 
-        scrollToPosition(position = 1)
+        scrollToPosition(position = 2)
         onView(withId(R.id.force_download_button)).perform(click())
         testCoroutineDispatchers.runCurrent()
 
@@ -658,7 +658,9 @@ class DeveloperOptionsFragmentTest {
 
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.developer_options_list)).perform(
-      scrollToPosition<ViewHolder>(position)
+      scrollToPosition<ViewHolder>(
+        position
+      )
     )
   }
 

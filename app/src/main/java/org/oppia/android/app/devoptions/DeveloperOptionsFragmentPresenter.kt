@@ -67,15 +67,15 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
           ViewType.VIEW_TYPE_MODIFY_LESSON_PROGRESS
         }
         is DeveloperOptionsViewLogsViewModel -> {
-          viewModel.itemIndex.set(3)
+          viewModel.itemIndex.set(1)
           ViewType.VIEW_TYPE_VIEW_LOGS
         }
         is DeveloperOptionsOverrideAppBehaviorsViewModel -> {
-          viewModel.itemIndex.set(1)
+          viewModel.itemIndex.set(2)
           ViewType.VIEW_TYPE_OVERRIDE_APP_BEHAVIORS
         }
         is DeveloperOptionsTestParsersViewModel -> {
-          viewModel.itemIndex.set(2)
+          viewModel.itemIndex.set(3)
           ViewType.VIEW_TYPE_TEST_PARSERS
         }
         else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
