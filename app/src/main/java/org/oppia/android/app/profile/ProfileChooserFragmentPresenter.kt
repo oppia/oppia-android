@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -84,6 +85,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
   @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
+  private var isInitializingLearnerId = false
+
   private lateinit var binding: ProfileSelectionFragmentBinding
 
   private val isRtl by lazy {
@@ -97,6 +100,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     adminProfileId: LegacyProfileId,
     parentScreen: ParentScreen
   ): View? {
+    isInitializingLearnerId = false
     if (parentScreen == ParentScreen.CREATE_ADMIN_PIN_SCREEN) {
       // The admin onboarding ends here in order to prevent the admin from seeing the onboarding
       // flow again if they exit the app at this point.
@@ -298,11 +302,37 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun updateLearnerIdIfAbsent(profile: Profile) {
-    if (profile.learnerId.isNullOrEmpty()) {
-      // TODO(#4345): Block on the following data provider before allowing the user to log in.
-      profileManagementController.initializeLearnerId(profile.id.toProfileIdPreservingZero())
+  /** Initializes the learner ID before routing to login, allowing failed attempts to be retried. */
+  fun onProfileClick(profile: Profile) {
+    if (isInitializingLearnerId) return
+    if (profile.learnerId.isNotEmpty()) {
+      computeLoginRoute(profile)
+      return
     }
+    isInitializingLearnerId = true
+    val result = profileManagementController.initializeLearnerId(
+      profile.id.toProfileIdPreservingZero()
+    ).toLiveData()
+    result.observe(
+      fragment.viewLifecycleOwner,
+      object : Observer<AsyncResult<Any?>> {
+        override fun onChanged(value: AsyncResult<Any?>) {
+          when (value) {
+            is AsyncResult.Pending -> Unit
+            is AsyncResult.Success -> {
+              result.removeObserver(this)
+              isInitializingLearnerId = false
+              computeLoginRoute(profile)
+            }
+            is AsyncResult.Failure -> {
+              result.removeObserver(this)
+              isInitializingLearnerId = false
+              oppiaLogger.e("ProfileChooser", "Failed to initialize learner ID", value.error)
+            }
+          }
+        }
+      }
+    )
   }
 
   private fun computeLoginRoute(profile: Profile) {
@@ -388,11 +418,5 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         )
       )
     }
-  }
-
-  /** Click listener for handling clicks to login to a profile. */
-  fun onProfileClick(profile: Profile) {
-    updateLearnerIdIfAbsent(profile)
-    computeLoginRoute(profile)
   }
 }

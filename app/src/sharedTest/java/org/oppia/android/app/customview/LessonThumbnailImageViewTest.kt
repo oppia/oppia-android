@@ -11,6 +11,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
 import org.junit.Rule
@@ -25,6 +26,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.databinding.databinding.LessonThumbnailBindingTestBinding
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.LessonThumbnail
@@ -86,6 +88,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -103,6 +106,7 @@ class LessonThumbnailImageViewTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var context: Context
+  @Inject lateinit var imageLoader: TestGlideImageLoader
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
@@ -152,6 +156,146 @@ class LessonThumbnailImageViewTest {
       onView(withId(lessonThumbnailImageViewId))
         .check(matches(withDrawable(R.drawable.topic_fractions_01)))
     }
+  }
+
+  @Test
+  fun testDataBinding_filenameBeforeAttachment_defersLoadingUntilAttached() {
+    imageLoader.arrangeBitmap("chapter.png", R.drawable.lesson_thumbnail_graphic_baker)
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val parent = getThumbnailContainer(activity)
+        val binding = LessonThumbnailBindingTestBinding.inflate(
+          activity.layoutInflater, parent, /* attachToParent= */ false
+        )
+
+        bindThumbnail(binding, "story_1", "chapter.png")
+
+        assertThat(binding.root.isAttachedToWindow).isFalse()
+        assertThat(imageLoader.getLoadedBitmaps()).isEmpty()
+        assertThat(binding.thumbnailImage.drawable).isNull()
+
+        parent.addView(binding.root)
+
+        assertThat(binding.root.isAttachedToWindow).isTrue()
+        assertThat(imageLoader.getLoadedBitmaps()).containsExactly(
+          thumbnailUrl("story_1", "chapter.png")
+        )
+      }
+      onView(withId(R.id.thumbnail_image))
+        .check(matches(withDrawable(R.drawable.lesson_thumbnail_graphic_baker)))
+    }
+  }
+
+  @Test
+  fun testDataBinding_filenameAfterAttachment_loadsThumbnail() {
+    imageLoader.arrangeBitmap("chapter.png", R.drawable.lesson_thumbnail_graphic_baker)
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val parent = getThumbnailContainer(activity)
+        val binding = LessonThumbnailBindingTestBinding.inflate(
+          activity.layoutInflater, parent, /* attachToParent= */ false
+        )
+        // Supply non-null IDs while leaving the thumbnail unset until after attachment.
+        binding.entityId = "story_1"
+        binding.entityType = "story"
+        binding.executePendingBindings()
+        parent.addView(binding.root)
+        assertThat(binding.root.isAttachedToWindow).isTrue()
+        assertThat(imageLoader.getLoadedBitmaps()).isEmpty()
+
+        bindThumbnail(binding, "story_1", "chapter.png")
+
+        assertThat(imageLoader.getLoadedBitmaps()).containsExactly(
+          thumbnailUrl("story_1", "chapter.png")
+        )
+      }
+      onView(withId(R.id.thumbnail_image))
+        .check(matches(withDrawable(R.drawable.lesson_thumbnail_graphic_baker)))
+    }
+  }
+
+  @Test
+  fun testDataBinding_detachAndRebind_reattachShowsNewThumbnail() {
+    imageLoader.arrangeBitmap("first.png", R.drawable.lesson_thumbnail_graphic_baker)
+    imageLoader.arrangeBitmap("second.png", R.drawable.topic_fractions_01)
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val parent = getThumbnailContainer(activity)
+        val binding = LessonThumbnailBindingTestBinding.inflate(
+          activity.layoutInflater, parent, /* attachToParent= */ false
+        )
+        bindThumbnail(binding, "story_1", "first.png")
+        parent.addView(binding.root)
+        parent.removeView(binding.root)
+        assertThat(binding.root.isAttachedToWindow).isFalse()
+
+        // RecyclerView can bind a previously attached view before attaching it again.
+        bindThumbnail(binding, "story_2", "second.png")
+        parent.addView(binding.root)
+
+        assertThat(binding.root.isAttachedToWindow).isTrue()
+        assertThat(imageLoader.getLoadedBitmaps().last()).isEqualTo(
+          thumbnailUrl("story_2", "second.png")
+        )
+      }
+      onView(withId(R.id.thumbnail_image))
+        .check(matches(withDrawable(R.drawable.topic_fractions_01)))
+    }
+  }
+
+  @Test
+  fun testDataBinding_multipleDetachedThumbnails_attachLoadsEachThumbnail() {
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val parent = getThumbnailContainer(activity)
+        // The original report involved more than two or three story items.
+        val bindings = (0 until 5).map { index ->
+          val filename = "chapter_$index.png"
+          imageLoader.arrangeBitmap(filename, R.drawable.lesson_thumbnail_graphic_baker)
+          LessonThumbnailBindingTestBinding.inflate(
+            activity.layoutInflater, parent, /* attachToParent= */ false
+          ).also { binding ->
+            bindThumbnail(binding, "story_$index", filename)
+            assertThat(binding.root.isAttachedToWindow).isFalse()
+          }
+        }
+        assertThat(imageLoader.getLoadedBitmaps()).isEmpty()
+
+        bindings.forEach { parent.addView(it.root) }
+
+        assertThat(imageLoader.getLoadedBitmaps()).containsExactlyElementsIn(
+          (0 until 5).map { thumbnailUrl("story_$it", "chapter_$it.png") }
+        ).inOrder()
+        bindings.forEach { binding ->
+          assertThat(binding.root.isAttachedToWindow).isTrue()
+          assertThat(binding.thumbnailImage.drawable).isNotNull()
+        }
+      }
+    }
+  }
+
+  private fun bindThumbnail(
+    binding: LessonThumbnailBindingTestBinding,
+    entityId: String,
+    filename: String
+  ) {
+    binding.entityId = entityId
+    binding.entityType = "story"
+    binding.lessonThumbnail = LessonThumbnail.newBuilder().setThumbnailFilename(filename).build()
+    // Execute generated binding code, including when the view has no fragment parent yet.
+    binding.executePendingBindings()
+  }
+
+  private fun getThumbnailContainer(activity: TestActivity): FrameLayout {
+    return checkNotNull(
+      activity.supportFragmentManager.findFragmentById(R.id.test_fragment_placeholder)?.view
+        as? FrameLayout
+    )
+  }
+
+  private fun thumbnailUrl(entityId: String, filename: String): String {
+    return "https://storage.googleapis.com/oppiaserver-resources/" +
+      "story/$entityId/assets/thumbnail/$filename"
   }
 
   private fun setUpTestApplicationComponent() {
