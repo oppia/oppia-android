@@ -33,6 +33,7 @@
   <string name="performance_metric_cpu_usage" translatable="false">CPU usage: %1$s</string>
   <string name="performance_metric_network_usage" translatable="false">Network usage: %1$s bytes sent, %2$s bytes received</string>
   <string name="performance_metric_unavailable" translatable="false">Metric unavailable</string>
+  <string name="performance_metric_context" translatable="false">Foreground: %1$s · Memory: %2$s · Storage: %3$s · Network: %4$s</string>
   <string name="developer_options_override_app_behaviors_label" translatable="false">Override App Behaviors</string>
   <string name="developer_options_show_all_hints_solution" translatable="false">Show all hints/solution</string>
   <string name="developer_options_force_network_type" translatable="false">Force network type</string>

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,7 +34,6 @@ class ViewPerformanceMetricsFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: ViewPerformanceMetricsFragmentBinding
   private lateinit var listAdapter: BindableAdapter<PerformanceMetricItemViewModel>
-  private var operationVersion = 0
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     binding = ViewPerformanceMetricsFragmentBinding.inflate(inflater, container, false)
@@ -54,31 +54,29 @@ class ViewPerformanceMetricsFragmentPresenter @Inject constructor(
         R.color.component_color_shared_activity_status_bar_color
       )
     }
-    loadMetrics()
     return binding.root
   }
 
   fun handleViewCreated() {
     viewModel.metrics.observe(fragment.viewLifecycleOwner) { listAdapter.setData(it) }
+    loadMetrics()
   }
 
   private fun loadMetrics() {
     if (viewModel.isBusy.value == true) return
     viewModel.isBusy.value = true
-    val version = ++operationVersion
     viewModel.status.value = activity.getString(R.string.developer_options_loading)
-    activity.lifecycleScope.launch {
-      val result = runCatching {
-        withContext(Dispatchers.IO) { metricsController.getDebugMetricLogStoreList() }
-      }
-      if (version == operationVersion) {
-        if (result.isSuccess) {
-          viewModel.setMetrics(
-            result.getOrThrow(), activity.getString(R.string.no_performance_metrics)
-          )
-        } else {
-          viewModel.status.value = activity.getString(R.string.performance_metrics_error)
+    fragment.viewLifecycleOwner.lifecycleScope.launch {
+      try {
+        val metrics = withContext(Dispatchers.IO) {
+          metricsController.getDebugMetricLogStoreList()
         }
+        viewModel.setMetrics(metrics, activity.getString(R.string.no_performance_metrics))
+      } catch (exception: CancellationException) {
+        throw exception
+      } catch (_: Exception) {
+        viewModel.status.value = activity.getString(R.string.performance_metrics_error)
+      } finally {
         viewModel.isBusy.value = false
       }
     }
@@ -87,18 +85,16 @@ class ViewPerformanceMetricsFragmentPresenter @Inject constructor(
   private fun resetMetrics() {
     if (viewModel.isBusy.value == true) return
     viewModel.isBusy.value = true
-    val version = ++operationVersion
     viewModel.status.value = activity.getString(R.string.developer_options_loading)
-    activity.lifecycleScope.launch {
-      val result = runCatching {
-        withContext(Dispatchers.IO) { metricsController.clearMetricLogStore() }
-      }
-      if (version == operationVersion) {
-        if (result.isSuccess) {
-          viewModel.setMetrics(emptyList(), activity.getString(R.string.no_performance_metrics))
-        } else {
-          viewModel.status.value = activity.getString(R.string.performance_metrics_error)
-        }
+    fragment.viewLifecycleOwner.lifecycleScope.launch {
+      try {
+        withContext(Dispatchers.IO) { metricsController.clearDebugMetricLogStore() }
+        viewModel.setMetrics(emptyList(), activity.getString(R.string.no_performance_metrics))
+      } catch (exception: CancellationException) {
+        throw exception
+      } catch (_: Exception) {
+        viewModel.status.value = activity.getString(R.string.performance_metrics_error)
+      } finally {
         viewModel.isBusy.value = false
       }
     }

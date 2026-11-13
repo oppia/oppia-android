@@ -198,7 +198,7 @@ class PerformanceMetricsController @Inject constructor(
   }
 
   /** Clears the local developer history without affecting logs waiting to be uploaded. */
-  suspend fun clearMetricLogStore() {
+  suspend fun clearDebugMetricLogStore() {
     debugMetricLogStore.storeDataAsync(updateInMemoryCache = true) {
       OppiaMetricLogs.getDefaultInstance()
     }.await()

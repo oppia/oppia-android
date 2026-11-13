@@ -60,12 +60,12 @@ class ViewLogcatFragmentPresenter @Inject constructor(
     binding.logcatSearchEditText.setText(viewModel.query.value)
     binding.logcatSearchEditText.doAfterTextChanged { viewModel.setQuery(it?.toString().orEmpty()) }
     binding.logcatPrioritySpinner.adapter = ArrayAdapter(
-      activity, android.R.layout.simple_spinner_dropdown_item,
+      activity, android.R.layout.simple_spinner_item,
       listOf(
         R.string.logcat_filter_verbose, R.string.logcat_filter_debug,
         R.string.logcat_filter_info, R.string.logcat_filter_error
       ).map(activity::getString)
-    )
+    ).also { it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
     val priorityIndex = listOf("V", "D", "I", "E").indexOf(viewModel.priority.value)
     binding.logcatPrioritySpinner.setSelection(priorityIndex.coerceAtLeast(0), false)
     binding.logcatPrioritySpinner.onItemSelectedListener =
@@ -85,12 +85,12 @@ class ViewLogcatFragmentPresenter @Inject constructor(
         activity, binding.logcatToolbar, R.color.component_color_shared_activity_status_bar_color
       )
     }
-    if (savedState == null) refresh()
     return binding.root
   }
 
   fun handleViewCreated() {
     viewModel.entries.observe(fragment.viewLifecycleOwner) { listAdapter.setData(it) }
+    refresh(force = true)
   }
 
   fun saveState(outState: Bundle) {
@@ -109,7 +109,7 @@ class ViewLogcatFragmentPresenter @Inject constructor(
     val selectedPriority = viewModel.priority.value?.firstOrNull() ?: 'V'
     binding.logcatRefreshButton.isEnabled = false
     viewModel.status.value = activity.getString(R.string.developer_options_loading)
-    refreshJob = activity.lifecycleScope.launch {
+    refreshJob = fragment.viewLifecycleOwner.lifecycleScope.launch {
       val output = withContext(Dispatchers.IO) {
         reader.read(selectedPriority)
       }

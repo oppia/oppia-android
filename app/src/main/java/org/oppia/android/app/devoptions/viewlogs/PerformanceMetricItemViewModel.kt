@@ -48,12 +48,13 @@ class PerformanceMetricItemViewModel(
       )
     }
   }
-  fun contextLabel(): String = buildString {
-    append("Foreground: ").append(metric.isAppInForeground)
-    append(" · Memory: ").append(metric.memoryTier.name)
-    append(" · Storage: ").append(metric.storageTier.name)
-    append(" · Network: ").append(metric.networkType.name)
-  }
+  fun contextLabel(): String = resourceHandler.getStringInLocaleWithoutWrapping(
+    R.string.performance_metric_context,
+    metric.isAppInForeground.toString(),
+    metric.memoryTier.name,
+    metric.storageTier.name,
+    metric.networkType.name
+  )
 
   private fun formatMetric(stringId: Int, vararg values: CharSequence): String =
     resourceHandler.getStringInLocaleWithoutWrapping(stringId, *values)
