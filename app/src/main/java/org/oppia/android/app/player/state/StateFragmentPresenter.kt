@@ -463,10 +463,10 @@ class StateFragmentPresenter @Inject constructor(
   ): AnswerOutcome {
     return when (ephemeralStateResult) {
       is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.error
+        throw IllegalStateException(
+          "Failed to retrieve answer outcome",
+          ephemeralStateResult.error
         )
-        AnswerOutcome.getDefaultInstance()
       }
       is AsyncResult.Pending -> AnswerOutcome.getDefaultInstance()
       is AsyncResult.Success -> ephemeralStateResult.value

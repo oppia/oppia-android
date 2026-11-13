@@ -80,10 +80,12 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.customview.LessonProgressIndicatorView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.StateFragmentArguments
+import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
@@ -170,6 +172,7 @@ import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction.replaceText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -204,6 +207,7 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
+import java.lang.reflect.InvocationTargetException
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -595,6 +599,40 @@ class StateFragmentTest {
           )
         )
       )
+    }
+  }
+
+  /**
+   * Tests that when answer classification fails with an internal exception during exploration play,
+   * an [IllegalStateException] is thrown on the main thread, preserving the classifier error cause.
+   */
+  @Test
+  fun testStateFragment_submitAnswer_classificationFails_throwsIllegalStateException() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      val mismatchedAnswer = UserAnswer.newBuilder()
+        .setAnswer(InteractionObject.newBuilder().setBoolValue(true).build())
+        .build()
+
+      scenario.onActivity { activity ->
+        val fragment = activity.supportFragmentManager
+          .findFragmentById(R.id.state_fragment_placeholder) as StateFragment
+        fragment.onAnswerReadyForSubmission(mismatchedAnswer)
+      }
+
+      val exception = assertThrows<Exception> {
+        testCoroutineDispatchers.runCurrent()
+      }
+      val outcomeException = (exception as? InvocationTargetException)?.cause ?: exception
+      assertThat(outcomeException).isInstanceOf(IllegalStateException::class.java)
+      assertThat(outcomeException).hasMessageThat().contains("Failed to retrieve answer outcome")
+      assertThat(outcomeException).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+      assertThat(outcomeException).hasCauseThat()
+        .hasMessageThat()
+        .contains("Failed when classifying answer")
     }
   }
 
