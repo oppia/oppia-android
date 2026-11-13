@@ -51,7 +51,6 @@ class DeveloperOptionsViewModel @Inject constructor(
         routeToMarkStoriesCompletedListener,
         routeToMarkTopicsCompletedListener
       ),
-      DeveloperOptionsViewLogsViewModel(routeToViewEventLogsListener),
       DeveloperOptionsOverrideAppBehaviorsViewModel(
         forceCrashButtonClickListener,
         forceDownloadRemoteParametersButtonClickListener,
@@ -60,7 +59,8 @@ class DeveloperOptionsViewModel @Inject constructor(
         routeToFeatureFlagsListener,
         routeToPlatformParametersListener
       ),
-      DeveloperOptionsTestParsersViewModel(routeToMathExpressionParserTestListener)
+      DeveloperOptionsTestParsersViewModel(routeToMathExpressionParserTestListener),
+      DeveloperOptionsViewLogsViewModel(routeToViewEventLogsListener)
     )
   }
 }
