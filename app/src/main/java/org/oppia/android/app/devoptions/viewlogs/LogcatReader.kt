@@ -1,13 +1,13 @@
 package org.oppia.android.app.devoptions.viewlogs
 
 import android.os.Build
-import android.os.Process as AndroidProcess
 import android.os.SystemClock
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import android.os.Process as AndroidProcess
 
 /** Executes a bounded Logcat dump for this app process. */
 class LogcatReader @Inject constructor() {
