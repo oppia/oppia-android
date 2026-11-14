@@ -31,6 +31,7 @@ package_group(
 # globs here to ensure that new files added to migrated packages don't accidentally get included in the
 # top-level layer library.
 MIGRATED_PROD_FILES = glob([
+    "src/main/java/org/oppia/android/domain/profile/ProfileCacheStore.kt",
     "src/main/java/org/oppia/android/domain/auth/*.kt",
     "src/main/java/org/oppia/android/domain/feedbackreporting/*.kt",
     "src/main/java/org/oppia/android/domain/onboarding/**/*.kt",
@@ -172,6 +173,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:debug_impl",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter/syncup",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_cache_store",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//domain/src/main/java/org/oppia/android/domain/state:state_deck",
         "//domain/src/main/java/org/oppia/android/domain/state:state_graph",
