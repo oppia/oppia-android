@@ -20,7 +20,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize
-import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
@@ -95,7 +94,7 @@ private const val PROFILE_ONBOARDING_MODE_PROVIDER_ID = "profile_onboarding_mode
 @Singleton
 class ProfileManagementController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
-  cacheStoreFactory: PersistentCacheStore.Factory,
+  profileCacheStore: ProfileCacheStore,
   private val dataProviders: DataProviders,
   private val context: Context,
   private val directoryManagementUtil: DirectoryManagementUtil,
@@ -115,8 +114,7 @@ class ProfileManagementController @Inject constructor(
   private val analyticsController: AnalyticsController
 ) {
   private var currentProfileId: Int = DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID
-  private val profileDataStore =
-    cacheStoreFactory.create("profile_database", ProfileDatabase.getDefaultInstance())
+  private val profileDataStore = profileCacheStore.store
 
   /** Indicates that the given name was is not unique. */
   class ProfileNameNotUniqueException(msg: String) : Exception(msg)

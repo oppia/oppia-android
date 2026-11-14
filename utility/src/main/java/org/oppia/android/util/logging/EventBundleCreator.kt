@@ -74,6 +74,7 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.util.extensions.getVersionCode
@@ -192,6 +193,21 @@ class EventBundleCreator @Inject constructor(
     bundle.putInt(
       "screen_density", screenDensity
     )
+    if (EventProfileContextPolicy.canIncludeProfileContext(eventLog.context) &&
+      eventLog.hasProfileContext() && eventLog.profileContext.hasProfileId() &&
+      eventLog.profileContext.profileId.internalId >= 0
+    ) {
+      bundle.putInt("profile_id", eventLog.profileContext.profileId.internalId)
+      when (eventLog.profileContext.profileType) {
+        ProfileType.SOLE_LEARNER ->
+          bundle.putString("profile_type", "sole_learner")
+        ProfileType.SUPERVISOR ->
+          bundle.putString("profile_type", "supervisor")
+        ProfileType.ADDITIONAL_LEARNER ->
+          bundle.putString("profile_type", "additional_learner")
+        else -> Unit
+      }
+    }
     return eventLog.context.convertToActivityContext().also { eventContext ->
       // Only allow user IDs to be logged when the learner study feature is enabled.
       eventContext.storeValue(
