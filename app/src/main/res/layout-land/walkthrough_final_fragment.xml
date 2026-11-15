@@ -14,130 +14,149 @@
       type="org.oppia.android.app.walkthrough.end.WalkthroughEndPageChanger" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <ImageView
-      android:id="@+id/walkthrough_final_image_view"
-      android:layout_width="180dp"
-      android:layout_height="180dp"
-      android:layout_marginStart="28dp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:srcCompat="@drawable/ic_portrait_onboarding_0"
-      android:importantForAccessibility="no" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
 
-    <LinearLayout
-      android:id="@+id/walkthrough_button_container"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="28dp"
-      android:layout_marginTop="16dp"
-      android:layout_marginEnd="28dp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@+id/walkthrough_final_image_view"
-      app:layout_constraintTop_toBottomOf="@+id/walkthrough_final_topic_text_view">
+      <ImageView
+        android:id="@+id/walkthrough_final_image_view"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_marginStart="28dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_portrait_onboarding_0" />
 
-      <com.google.android.material.card.MaterialCardView
-        android:id="@+id/walkthrough_final_no_button"
+      <LinearLayout
+        android:id="@+id/walkthrough_button_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/walkthrough_final_no_button_margin_end"
-        android:layout_weight="1"
-        android:background="?attr/selectableItemBackground"
-        android:onClick="@{(v) -> presenter.goBack()}"
-        app:cardCornerRadius="4dp"
-        app:contentPadding="@dimen/walkthrough_final_fragment_card_content_padding">
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="28dp"
+        android:baselineAligned="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/walkthrough_final_image_view"
+        app:layout_constraintTop_toBottomOf="@+id/walkthrough_final_topic_text_view">
 
-        <TextView
-          android:id="@+id/walkthrough_final_no_text_view"
-          style="@style/TextViewCenter"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          android:fontFamily="sans-serif"
-          android:text="@string/no"
-          android:textColor="@color/component_color_shared_primary_text_color"
-          android:textSize="20sp" />
+        <com.google.android.material.card.MaterialCardView
+          android:id="@+id/walkthrough_final_no_button"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_marginEnd="@dimen/walkthrough_final_no_button_margin_end"
+          android:layout_weight="1"
+          android:background="?attr/selectableItemBackground"
+          android:onClick="@{(v) -> presenter.goBack()}"
+          app:cardCornerRadius="4dp"
+          app:contentPadding="@dimen/walkthrough_final_fragment_card_content_padding">
 
-        <TextView
-          android:id="@+id/walkthrough_final_no_center_text_view"
-          style="@style/TextViewCenter"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          android:layout_marginTop="40dp"
-          android:fontFamily="sans-serif"
-          android:text="@string/pick_a_different_topic"
-          android:textColor="@color/component_color_shared_primary_text_color"
-          android:textSize="12sp" />
-      </com.google.android.material.card.MaterialCardView>
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-      <com.google.android.material.card.MaterialCardView
-        android:id="@+id/walkthrough_final_yes_button"
+            <TextView
+              android:id="@+id/walkthrough_final_no_text_view"
+              style="@style/TextViewCenter"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_horizontal"
+              android:fontFamily="sans-serif"
+              android:text="@string/no"
+              android:textColor="@color/component_color_shared_primary_text_color"
+              android:textSize="20sp" />
+
+            <TextView
+              android:id="@+id/walkthrough_final_no_center_text_view"
+              style="@style/TextViewCenter"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="8dp"
+              android:fontFamily="sans-serif"
+              android:text="@string/pick_a_different_topic"
+              android:textColor="@color/component_color_shared_primary_text_color"
+              android:textSize="12sp" />
+          </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+          android:id="@+id/walkthrough_final_yes_button"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_marginStart="@dimen/walkthrough_final_yes_button_margin_start"
+          android:layout_weight="1"
+          android:background="?attr/selectableItemBackground"
+          android:clickable="true"
+          android:focusable="true"
+          app:cardCornerRadius="4dp"
+          app:contentPadding="@dimen/walkthrough_final_fragment_card_content_padding">
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+              android:id="@+id/walkthrough_final_yes_text_view"
+              style="@style/TextViewCenter"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_horizontal"
+              android:fontFamily="sans-serif"
+              android:text="@string/yes"
+              android:textColor="@color/component_color_shared_secondary_6_text_color"
+              android:textSize="20sp" />
+
+            <TextView
+              android:id="@+id/walkthrough_final_yes_center_text_view"
+              style="@style/TextViewCenter"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="8dp"
+              android:fontFamily="sans-serif"
+              android:text="@string/lets_get_started"
+              android:textColor="@color/component_color_shared_secondary_6_text_color"
+              android:textSize="12sp" />
+          </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+      </LinearLayout>
+
+      <TextView
+        android:id="@+id/walkthrough_final_topic_text_view"
+        style="@style/TextViewCenter"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/walkthrough_final_yes_button_margin_start"
-        android:layout_weight="1"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        app:cardCornerRadius="4dp"
-        app:contentPadding="@dimen/walkthrough_final_fragment_card_content_padding">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif"
+        android:text="@{viewModel.topicTitle}"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/walkthrough_final_image_view"
+        app:layout_constraintTop_toBottomOf="@+id/walkthrough_final_title_text_view"
+        tools:text="Are you interested in: \nMultiplication?" />
 
-        <TextView
-          android:id="@+id/walkthrough_final_yes_text_view"
-          style="@style/TextViewCenter"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          android:fontFamily="sans-serif"
-          android:text="@string/yes"
-          android:textColor="@color/component_color_shared_secondary_6_text_color"
-          android:textSize="20sp" />
-
-        <TextView
-          android:id="@+id/walkthrough_final_yes_center_text_view"
-          style="@style/TextViewCenter"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          android:layout_marginTop="40dp"
-          android:fontFamily="sans-serif"
-          android:text="@string/lets_get_started"
-          android:textColor="@color/component_color_shared_secondary_6_text_color"
-          android:textSize="12sp" />
-      </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
-
-    <TextView
-      android:id="@+id/walkthrough_final_topic_text_view"
-      style="@style/TextViewCenter"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="4dp"
-      android:fontFamily="sans-serif"
-      android:text="@{viewModel.topicTitle}"
-      android:textColor="@color/component_color_shared_primary_text_color"
-      android:textSize="20sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@+id/walkthrough_final_image_view"
-      app:layout_constraintTop_toBottomOf="@+id/walkthrough_final_title_text_view"
-      tools:text="Are you interested in: \nMultiplication?" />
-
-    <TextView
-      android:id="@+id/walkthrough_final_title_text_view"
-      style="@style/TextViewCenter"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:fontFamily="sans-serif"
-      android:text="@string/great"
-      android:textColor="@color/component_color_shared_primary_text_color"
-      android:textSize="24sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@+id/walkthrough_final_image_view"
-      app:layout_constraintTop_toTopOf="@+id/walkthrough_final_image_view" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+      <TextView
+        android:id="@+id/walkthrough_final_title_text_view"
+        style="@style/TextViewCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/great"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/walkthrough_final_image_view"
+        app:layout_constraintTop_toTopOf="@+id/walkthrough_final_image_view" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </ScrollView>
 </layout>

@@ -48,28 +48,35 @@
       <TextView
         android:id="@+id/profile_edit_name"
         style="@style/Heading2ViewStart"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+        android:layout_marginEnd="16dp"
         android:importantForAccessibility="no"
         android:text="@{viewModel.profile.name}"
         android:textColor="@color/component_color_shared_primary_text_color"
-        app:layout_constraintBottom_toTopOf="@+id/profile_edit_created"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/profile_edit_image"
-        app:layout_constraintTop_toTopOf="@id/profile_edit_image"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toTopOf="@id/profile_edit_image" />
 
       <TextView
         android:id="@+id/profile_edit_created"
         style="@style/Subtitle2ViewStart"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:textColor="@color/component_color_shared_secondary_1_text_color"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/profile_edit_name"
         app:layout_constraintTop_toBottomOf="@+id/profile_edit_name"
-        app:layout_constraintVertical_chainStyle="packed"
         app:profileCreatedTime="@{viewModel.profile.dateCreatedTimestampMs}" />
+
+      <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/profile_edit_header_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="profile_edit_image,profile_edit_created" />
 
       <Button
         android:id="@+id/profile_rename_button"
@@ -89,7 +96,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_edit_image" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_edit_header_barrier" />
 
       <Button
         android:id="@+id/profile_reset_button"
@@ -217,10 +224,10 @@
           android:text="@string/profile_edit_allow_download_heading"
           android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="16sp"
-          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@+id/profile_edit_allow_download_switch"
           app:layout_constraintHorizontal_bias="0.0"
-          app:layout_constraintStart_toStartOf="parent" />
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
           android:id="@+id/profile_edit_allow_download_sub"
@@ -259,6 +266,7 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/profile_edit_delete_margin_bottom"
         android:background="@drawable/general_item_background_border"
         android:fontFamily="sans-serif"
         android:gravity="start|center_vertical"
@@ -273,7 +281,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_edit_enable_in_lesson_language_switching_container" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_edit_allow_download_container"
+        app:layout_constraintVertical_bias="1.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>
