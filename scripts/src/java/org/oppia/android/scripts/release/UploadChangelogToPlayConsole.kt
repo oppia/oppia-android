@@ -61,38 +61,93 @@ fun main(args: Array<String>) {
   println("  Version : $version")
   println()
 
+  val isAutomaticRun = System.getenv("IS_AUTOMATIC_RUN")?.toBooleanStrictOrNull() == true ||
+    System.getenv("GITHUB_EVENT_NAME") == "push"
+
   val client = GooglePlayConsoleClient(gcpAccessToken, apiBaseUrl)
-  maybeUploadUpdatedChangelogs(client, workspacePath, packageName, version)
+  maybeUploadUpdatedChangelogs(client, workspacePath, packageName, version, isAutomaticRun)
 }
 
 /**
  * Audits all live Play Console tracks and uploads updated release notes for [version] to each
  * track that has a corresponding changelog file in `config/changelogs/`.
  *
- * Tracks with no matching file are skipped silently. This is a no-op if no tracks are live.
+ * Verifies authoritatively that [version] is currently live on at least one Play Console track
+ * before creating or committing an edit session. If [version] is not live:
+ * - If [isAutomaticRun] is `true`, logs a message and returns safely without opening an edit.
+ * - If [isAutomaticRun] is `false` (manual trigger), throws [IllegalStateException] with a clear message.
+ *
+ * For tracks with an active release matching [version], release notes are resolved and uploaded.
+ * Tracks whose live release does not match [version] or with no matching changelog file are skipped.
  *
  * @param client the [PlayConsoleClient] used for all Play Console API calls
  * @param workspacePath absolute path to the repository root (for changelog lookups)
  * @param packageName the application package name (e.g. `"org.oppia.android"`)
  * @param version version in major.minor format (e.g. `"0.17"`)
+ * @param isAutomaticRun whether this run was triggered automatically (e.g. on push) vs. manually
  * @param frozenVersionCodesPerTrack frozen codes to preserve; defaults to the release config
  */
+@JvmOverloads
 fun maybeUploadUpdatedChangelogs(
   client: PlayConsoleClient,
   workspacePath: String,
   packageName: String,
   version: String,
+  isAutomaticRun: Boolean = false,
   frozenVersionCodesPerTrack: Map<String, Set<Long>> = FROZEN_VERSION_CODES_PER_TRACK
 ) {
   val liveTracks = auditLiveTracks(client, packageName)
 
   if (liveTracks.isEmpty()) {
-    println("No live tracks found — nothing to update.")
-    return
+    if (isAutomaticRun) {
+      println("No live tracks found — nothing to update.")
+      return
+    } else {
+      error(
+        "No live tracks found for '$packageName'. Confirm that a release has been deployed " +
+          "before running a manual changelog upload."
+      )
+    }
+  }
+
+  // Authoritative version validation: identify tracks where the active non-frozen release
+  // matches the target version.
+  val matchingTracks = liveTracks.filter { (track, releases) ->
+    val frozenCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
+    val activeRelease = findHighestNonFrozenVersionCode(releases, frozenCodes)?.first
+    activeRelease != null && releaseMatchesVersion(activeRelease, version)
+  }
+
+  for ((track, releases) in liveTracks) {
+    if (track !in matchingTracks) {
+      val frozenCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
+      val activeRelease = findHighestNonFrozenVersionCode(releases, frozenCodes)?.first
+      val releaseLabel =
+        activeRelease?.name ?: activeRelease?.versionCodes?.toString() ?: "unknown"
+      println(
+        "Track '$track': live release ($releaseLabel) does not match target version " +
+          "$version — skipping."
+      )
+    }
+  }
+
+  if (matchingTracks.isEmpty()) {
+    if (isAutomaticRun) {
+      println(
+        "Target version $version is not currently live on any Play Console track — " +
+          "skipping automatic changelog upload."
+      )
+      return
+    } else {
+      error(
+        "Target version '$version' is not currently live on any Play Console track. " +
+          "Confirm that the release has been deployed before running a manual changelog upload."
+      )
+    }
   }
 
   var updatedCount = 0
-  for ((track, releases) in liveTracks) {
+  for ((track, releases) in matchingTracks) {
     val notes = resolveNotesForTrack(workspacePath, version, track)
     if (notes.isEmpty()) {
       println("Track '$track': no changelog file found for version $version — skipping.")
@@ -131,6 +186,43 @@ fun maybeUploadUpdatedChangelogs(
 
   println()
   println("Changelog upload complete: $updatedCount track(s) updated")
+}
+
+/**
+ * Determines whether [release] matches the requested [version] (e.g. "0.18" or "0.9").
+ *
+ * Checks that [release.name] matches [version] or starts with [version] followed by a standard
+ * delimiter (`-`, `_`, `.`, `+`, space, `(`, etc.), allowing names like "0.18", "0.18-rc01-alpha",
+ * "v0.18", "0.18.0", and "0.18_alpha", while ensuring "0.18" never matches "0.180" or "0.19".
+ *
+ * For single-digit minor versions (e.g. "0.9"), both unpadded ("0.9") and zero-padded ("0.09")
+ * formats are matched to support both modern and historical Oppia Android versionName formats.
+ */
+fun releaseMatchesVersion(release: PlayConsoleClient.TrackRelease, version: String): Boolean {
+  val releaseName = release.name?.removePrefix("v")?.removePrefix("V")?.trim() ?: return false
+  val candidatePrefixes = getCandidateVersionPrefixes(version)
+  return candidatePrefixes.any { prefix ->
+    releaseName == prefix ||
+      releaseName.startsWith("$prefix-") ||
+      releaseName.startsWith("${prefix}_") ||
+      releaseName.startsWith("$prefix.") ||
+      releaseName.startsWith("$prefix+") ||
+      releaseName.startsWith("$prefix ") ||
+      releaseName.startsWith("$prefix(")
+  }
+}
+
+/**
+ * Returns candidate version strings for [version] to handle both unpadded (e.g. "0.9") and
+ * zero-padded (e.g. "0.09") minor version numbering across different release eras.
+ */
+private fun getCandidateVersionPrefixes(version: String): Set<String> {
+  val match = Regex("""^(\d+)\.(\d+)$""").matchEntire(version.trim()) ?: return setOf(version)
+  val major = match.groupValues[1]
+  val minorInt = match.groupValues[2].toIntOrNull() ?: return setOf(version)
+  val unpadded = "$major.$minorInt"
+  val padded = "$major.%02d".format(minorInt)
+  return setOf(unpadded, padded)
 }
 
 /**

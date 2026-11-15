@@ -34,11 +34,15 @@ class UploadChangelogToPlayConsoleTest {
   )
   private val testAlphaFrozenBaseline =
     PlayConsoleClient.TrackRelease(
-      versionCodes = testFrozenVersionCodesPerTrack.getValue("alpha").toList(), status = "completed"
+      versionCodes = testFrozenVersionCodesPerTrack.getValue("alpha").toList(),
+      status = "completed",
+      name = "0.16"
     )
   private val testBetaFrozenBaseline =
     PlayConsoleClient.TrackRelease(
-      versionCodes = testFrozenVersionCodesPerTrack.getValue("beta").toList(), status = "completed"
+      versionCodes = testFrozenVersionCodesPerTrack.getValue("beta").toList(),
+      status = "completed",
+      name = "0.16"
     )
 
   private val testPackageName = "org.oppia.android"
@@ -59,6 +63,7 @@ class UploadChangelogToPlayConsoleTest {
   fun testMaybeUploadUpdatedChangelogs_noLiveTracks_doesNotCreateAnyEdits() {
     maybeUploadUpdatedChangelogs(
       fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+      isAutomaticRun = true,
       frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
     )
 
@@ -66,15 +71,33 @@ class UploadChangelogToPlayConsoleTest {
   }
 
   @Test
+  fun testMaybeUploadUpdatedChangelogs_noLiveTracks_manualRun_throwsIllegalStateException() {
+    val exception = assertThrows<IllegalStateException> {
+      maybeUploadUpdatedChangelogs(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+        isAutomaticRun = false,
+        frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains("No live tracks found")
+  }
+
+  @Test
   fun testMaybeUploadUpdatedChangelogs_draftTrackOnly_doesNotCreateAnyEdits() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "draft"))
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "draft", name = testVersion
+        )
+      )
     )
     createSharedChangelog(testVersion, testNotes)
 
     maybeUploadUpdatedChangelogs(
       fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+      isAutomaticRun = true,
       frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
     )
 
@@ -85,12 +108,17 @@ class UploadChangelogToPlayConsoleTest {
   fun testMaybeUploadUpdatedChangelogs_haltedTrackOnly_doesNotCreateAnyEdits() {
     fakeClient.setTrackReleases(
       "production",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "halted"))
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "halted", name = testVersion
+        )
+      )
     )
     createSharedChangelog(testVersion, testNotes)
 
     maybeUploadUpdatedChangelogs(
       fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+      isAutomaticRun = true,
       frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
     )
 
@@ -102,7 +130,9 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        ),
         testAlphaFrozenBaseline
       )
     )
@@ -126,7 +156,8 @@ class UploadChangelogToPlayConsoleTest {
       "beta",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(200L), status = "inProgress", rolloutPermille = 250
+          versionCodes = listOf(200L), status = "inProgress", rolloutPermille = 250,
+          name = testVersion
         ),
         testBetaFrozenBaseline
       )
@@ -150,7 +181,11 @@ class UploadChangelogToPlayConsoleTest {
   fun testMaybeUploadUpdatedChangelogs_completedProductionTrack_uploadsCorrectNotes() {
     fakeClient.setTrackReleases(
       "production",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"))
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(300L), status = "completed", name = testVersion
+        )
+      )
     )
     createSharedChangelog(testVersion, testNotes)
 
@@ -171,7 +206,9 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        ),
         testAlphaFrozenBaseline
       )
     )
@@ -191,7 +228,9 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        ),
         testAlphaFrozenBaseline
       )
     )
@@ -211,7 +250,11 @@ class UploadChangelogToPlayConsoleTest {
   fun testMaybeUploadUpdatedChangelogs_liveTrackWithNoMatchingChangelogFile_skipsUpload() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"))
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        )
+      )
     )
     // No changelog file created for testVersion — only the dir exists.
     File(tempFolder.root, "config/changelogs").mkdirs()
@@ -229,7 +272,9 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "beta",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(200L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(200L), status = "completed", name = testVersion
+        ),
         testBetaFrozenBaseline
       )
     )
@@ -250,7 +295,9 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        ),
         testAlphaFrozenBaseline
       )
     )
@@ -269,7 +316,11 @@ class UploadChangelogToPlayConsoleTest {
   fun testMaybeUploadUpdatedChangelogs_changelogExceedsMaxLength_throwsIllegalStateException() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"))
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        )
+      )
     )
     createSharedChangelog(testVersion, "A".repeat(501))
 
@@ -288,13 +339,19 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        ),
         testAlphaFrozenBaseline
       )
     )
     fakeClient.setTrackReleases(
       "production",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(200L), status = "completed"))
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(200L), status = "completed", name = testVersion
+        )
+      )
     )
     createSharedChangelog(testVersion, testNotes)
 
@@ -316,14 +373,18 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        ),
         testAlphaFrozenBaseline
       )
     )
     fakeClient.setTrackReleases(
       "beta",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(200L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(200L), status = "completed", name = testVersion
+        ),
         testBetaFrozenBaseline
       )
     )
@@ -345,20 +406,28 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        ),
         testAlphaFrozenBaseline
       )
     )
     fakeClient.setTrackReleases(
       "beta",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(200L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(200L), status = "completed", name = testVersion
+        ),
         testBetaFrozenBaseline
       )
     )
     fakeClient.setTrackReleases(
       "production",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"))
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(300L), status = "completed", name = testVersion
+        )
+      )
     )
     createSharedChangelog(testVersion, testNotes)
 
@@ -378,7 +447,9 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        ),
         testAlphaFrozenBaseline
       )
     )
@@ -399,7 +470,8 @@ class UploadChangelogToPlayConsoleTest {
       listOf(
         PlayConsoleClient.TrackRelease(
           versionCodes = listOf(98L, 100L, 99L),
-          status = "completed"
+          status = "completed",
+          name = testVersion
         ),
         testAlphaFrozenBaseline
       )
@@ -418,7 +490,11 @@ class UploadChangelogToPlayConsoleTest {
   fun testMaybeUploadUpdatedChangelogs_noVersionCodes_throwsIllegalStateException() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = emptyList(), status = "completed"))
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = emptyList(), status = "completed", name = testVersion
+        )
+      )
     )
     createSharedChangelog(testVersion, "Notes.")
 
@@ -429,25 +505,42 @@ class UploadChangelogToPlayConsoleTest {
       )
     }
 
-    assertThat(exception).hasMessageThat().contains("no version codes")
+    assertThat(exception).hasMessageThat()
+      .contains("Target version '$testVersion' is not currently live on any Play Console track")
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_onlyFrozenVersionCodes_doesNotCreateEdit() {
+  fun testMaybeUploadUpdatedChangelogs_onlyFrozenVersionCodes_automaticRun_skipsSafely() {
+    fakeClient.setTrackReleases("alpha", listOf(testAlphaFrozenBaseline))
+    createSharedChangelog(testVersion, "Notes.")
+
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+      isAutomaticRun = true,
+      frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+    )
+
+    assertThat(fakeClient.createdEdits).isEmpty()
+    assertThat(fakeClient.trackUpdates).isEmpty()
+    assertThat(fakeClient.committedEdits).isEmpty()
+  }
+
+  @Test
+  fun testMaybeUploadUpdatedChangelogs_onlyFrozenVersionCodes_manualRun_throwsException() {
     fakeClient.setTrackReleases("alpha", listOf(testAlphaFrozenBaseline))
     createSharedChangelog(testVersion, "Notes.")
 
     val exception = assertThrows<IllegalStateException> {
       maybeUploadUpdatedChangelogs(
         fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+        isAutomaticRun = false,
         frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
       )
     }
 
-    assertThat(exception).hasMessageThat().contains("no version codes outside its frozen builds")
+    assertThat(exception).hasMessageThat()
+      .contains("Target version '$testVersion' is not currently live on any Play Console track")
     assertThat(fakeClient.createdEdits).isEmpty()
-    assertThat(fakeClient.trackUpdates).isEmpty()
-    assertThat(fakeClient.committedEdits).isEmpty()
   }
 
   @Test
@@ -455,7 +548,9 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        ),
         testAlphaFrozenBaseline
       )
     )
@@ -475,7 +570,8 @@ class UploadChangelogToPlayConsoleTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 250
+          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 250,
+          name = testVersion
         ),
         testAlphaFrozenBaseline
       )
@@ -499,10 +595,12 @@ class UploadChangelogToPlayConsoleTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 250
+          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 250,
+          name = testVersion
         ),
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(200L), status = "inProgress", rolloutPermille = 750
+          versionCodes = listOf(200L), status = "inProgress", rolloutPermille = 750,
+          name = testVersion
         ),
         testAlphaFrozenBaseline
       )
@@ -525,9 +623,12 @@ class UploadChangelogToPlayConsoleTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 250
+          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 250,
+          name = testVersion
         ),
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(200L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(200L), status = "completed", name = testVersion
+        ),
         testAlphaFrozenBaseline
       )
     )
@@ -549,7 +650,8 @@ class UploadChangelogToPlayConsoleTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 1000
+          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 1000,
+          name = testVersion
         ),
         testAlphaFrozenBaseline
       )
@@ -569,7 +671,9 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        ),
         testAlphaFrozenBaseline
       )
     )
@@ -589,7 +693,9 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = testVersion
+        ),
         testAlphaFrozenBaseline
       )
     )
@@ -608,7 +714,11 @@ class UploadChangelogToPlayConsoleTest {
   fun testMaybeUploadUpdatedChangelogs_singleLiveTrack_setsCorrectTrackAndPackageName() {
     fakeClient.setTrackReleases(
       "production",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"))
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(300L), status = "completed", name = testVersion
+        )
+      )
     )
     createSharedChangelog(testVersion, "Notes.")
 
@@ -693,7 +803,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(listOf(liveVersionCode), "completed"),
+        PlayConsoleClient.TrackRelease(listOf(liveVersionCode), "completed", name = testVersion),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -720,7 +830,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "beta",
       listOf(
-        PlayConsoleClient.TrackRelease(listOf(liveVersionCode), "completed"),
+        PlayConsoleClient.TrackRelease(listOf(liveVersionCode), "completed", name = testVersion),
         FROZEN_BETA_BASELINE
       )
     )
@@ -734,6 +844,305 @@ class UploadChangelogToPlayConsoleTest {
     assertThat(fakeClient.trackUpdates[0].track).isEqualTo("beta")
     assertThat(fakeClient.trackUpdates[0].frozenVersionCodes)
       .containsExactlyElementsIn(FROZEN_VERSION_CODES_PER_TRACK["beta"] ?: emptySet<Long>())
+  }
+
+  @Test
+  fun testMaybeUploadUpdatedChangelogs_versionNotLive_automaticRun_skipsSafelyWithoutEdit() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = "0.17"
+        ),
+        testAlphaFrozenBaseline
+      )
+    )
+    createSharedChangelog(testVersion, testNotes)
+
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+      isAutomaticRun = true,
+      frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+    )
+
+    assertThat(fakeClient.createdEdits).isEmpty()
+    assertThat(fakeClient.trackUpdates).isEmpty()
+    assertThat(fakeClient.committedEdits).isEmpty()
+  }
+
+  @Test
+  fun testMaybeUploadUpdatedChangelogs_versionNotLive_manualRun_throwsIllegalStateException() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = "0.17"
+        ),
+        testAlphaFrozenBaseline
+      )
+    )
+    createSharedChangelog(testVersion, testNotes)
+
+    val exception = assertThrows<IllegalStateException> {
+      maybeUploadUpdatedChangelogs(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+        isAutomaticRun = false,
+        frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Target version '$testVersion' is not currently live on any Play Console track")
+    assertThat(fakeClient.createdEdits).isEmpty()
+  }
+
+  @Test
+  fun testMaybeUploadUpdatedChangelogs_releaseNameWithRcAndFlavorSuffix_matchesAndUploads() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = "0.18-rc01-alpha"
+        ),
+        testAlphaFrozenBaseline
+      )
+    )
+    createSharedChangelog(testVersion, testNotes)
+
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+      frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+    )
+
+    val update = fakeClient.trackUpdates.single()
+    assertThat(update.track).isEqualTo("alpha")
+    assertThat(update.versionCode).isEqualTo(100L)
+    assertThat(update.releaseNotes).containsEntry("en-US", testNotes)
+    assertThat(fakeClient.committedEdits).hasSize(1)
+  }
+
+  @Test
+  fun testMaybeUploadUpdatedChangelogs_mixedTracksVersionMatching_uploadsOnlyToMatchingTracks() {
+    fakeClient.setTrackReleases(
+      "beta",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(200L), status = "completed", name = "0.18"
+        ),
+        testBetaFrozenBaseline
+      )
+    )
+    fakeClient.setTrackReleases(
+      "production",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = "0.17"
+        )
+      )
+    )
+    createSharedChangelog(testVersion, testNotes)
+
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+      frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+    )
+
+    assertThat(fakeClient.committedEdits).hasSize(1)
+    val update = fakeClient.trackUpdates.single()
+    assertThat(update.track).isEqualTo("beta")
+    assertThat(update.versionCode).isEqualTo(200L)
+    assertThat(update.releaseNotes).containsEntry("en-US", testNotes)
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_exactMatch_returnsTrue() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.18"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.18")).isTrue()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_prefixWithHyphen_returnsTrue() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.18-rc01"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.18")).isTrue()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_prefixWithUnderscore_returnsTrue() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.18_alpha"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.18")).isTrue()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_leadingV_returnsTrue() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "v0.18"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.18")).isTrue()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_prefixWithDot_returnsTrue() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.18.1"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.18")).isTrue()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_similarNumberPrefix_returnsFalse() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.180"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.18")).isFalse()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_differentVersion_returnsFalse() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.19"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.18")).isFalse()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_nullName_returnsFalse() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = null
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.18")).isFalse()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_leadingCapitalV_returnsTrue() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "V0.18"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.18")).isTrue()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_prefixWithSpace_returnsTrue() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.18 (Production)"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.18")).isTrue()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_prefixWithParenthesis_returnsTrue() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.18(alpha)"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.18")).isTrue()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_prefixWithPlus_returnsTrue() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.18+1"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.18")).isTrue()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_olderVersion_singleDigitMinor_matchesUnpadded() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.9-alpha"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.9")).isTrue()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_olderVersion_singleDigitMinor_matchesZeroPadded() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.09-rc01-alpha"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.9")).isTrue()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_olderVersion_zeroPaddedTarget_matchesUnpadded() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.9"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.09")).isTrue()
+  }
+
+  @Test
+  fun testReleaseMatchesVersion_version019CannotMatchVersion018Release() {
+    val release = PlayConsoleClient.TrackRelease(
+      versionCodes = listOf(100L), status = "completed", name = "0.18-rc01-alpha"
+    )
+
+    assertThat(releaseMatchesVersion(release, "0.19")).isFalse()
+  }
+
+  @Test
+  fun testMaybeUploadUpdatedChangelogs_requested019_liveIs018_automaticRun_skipsWithoutEdit() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = "0.18-rc01-alpha"
+        )
+      )
+    )
+    createSharedChangelog("0.19", "Notes for 0.19.")
+
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "0.19",
+      isAutomaticRun = true,
+      frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+    )
+
+    assertThat(fakeClient.createdEdits).isEmpty()
+    assertThat(fakeClient.committedEdits).isEmpty()
+  }
+
+  @Test
+  fun testMaybeUploadUpdatedChangelogs_requested019_liveIs018_manualRun_throwsException() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "completed", name = "0.18-rc01-alpha"
+        )
+      )
+    )
+    createSharedChangelog("0.19", "Notes for 0.19.")
+
+    val exception = assertThrows<IllegalStateException> {
+      maybeUploadUpdatedChangelogs(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, "0.19",
+        isAutomaticRun = false,
+        frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Target version '0.19' is not currently live on any Play Console track")
+    assertThat(fakeClient.createdEdits).isEmpty()
   }
 
   /** Creates `config/changelogs/<version>.md` in the temp folder with [notes]. */
