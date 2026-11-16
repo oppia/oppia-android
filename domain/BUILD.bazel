@@ -137,10 +137,7 @@ local_assets_library(
 downloaded_assets_library(
     name = "domain_alpha_assets",
     download_config = "@oppia_android_asset_pipeline//scripts:assets/alpha_download_config.textproto",
-    download_questions = select({
-        "//config:download_practice_questions_in_alpha": True,
-        "//conditions:default": False,
-    }),
+    download_questions = True,
     output_log_name = "domain_alpha_assets_output.log",
     pinned_versions = "//config:lessons/alpha_pinned_lesson_versions.textproto",
     tags = ["manual"],
@@ -150,6 +147,7 @@ downloaded_assets_library(
 downloaded_assets_library(
     name = "domain_prod_assets",
     download_config = "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
+    download_questions = False,
     output_log_name = "domain_prod_assets_output.log",
     pinned_versions = "//config:lessons/prod_pinned_lesson_versions.textproto",
     tags = ["manual"],

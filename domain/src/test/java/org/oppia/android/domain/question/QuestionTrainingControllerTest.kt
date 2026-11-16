@@ -105,7 +105,7 @@ class QuestionTrainingControllerTest {
   }
 
   @Test
-  fun testController_startTrainingSession_retrievedStartResult_completesSameSession() {
+  fun testController_startSession_retrievedStartResult_isSameProviderAndReportsSuccess() {
     setUpTestApplicationComponent(questionSeed = 0)
     val startResult = questionTrainingController.startQuestionTrainingSession(
       profileId1, listOf(TEST_SKILL_ID_0)

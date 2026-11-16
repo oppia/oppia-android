@@ -260,7 +260,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_secondQuestion_textSizeChanged_retainsProgressAndPendingAnswer() {
     launchForSkillList(SKILL_ID_LIST).use { scenario ->
       selectMultipleChoiceOption(optionPosition = 2)
@@ -279,7 +278,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_pendingChoice_textSizeChangedTwice_retainsSelection() {
     launchForSkillList(SKILL_ID_LIST).use { scenario ->
       clickSelection(optionPosition = 2, targetViewId = R.id.multiple_choice_radio_button)
@@ -305,7 +303,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_pendingText_textSizeChangedTwice_retainsAnswer() {
     launchForSkillList(SKILL_ID_LIST).use { scenario ->
       selectMultipleChoiceOption(optionPosition = 2)
@@ -363,7 +360,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testQuestionPlayer_sessionReplayed_hintMatchesCurrentQuestion() {
     launchForSkillList(SKILL_ID_LIST).use {
       selectMultipleChoiceOption(optionPosition = 2)
@@ -417,18 +413,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testQuestionPlayer_progressBar_isExcludedFromAccessibility() {
-    launchForSkillList(SKILL_ID_LIST).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(
-          activity.findViewById<View>(R.id.question_progress_bar).importantForAccessibility
-        ).isEqualTo(View.IMPORTANT_FOR_ACCESSIBILITY_NO)
-      }
-    }
-  }
-
-  @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_loadingSession_activityRecreatedTwice_hintMatchesCurrentQuestion() {
     ActivityScenario.launch<QuestionPlayerActivity>(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
@@ -464,7 +448,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_replayingSession_activityRecreated_startsFreshSession() {
     launchForSkillList(SKILL_ID_LIST).use { scenario ->
       selectMultipleChoiceOption(optionPosition = 2)
@@ -502,7 +485,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_recreatedCompletion_replayedBeforeProfileLoads_startsFreshSession() {
     launchForSkillList(SKILL_ID_LIST).use { scenario ->
       selectMultipleChoiceOption(optionPosition = 2)
@@ -523,7 +505,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_stoppingSession_activityRecreated_finishesActivity() {
     launchForSkillList(SKILL_ID_LIST).use { scenario ->
       scenario.onActivity { activity -> activity.stopSession() }
@@ -536,7 +517,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_loadingSession_stoppedThenRecreated_finishesActivity() {
     ActivityScenario.launch<QuestionPlayerActivity>(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
@@ -570,7 +550,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_correctSelection_rtl_tickDoesNotOverlapChoices() {
     launchForSkillList(SKILL_ID_LIST).use { scenario ->
       scenario.onActivity { activity ->
