@@ -107,6 +107,19 @@ class UrlImageParserTest {
   }
 
   @Test
+  fun testLoadDrawable_svgFromUrlBlockType_loadsBlockSvgImagePreservingAspectRatio() {
+    val imageUrl = "https://example.com/test_image.svg"
+    urlImageParser.loadDrawable(imageUrl, BLOCK_IMAGE)
+
+    Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+    // Lesson images shouldn't be stretched when their filename size has a different aspect ratio.
+    val loadedSvgs = testGlideImageLoader.getLoadedBlockSvgsPreservingAspectRatio()
+    assertThat(loadedSvgs).hasSize(1)
+    assertThat(loadedSvgs.first()).contains("test_image.svg")
+  }
+
+  @Test
   fun testLoadDrawable_svgzFromUrlBlockType_loadsBlockSvgImage() {
     val imageUrl = "https://example.com/test_image.svgz"
     urlImageParser.loadDrawable(imageUrl, BLOCK_IMAGE)

@@ -104,12 +104,15 @@ class UrlImageParser private constructor(
       }
       BLOCK_IMAGE -> {
         if (isSvg) {
+          // Lesson images are shown at the size from their filename, but (like on Oppia web) they
+          // shouldn't be stretched if the SVG itself has a different shape.
           imageLoader.loadBlockSvg(
             imageUrl,
             createCustomTarget(
               proxyDrawable,
               AutoAdjustingImageTarget.BlockImageTarget.SvgTarget::create
-            )
+            ),
+            preserveAspectRatio = true
           )
         } else {
           imageLoader.loadBitmap(
