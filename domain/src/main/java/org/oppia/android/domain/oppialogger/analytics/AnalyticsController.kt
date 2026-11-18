@@ -178,12 +178,22 @@ class AnalyticsController @Inject constructor(
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NONE -> cacheEventLog(eventLog)
       else -> {
-        analyticsEventLogger.logEvent(eventLog)
-        if (enableLearnerStudyAnalytics) {
-          recordUploadedEvent(eventLog)
-        }
+        if (enableLearnerStudyAnalytics) recordUploadedEvent(eventLog)
+        handOffEventLog(eventLog)
       }
     }
+  }
+
+  /**
+   * Hands [eventLog] off to the analytics service and, for learner studies, records when the
+   * hand-off completed.
+   *
+   * Note that [eventLog] must already be recorded as uploaded when learner studies are enabled so
+   * that it's retained even if the hand-off fails.
+   */
+  private suspend fun handOffEventLog(eventLog: EventLog) {
+    analyticsEventLogger.logEvent(eventLog)
+    if (enableLearnerStudyAnalytics) recordEventHandOff(eventLog)
   }
 
   /**
@@ -217,6 +227,19 @@ class AnalyticsController @Inject constructor(
   private suspend fun recordUploadedEvent(eventLog: EventLog) {
     eventLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
       oppiaEventLogs.toBuilder().addUploadedEventLogs(eventLog).build()
+    }.await()
+  }
+
+  private suspend fun recordEventHandOff(eventLog: EventLog) {
+    val handOffTimestampMs = oppiaClock.getCurrentTimeMs()
+    eventLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
+      // The most recent matching entry is the one for this hand-off (identical entries are
+      // interchangeable).
+      val index = oppiaEventLogs.uploadedEventLogsList.lastIndexOf(eventLog)
+      if (index == -1) return@storeDataAsync oppiaEventLogs
+      oppiaEventLogs.toBuilder().setUploadedEventLogs(
+        index, eventLog.toBuilder().setUploadHandOffTimestampMs(handOffTimestampMs)
+      ).build()
     }.await()
   }
 
@@ -309,7 +332,7 @@ class AnalyticsController @Inject constructor(
       check(networkConnectionUtil.getCurrentConnectionStatus() != NONE) {
         "Cannot upload events without internet connectivity."
       }
-      emit(analyticsEventLogger.logEvent(removeFirstEventLogFromStoreAsync().await()))
+      emit(handOffEventLog(removeFirstEventLogFromStoreAsync().await()))
     }
   }
 

@@ -43,6 +43,11 @@ message EventLog {
   // at source.
   ProfileContext profile_context = 9;
 
+  // The time at which this event was handed off to the analytics service, or 0 if the hand-off
+  // wasn't confirmed to complete (e.g. due to an upload failure or app crash). This is only set for
+  // events retained in OppiaEventLogs.uploaded_event_logs, and is never logged remotely.
+  int64 upload_hand_off_timestamp_ms = 10;
+
   // Structure of an activity context.
   message Context {
     // Deprecated exploration context. This is now handled via the open_exploration_activity context
@@ -620,7 +625,9 @@ message OppiaEventLogs {
   // app not have internet connectivity at the time of wanting to originally log the event.
   repeated EventLog event_logs_to_upload = 1;
 
-  // Contains all events that have been uploaded remotely to the analytics service. This is only
+  // Contains all events for which an upload to the analytics service was attempted. Events are
+  // recorded here before the attempt so that they're retained even if it fails; see
+  // EventLog.upload_hand_off_timestamp_ms for whether it was confirmed to complete. This is only
   // used for special builds of the app that have additional telemetry diagnostics enabled.
   repeated EventLog uploaded_event_logs = 2;
 }
