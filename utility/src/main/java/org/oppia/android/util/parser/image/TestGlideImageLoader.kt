@@ -20,6 +20,7 @@ class TestGlideImageLoader @Inject constructor(
   private val availableBitmaps = mutableMapOf<String, Int>()
   private val loadedBitmaps = mutableListOf<String>()
   private val loadedBlockSvgs = mutableListOf<String>()
+  private val loadedBlockSvgsPreservingAspectRatio = mutableListOf<String>()
   private val loadedTextSvgs = mutableListOf<String>()
   private val loadedMathDrawables = mutableListOf<MathModel>()
 
@@ -41,10 +42,12 @@ class TestGlideImageLoader @Inject constructor(
   override fun loadBlockSvg(
     imageUrl: String,
     target: ImageTarget<BlockPictureDrawable>,
-    transformations: List<ImageTransformation>
+    transformations: List<ImageTransformation>,
+    preserveAspectRatio: Boolean
   ) {
     loadedBlockSvgs += imageUrl
-    glideImageLoader.loadBlockSvg(imageUrl, target, transformations)
+    if (preserveAspectRatio) loadedBlockSvgsPreservingAspectRatio += imageUrl
+    glideImageLoader.loadBlockSvg(imageUrl, target, transformations, preserveAspectRatio)
   }
 
   override fun loadTextSvg(
@@ -111,6 +114,13 @@ class TestGlideImageLoader @Inject constructor(
    * of the application.
    */
   fun getLoadedBlockSvgs(): List<String> = loadedBlockSvgs
+
+  /**
+   * Returns the subset of [getLoadedBlockSvgs] that were requested to keep their own aspect ratio
+   * (rather than being stretched to their rendered size).
+   */
+  fun getLoadedBlockSvgsPreservingAspectRatio(): List<String> =
+    loadedBlockSvgsPreservingAspectRatio
 
   /**
    * Returns the list of image URLs that have been loaded as SVGs (in inline text format) since the

@@ -50,8 +50,9 @@ class GlideImageLoader @Inject constructor(
   override fun loadBlockSvg(
     imageUrl: String,
     target: ImageTarget<BlockPictureDrawable>,
-    transformations: List<ImageTransformation>
-  ) = loadSvgWithGlide(imageUrl, target, transformations)
+    transformations: List<ImageTransformation>,
+    preserveAspectRatio: Boolean
+  ) = loadSvgWithGlide(imageUrl, target, transformations, preserveAspectRatio)
 
   override fun loadTextSvg(
     imageUrl: String,
@@ -87,7 +88,8 @@ class GlideImageLoader @Inject constructor(
   private inline fun <reified T : SvgPictureDrawable> loadSvgWithGlide(
     imageUrl: String,
     target: ImageTarget<T>,
-    transformations: List<ImageTransformation>
+    transformations: List<ImageTransformation>,
+    preserveAspectRatio: Boolean = false
   ) {
     // TODO(#45): Ensure the image caching flow is properly hooked up.
     glide
@@ -96,7 +98,9 @@ class GlideImageLoader @Inject constructor(
       .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
       .apply(SvgDecoder.createLoadSvgFromPipelineOption())
       .load(loadImage(imageUrl))
-      .transformWithAll(transformations.toPictureGlideTransformations(imageUrl))
+      .transformWithAll(
+        transformations.toPictureGlideTransformations(imageUrl, preserveAspectRatio)
+      )
       .intoTarget(target)
   }
 
@@ -132,17 +136,20 @@ class GlideImageLoader @Inject constructor(
       }
     }
 
-  private fun List<ImageTransformation>.toPictureGlideTransformations(imageUrl: String):
-    List<Transformation<ScalableVectorGraphic>> {
-      return map {
-        when (it) {
-          ImageTransformation.BLUR -> pictureBitmapBlurTransformation
-        }
-      } + UpdatePictureDrawableSize(imageUrl)
-    }
+  private fun List<ImageTransformation>.toPictureGlideTransformations(
+    imageUrl: String,
+    preserveAspectRatio: Boolean
+  ): List<Transformation<ScalableVectorGraphic>> {
+    return map {
+      when (it) {
+        ImageTransformation.BLUR -> pictureBitmapBlurTransformation
+      }
+    } + UpdatePictureDrawableSize(imageUrl, preserveAspectRatio)
+  }
 
   private class UpdatePictureDrawableSize(
-    private val url: String
+    private val url: String,
+    private val preserveAspectRatio: Boolean
   ) : Transformation<ScalableVectorGraphic> {
     private val filename by lazy { Uri.parse(url).lastPathSegment }
 
@@ -156,6 +163,7 @@ class GlideImageLoader @Inject constructor(
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
       messageDigest.update(ID.toByteArray())
       messageDigest.update(url.toByteArray())
+      messageDigest.update((if (preserveAspectRatio) 1 else 0).toByte())
     }
 
     override fun transform(
@@ -166,7 +174,7 @@ class GlideImageLoader @Inject constructor(
     ): Resource<ScalableVectorGraphic> {
       return SimpleResource(
         toTransform.get().also {
-          it.initializeWithExtractedDimensions(extractedWidth, extractedHeight)
+          it.initializeWithExtractedDimensions(extractedWidth, extractedHeight, preserveAspectRatio)
         }
       )
     }
