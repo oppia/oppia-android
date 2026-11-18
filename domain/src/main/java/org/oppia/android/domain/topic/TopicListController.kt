@@ -36,6 +36,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.EnableAdminUnlockChapters
 import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
@@ -103,7 +104,9 @@ class TopicListController @Inject constructor(
   private val translationController: TranslationController,
   private val classroomController: ClassroomController,
   @LoadLessonProtosFromAssets
-  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>,
+  @EnableAdminUnlockChapters
+  private val adminUnlockChapters: PlatformParameterValue<Boolean>
 ) {
 
   /**
@@ -447,11 +450,18 @@ class TopicListController @Inject constructor(
     storyProgress: StoryProgress,
     storySummary: StorySummary
   ): Boolean {
-    val completedChapterProgressList = getCompletedChapterProgressList(storyProgress)
-    val lastChapterSummary = storySummary.chapterList.lastOrNull()
-    return completedChapterProgressList.find { chapterProgress ->
-      chapterProgress.explorationId == lastChapterSummary?.explorationId
-    } != null
+    return if (adminUnlockChapters.value) {
+      storySummary.chapterList.all { chapter ->
+        val chapterProgress = storyProgress.chapterProgressMap[chapter.explorationId]
+        chapterProgress?.chapterPlayState == ChapterPlayState.COMPLETED
+      }
+    } else {
+      val completedChapterProgressList = getCompletedChapterProgressList(storyProgress)
+      val lastChapterSummary = storySummary.chapterList.lastOrNull()
+      completedChapterProgressList.find { chapterProgress ->
+        chapterProgress.explorationId == lastChapterSummary?.explorationId
+      } != null
+    }
   }
 
   private fun getStartedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> {

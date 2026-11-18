@@ -406,14 +406,23 @@ class TopicController @Inject constructor(
 
   /**
    * Return whether the current [StorySummary] can be considered "ongoing" given the specified
-   * [StoryProgress] (that is, at least one chapter has started and the final chapter isn't yet
-   * completed).
+   * [StoryProgress] (that is, at least one chapter has started and the story is not yet completed).
+   *
+   * When the admin unlock flag is enabled, any chapter may be started out of order, so the check
+   * detects progress in any chapter and determines completion across all chapters.
    */
   private fun StorySummary.isOngoing(storyProgress: StoryProgress): Boolean {
-    val firstChapterState = storyProgress.getChapterPlayState(chapterList.first().explorationId)
-    val lastChapterState = storyProgress.getChapterPlayState(chapterList.last().explorationId)
-    return firstChapterState != ChapterPlayState.NOT_STARTED &&
-      lastChapterState != ChapterPlayState.COMPLETED
+    return if (adminUnlockChapters.value) {
+      val hasAnyChapterStarted = chapterList.any { chapter ->
+        storyProgress.getChapterPlayState(chapter.explorationId) != ChapterPlayState.NOT_STARTED
+      }
+      hasAnyChapterStarted && !isStoryCompleted(this, storyProgress)
+    } else {
+      val firstChapterState = storyProgress.getChapterPlayState(chapterList.first().explorationId)
+      val lastChapterState = storyProgress.getChapterPlayState(chapterList.last().explorationId)
+      firstChapterState != ChapterPlayState.NOT_STARTED &&
+        lastChapterState != ChapterPlayState.COMPLETED
+    }
   }
 
   /**
@@ -432,11 +441,7 @@ class TopicController @Inject constructor(
     val completedStoryList = ArrayList<CompletedStory>()
     storyProgressList.safeForEach { storyProgress ->
       val storySummary = retrieveStory(topic.topicId, storyProgress.storyId)
-      val lastChapterSummary = storySummary.chapterList.last()
-      if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId) &&
-        storyProgress.chapterProgressMap[lastChapterSummary.explorationId]!!.chapterPlayState ==
-        ChapterPlayState.COMPLETED
-      ) {
+      if (isStoryCompleted(storySummary, storyProgress)) {
         val storyTranslationContext =
           translationController.computeWrittenTranslationContext(
             storySummary.writtenTranslationsMap, contentLocale
@@ -458,6 +463,29 @@ class TopicController @Inject constructor(
       }
     }
     return completedStoryList
+  }
+
+  /**
+   * Returns whether all chapters in the story are completed.
+   *
+   * When the admin unlock flag is enabled, chapters can be played out of order, so a story is only
+   * considered complete when every chapter is marked [ChapterPlayState.COMPLETED], not just the
+   * last one.
+   */
+  private fun isStoryCompleted(
+    storySummary: StorySummary,
+    storyProgress: StoryProgress
+  ): Boolean {
+    return if (adminUnlockChapters.value) {
+      storySummary.chapterList.all { chapter ->
+        storyProgress.getChapterPlayState(chapter.explorationId) == ChapterPlayState.COMPLETED
+      }
+    } else {
+      val lastChapterSummary = storySummary.chapterList.last()
+      storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId) &&
+        storyProgress.chapterProgressMap[lastChapterSummary.explorationId]!!.chapterPlayState ==
+        ChapterPlayState.COMPLETED
+    }
   }
 
   /** Combines the specified topic without progress and topic-progress into a topic. */

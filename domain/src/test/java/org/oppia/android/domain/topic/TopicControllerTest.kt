@@ -968,6 +968,71 @@ class TopicControllerTest {
     assertThat(completedStoryList.completedStoryList[1].storyId).isEqualTo(RATIOS_STORY_ID_0)
   }
 
+  @Test
+  fun testCompletedStoryList_withAdminUnlockChapters_onlyLastChapterCompleted_listIsEmpty() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    // Directly complete only the last chapter without completing prior chapters.
+    markFractionsStory0Chapter1AsCompletedWithoutPrerequisites()
+
+    val storyList = topicController.getCompletedStoryList(profileId1)
+
+    val completedStoryList = monitorFactory.waitForNextSuccessfulResult(storyList)
+    // The story should NOT be marked complete since earlier chapters are not done.
+    assertThat(completedStoryList.completedStoryCount).isEqualTo(0)
+  }
+
+  @Test
+  fun testCompletedStoryList_withAdminUnlockChapters_allChaptersCompleted_listIsCorrect() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    markFractionsStory0Chapter0AsCompleted()
+    markFractionsStory0Chapter1AsCompleted()
+
+    val storyList = topicController.getCompletedStoryList(profileId1)
+
+    val completedStoryList = monitorFactory.waitForNextSuccessfulResult(storyList)
+    assertThat(completedStoryList.completedStoryCount).isEqualTo(1)
+    assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+  }
+
+  @Test
+  fun testOngoingTopicList_withAdminUnlockChapters_laterChapterStarted_topicIsOngoing() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    // Start a later chapter in-progress without touching chapter 0.
+    markInProgressSavedFractionsStory0Exp1WithoutCompletingPreviousChapters()
+
+    val topicListProvider = topicController.getOngoingTopicList(profileId1)
+
+    val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
+    // Even though chapter 0 was never started, progress on chapter 1 should count.
+    assertThat(ongoingTopicList.topicCount).isEqualTo(1)
+    assertThat(ongoingTopicList.topicList[0].topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+  }
+
+  @Test
+  fun testOngoingTopicList_withAdminUnlockChapters_onlyLastChapterCompleted_topicIsOngoing() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    // Completing only the last chapter leaves prior chapters uncompleted, so topic is ongoing.
+    markFractionsStory0Chapter1AsCompletedWithoutPrerequisites()
+
+    val topicListProvider = topicController.getOngoingTopicList(profileId1)
+
+    val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
+    assertThat(ongoingTopicList.topicCount).isEqualTo(1)
+    assertThat(ongoingTopicList.topicList[0].topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+  }
+
+  @Test
+  fun testOngoingTopicList_withAdminUnlockChapters_allChaptersCompleted_topicIsNotOngoing() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    markFractionsStory0Chapter0AsCompleted()
+    markFractionsStory0Chapter1AsCompleted()
+
+    val topicListProvider = topicController.getOngoingTopicList(profileId1)
+
+    val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
+    assertThat(ongoingTopicList.topicCount).isEqualTo(0)
+  }
+
   /* Localization-based tests. */
 
   @Test
@@ -1305,6 +1370,22 @@ class TopicControllerTest {
     TestPlatformParameterModule.forceEnableAdminUnlockChapters(true)
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+  }
+
+  /**
+   * Marks the second chapter of fractions story 0 as completed without first completing the
+   * prerequisite first chapter. Used to verify that the admin unlock flag correctly prevents a
+   * story from being falsely marked complete when only the last chapter is done.
+   */
+  private fun markFractionsStory0Chapter1AsCompletedWithoutPrerequisites() {
+    val resultProvider = storyProgressController.recordCompletedChapter(
+      profileId1.toProfileIdPreservingZero(),
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
+      completionTimestamp = fakeOppiaClock.getCurrentTimeMs()
+    )
+    monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
   /**
