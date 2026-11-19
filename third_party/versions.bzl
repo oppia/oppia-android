@@ -55,6 +55,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.work:work-runtime": "2.7.1",
     "androidx.work:work-runtime-ktx": "2.7.1",
     "com.android.tools.build:aapt2-proto": "8.3.2-10880808",
+    "com.android.tools:r8": "8.12.30",
     "com.crashlytics.sdk.android:crashlytics": "2.9.8",
     "com.github.bumptech.glide:compiler": "4.11.0",
     "com.github.bumptech.glide:glide": "4.11.0",
