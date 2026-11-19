@@ -379,7 +379,7 @@ private operator fun Term.div(rhs: Term): Term? {
 
   // Division is simply subtracting the powers of terms in the divisor from those in the dividend.
   val quotientPowerMap = dividendPowerMap.mapValues { (name, power) ->
-    power - divisorPowerMap.getOrDefault(name, defaultValue = 0)
+    power - divisorPowerMap.getOrElse(name) { 0 }
   }
 
   // If there are any negative powers, the divisor can't effectively divide this value.

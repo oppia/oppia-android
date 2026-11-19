@@ -238,6 +238,9 @@ class RegexPatternValidationCheckTest {
   private val referenceComputeIfAbsent =
     "computeIfAbsent won't desugar and requires Java 8 support (SDK 24+). Suggest using an atomic" +
       " Kotlin-specific solution, instead."
+  private val referenceGetOrDefault =
+    "getOrDefault won't desugar and requires Java 8 support (SDK 24+). Suggest using an atomic" +
+      " Kotlin-specific solution, instead."
   private val cdataShouldNotBeUsed =
     "CDATA isn't handled by Translatewiki correctly. Use escaped HTML, instead."
   private val wikiReferenceNote =
@@ -2886,6 +2889,28 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $referenceComputeIfAbsent
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_includesReferenceToGetOrDefault_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        val value = someMap.getOrDefault(key, defaultValue)
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows<Exception>() { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $referenceGetOrDefault
         $wikiReferenceNote
         """.trimIndent()
       )
