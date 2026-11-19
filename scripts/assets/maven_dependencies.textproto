@@ -1667,7 +1667,7 @@ maven_dependency {
 }
 maven_dependency {
   artifact_name: "com.squareup.moshi:moshi:1.15.0"
-  artifact_version: "1.13.0"
+  artifact_version: "1.15.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1678,7 +1678,7 @@ maven_dependency {
 }
 maven_dependency {
   artifact_name: "com.squareup.moshi:moshi-kotlin:1.15.0"
-  artifact_version: "1.13.0"
+  artifact_version: "1.15.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1689,7 +1689,7 @@ maven_dependency {
 }
 maven_dependency {
   artifact_name: "com.squareup.moshi:moshi-kotlin-codegen:1.15.0"
-  artifact_version: "1.13.0"
+  artifact_version: "1.15.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1989,7 +1989,7 @@ maven_dependency {
 }
 maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0"
-  artifact_version: "1.6.21"
+  artifact_version: "1.9.0"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -2000,7 +2000,7 @@ maven_dependency {
 }
 maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0"
-  artifact_version: "1.6.21"
+  artifact_version: "1.9.0"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
