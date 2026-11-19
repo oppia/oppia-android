@@ -161,7 +161,7 @@ http_archive(
     urls = ["https://github.com/google/dagger/archive/dagger-%s.zip" % HTTP_DEPENDENCY_VERSIONS["dagger"]["version"]],
 )
 
-load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
+load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS")
 
 # Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
@@ -272,7 +272,9 @@ maven_install(
     override_targets = {
         "com.google.guava:guava": "@//third_party:com_google_guava_guava",
     },
-    repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
+    # Omit DAGGER_REPOSITORIES: MAVEN_REPOSITORIES already covers maven.google.com and Maven
+    # Central, whereas DAGGER_REPOSITORIES adds the defunct oss.sonatype.org snapshots repository.
+    repositories = MAVEN_REPOSITORIES,
     strict_visibility = True,
 )
 
@@ -290,7 +292,7 @@ pinned_maven_install()
                 HTTP_DEPENDENCY_VERSIONS["guava_%s" % guava_type]["version"],
                 guava_type,
             )
-            for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+            for url_base in MAVEN_REPOSITORIES
         ],
     )
     for guava_type in [
