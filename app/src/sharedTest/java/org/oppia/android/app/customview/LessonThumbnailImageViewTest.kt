@@ -215,7 +215,7 @@ class LessonThumbnailImageViewTest {
   }
 
   @Test
-  fun testDataBinding_detachAndRebind_reattachShowsNewThumbnail() {
+  fun testDataBinding_detachRebindAndReattach_showsNewThumbnail() {
     imageLoader.arrangeBitmap("first.png", R.drawable.lesson_thumbnail_graphic_baker)
     imageLoader.arrangeBitmap("second.png", R.drawable.topic_fractions_01)
     runWithLaunchedActivity {
@@ -244,7 +244,7 @@ class LessonThumbnailImageViewTest {
   }
 
   @Test
-  fun testDataBinding_multipleDetachedThumbnails_attachLoadsEachThumbnail() {
+  fun testDataBinding_multipleDetachedThumbnailsThenAttach_loadsEachThumbnail() {
     runWithLaunchedActivity {
       onActivity { activity ->
         val parent = getThumbnailContainer(activity)

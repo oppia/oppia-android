@@ -310,22 +310,22 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       return
     }
     isInitializingLearnerId = true
-    val result = profileManagementController.initializeLearnerId(
+    val initializationResultLiveData = profileManagementController.initializeLearnerId(
       profile.id.toProfileIdPreservingZero()
     ).toLiveData()
-    result.observe(
+    initializationResultLiveData.observe(
       fragment.viewLifecycleOwner,
       object : Observer<AsyncResult<Any?>> {
         override fun onChanged(value: AsyncResult<Any?>) {
           when (value) {
             is AsyncResult.Pending -> Unit
             is AsyncResult.Success -> {
-              result.removeObserver(this)
+              initializationResultLiveData.removeObserver(this)
               isInitializingLearnerId = false
               computeLoginRoute(profile)
             }
             is AsyncResult.Failure -> {
-              result.removeObserver(this)
+              initializationResultLiveData.removeObserver(this)
               isInitializingLearnerId = false
               oppiaLogger.e("ProfileChooser", "Failed to initialize learner ID", value.error)
             }

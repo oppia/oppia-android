@@ -213,75 +213,6 @@ class ProfileChooserFragmentTest {
     checkLearnerIdLoginRouting(onboardingV2 = true, behavior = LoginRoutingBehavior.EXISTING_ID)
   }
 
-  private enum class LoginRoutingBehavior { PENDING, PENDING_WITHOUT_PIN, FAILURE, EXISTING_ID }
-
-  private fun checkLearnerIdLoginRouting(
-    onboardingV2: Boolean,
-    behavior: LoginRoutingBehavior
-  ) {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(onboardingV2)
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-    setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles(autoLogIn = false)
-    val profile = Profile.newBuilder()
-      .setId(testProfileId)
-      .setPin(if (behavior == LoginRoutingBehavior.PENDING_WITHOUT_PIN) "" else "123")
-      .setProfileType(ProfileType.SUPERVISOR)
-      .build()
-    val loginActivity = if (behavior == LoginRoutingBehavior.PENDING_WITHOUT_PIN) {
-      HomeActivity::class.java.name
-    } else if (onboardingV2) {
-      ProfileLoginActivity::class.java.name
-    } else {
-      PinPasswordActivity::class.java.name
-    }
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      val initialIntentCount = Intents.getIntents().size
-      fun clickProfile(activity: ProfileChooserActivity, clickedProfile: Profile) {
-        val fragment = activity.supportFragmentManager.fragments
-          .filterIsInstance<ProfileChooserFragment>().single()
-        if (onboardingV2) {
-          fragment.profileChooserFragmentPresenter.onProfileClick(clickedProfile)
-        } else {
-          fragment.profileChooserFragmentPresenterV1.onProfileClick(clickedProfile)
-        }
-      }
-      scenario.onActivity { activity ->
-        when (behavior) {
-          LoginRoutingBehavior.EXISTING_ID -> {
-            clickProfile(activity, profile.toBuilder().setLearnerId("existing-id").build())
-            assertThat(Intents.getIntents()).hasSize(initialIntentCount + 1)
-          }
-          LoginRoutingBehavior.FAILURE -> {
-            val missingProfile = profile.toBuilder()
-              .setId(LegacyProfileId.newBuilder().setInternalId(999)).build()
-            clickProfile(activity, missingProfile)
-          }
-          LoginRoutingBehavior.PENDING, LoginRoutingBehavior.PENDING_WITHOUT_PIN -> {
-            clickProfile(activity, profile)
-            // A second tap while initialization is pending must not schedule another login.
-            clickProfile(activity, profile)
-            assertThat(Intents.getIntents()).hasSize(initialIntentCount)
-            assertThat(profileManagementController.getCurrentProfileId()).isNull()
-          }
-        }
-      }
-      testCoroutineDispatchers.runCurrent()
-      if (behavior == LoginRoutingBehavior.FAILURE) {
-        assertThat(Intents.getIntents()).hasSize(initialIntentCount)
-        assertThat(profileManagementController.getCurrentProfileId()).isNull()
-        scenario.onActivity { activity -> clickProfile(activity, profile) }
-        testCoroutineDispatchers.runCurrent()
-      }
-      intended(hasComponent(loginActivity))
-      assertThat(Intents.getIntents()).hasSize(initialIntentCount + 1)
-      if (behavior == LoginRoutingBehavior.PENDING_WITHOUT_PIN) {
-        assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(0)
-      }
-    }
-  }
-
   @Test
   fun testProfileChooserActivity_hasCorrectLabel() {
     setUpTestApplicationComponent()
@@ -1732,6 +1663,85 @@ class ProfileChooserFragmentTest {
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ClassroomListActivity::class.java.name))
+    }
+  }
+
+  private enum class LoginRoutingBehavior { PENDING, PENDING_WITHOUT_PIN, FAILURE, EXISTING_ID }
+
+  private fun checkLearnerIdLoginRouting(
+    onboardingV2: Boolean,
+    behavior: LoginRoutingBehavior
+  ) {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(onboardingV2)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    setUpTestApplicationComponent()
+
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+
+    val profile = Profile.newBuilder()
+      .setId(testProfileId)
+      .setPin(if (behavior == LoginRoutingBehavior.PENDING_WITHOUT_PIN) "" else "123")
+      .setProfileType(ProfileType.SUPERVISOR)
+      .build()
+
+    val loginActivity = if (behavior == LoginRoutingBehavior.PENDING_WITHOUT_PIN) {
+      HomeActivity::class.java.name
+    } else if (onboardingV2) {
+      ProfileLoginActivity::class.java.name
+    } else {
+      PinPasswordActivity::class.java.name
+    }
+
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      val initialIntentCount = Intents.getIntents().size
+      scenario.onActivity { activity ->
+        when (behavior) {
+          LoginRoutingBehavior.EXISTING_ID -> {
+            val existingProfileId = profile.toBuilder().setLearnerId("existing-id").build()
+            clickProfile(activity, existingProfileId, onboardingV2)
+            assertThat(Intents.getIntents()).hasSize(initialIntentCount + 1)
+          }
+          LoginRoutingBehavior.FAILURE -> {
+            val missingProfile = profile.toBuilder()
+              .setId(LegacyProfileId.newBuilder().setInternalId(999)).build()
+            clickProfile(activity, missingProfile, onboardingV2)
+          }
+          LoginRoutingBehavior.PENDING, LoginRoutingBehavior.PENDING_WITHOUT_PIN -> {
+            clickProfile(activity, profile, onboardingV2)
+            // A second tap while initialization is pending must not schedule another login.
+            clickProfile(activity, profile, onboardingV2)
+            assertThat(Intents.getIntents()).hasSize(initialIntentCount)
+            assertThat(profileManagementController.getCurrentProfileId()).isNull()
+          }
+        }
+      }
+      testCoroutineDispatchers.runCurrent()
+      if (behavior == LoginRoutingBehavior.FAILURE) {
+        assertThat(Intents.getIntents()).hasSize(initialIntentCount)
+        assertThat(profileManagementController.getCurrentProfileId()).isNull()
+        scenario.onActivity { activity -> clickProfile(activity, profile, onboardingV2) }
+        testCoroutineDispatchers.runCurrent()
+      }
+      intended(hasComponent(loginActivity))
+      assertThat(Intents.getIntents()).hasSize(initialIntentCount + 1)
+      if (behavior == LoginRoutingBehavior.PENDING_WITHOUT_PIN) {
+        assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(0)
+      }
+    }
+  }
+
+  private fun clickProfile(
+    activity: ProfileChooserActivity,
+    clickedProfile: Profile,
+    onboardingV2: Boolean
+  ) {
+    val fragment = activity.supportFragmentManager.fragments
+      .filterIsInstance<ProfileChooserFragment>().single()
+    if (onboardingV2) {
+      fragment.profileChooserFragmentPresenter.onProfileClick(clickedProfile)
+    } else {
+      fragment.profileChooserFragmentPresenterV1.onProfileClick(clickedProfile)
     }
   }
 
