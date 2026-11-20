@@ -13,6 +13,7 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import javax.inject.Inject
 
 /** The presenter for [AdminSettingsDialogFragment]. */
@@ -21,7 +22,8 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val adminViewModel: AdminSettingsViewModel,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
 ) {
   fun handleOnCreateDialog(
     routeDialogInterface: ProfileRouteDialogInterface,
@@ -93,6 +95,11 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
               R.string.admin_settings_incorrect
             )
           )
+          lifecycleSafeTimerFactory.createTimer(1000).observe(fragment) {
+            // Clear inputPin first so that onTextChanged keeps the error message visible.
+            adminViewModel.inputPin.set("")
+            binding.adminSettingsInputPinEditText.setText("")
+          }
         }
       }
     }
