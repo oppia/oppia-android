@@ -8,13 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.ViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.ProfileItemBinding
@@ -26,6 +31,7 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
@@ -86,6 +92,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: ProfileSelectionFragmentBinding
+  private var isBecomeAdministratorNoticeShowing = false
 
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
@@ -273,12 +280,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     if (chooserViewModel.canAddProfile.get() != true) {
       showMaximumProfilesReachedDialog()
     } else if (chooserViewModel.adminPin.isEmpty()) {
-      activity.startActivity(
-        CreateAdminPinActivity.createAdminPinActivityIntent(
-          activity,
-          chooserViewModel.adminProfileId
-        )
-      )
+      handleAdminWithoutPin()
+    } else if (
+      chooserViewModel.adminProfile.profileType == ProfileType.SUPERVISOR &&
+      chooserViewModel.adminProfile.hasSeenBecomeAdministratorNotice
+    ) {
+      launchCreateProfile()
     } else {
       activity.startActivity(
         ProfileLoginActivity.createProfileLoginForAddProfileIntent(
@@ -289,6 +296,74 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         )
       )
     }
+  }
+
+  private fun handleAdminWithoutPin() {
+    val adminProfile = chooserViewModel.adminProfile
+    if (
+      adminProfile.profileType == ProfileType.SOLE_LEARNER &&
+      !adminProfile.hasSeenBecomeAdministratorNotice
+    ) {
+      showBecomeAdministratorNotice()
+    } else {
+      launchCreateAdminPin()
+    }
+  }
+
+  private fun showBecomeAdministratorNotice() {
+    if (isBecomeAdministratorNoticeShowing) return
+    isBecomeAdministratorNoticeShowing = true
+    profileManagementController.markBecomeAdministratorNoticeSeen(
+      chooserViewModel.adminProfileId.toProfileIdPreservingZero()
+    ).toLiveData().observe(fragment.viewLifecycleOwner) { result ->
+      when (result) {
+        is AsyncResult.Success -> showPersistedBecomeAdministratorNotice()
+        is AsyncResult.Failure -> isBecomeAdministratorNoticeShowing = false
+        is AsyncResult.Pending -> Unit
+      }
+    }
+  }
+
+  private fun showPersistedBecomeAdministratorNotice() {
+    val dialogHost = activity.findViewById<ViewGroup>(android.R.id.content)
+    val composeView = ComposeView(fragment.requireContext()).apply {
+      ViewTreeLifecycleOwner.set(this, fragment.viewLifecycleOwner)
+      ViewTreeViewModelStoreOwner.set(this, fragment)
+      ViewTreeSavedStateRegistryOwner.set(this, fragment)
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
+    composeView.setContent {
+      BecomeAdministratorNoticeDialog(
+        appLanguageResourceHandler = resourceHandler,
+        onContinue = {
+          isBecomeAdministratorNoticeShowing = false
+          composeView.disposeComposition()
+          dialogHost.removeView(composeView)
+          launchCreateAdminPin()
+        }
+      )
+    }
+    dialogHost.addView(composeView, ViewGroup.LayoutParams(0, 0))
+  }
+
+  private fun launchCreateAdminPin() {
+    activity.startActivity(
+      CreateAdminPinActivity.createAdminPinActivityIntent(
+        activity,
+        chooserViewModel.adminProfileId
+      )
+    )
+  }
+
+  private fun launchCreateProfile() {
+    activity.startActivity(
+      CreateProfileActivity.createProfileActivityIntent(
+        activity,
+        chooserViewModel.adminProfileId,
+        ProfileType.ADDITIONAL_LEARNER,
+        selectUniqueRandomColor()
+      )
+    )
   }
 
   private fun showMaximumProfilesReachedDialog() {

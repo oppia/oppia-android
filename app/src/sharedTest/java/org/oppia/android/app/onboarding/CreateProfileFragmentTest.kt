@@ -32,6 +32,7 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasFlag
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -946,7 +947,13 @@ class CreateProfileFragmentTest {
         context.getString(R.string.create_profile_activity_ok_button_text)
       ).performClick()
 
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
+      intended(
+        allOf(
+          hasComponent(ProfileChooserActivity::class.java.name),
+          hasFlag(Intent.FLAG_ACTIVITY_NEW_TASK),
+          hasFlag(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        )
+      )
     }
   }
 
@@ -962,7 +969,13 @@ class CreateProfileFragmentTest {
         context.getString(R.string.create_profile_activity_close_button_description)
       ).performClick()
 
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
+      intended(
+        allOf(
+          hasComponent(ProfileChooserActivity::class.java.name),
+          hasFlag(Intent.FLAG_ACTIVITY_NEW_TASK),
+          hasFlag(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        )
+      )
     }
   }
 

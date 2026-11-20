@@ -1132,6 +1132,22 @@ class SplashActivityTest {
   }
 
   @Test
+  fun testSplashActivity_onboardingV2Disabled_profilePartiallyOnboarded_routesToOnboarding() {
+    initializeTestApplication(onboardingV2Enabled = false)
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
+    )
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.markProfileOnboardingStarted(profileId)
+    )
+    launchSplashActivityPartially {
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testSplashActivity_onboardingV2Enabled_onboardedSoleLearnerProfile_routesToHomeActivity() {
     simulateAppAlreadyOnboarded()
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
