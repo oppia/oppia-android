@@ -6,8 +6,6 @@
 
     <import type="android.view.View" />
 
-    <import type="org.oppia.android.app.topic.studyguide.StudyGuideViewModel.NavigationCardType" />
-
     <variable
       name="viewModel"
       type="org.oppia.android.app.topic.studyguide.StudyGuideViewModel" />
@@ -30,7 +28,7 @@
         Hosts the study guide's ordered sections. Each section contributes a SECTION_HEADING and a
         SECTION_CONTENT item, bound through a BindableAdapter in StudyGuideFragmentPresenter. Nested
         scrolling is disabled so the parent NestedScrollView scrolls the sections and the navigation
-        cards together (mirrors the revision card screen).
+        buttons together (mirrors the revision card screen).
       -->
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/study_guide_section_recycler_view"
@@ -46,64 +44,61 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp">
 
-        <TextView
-          android:id="@+id/study_guide_continue_studying_text_view"
-          style="@style/TextViewStart"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="28dp"
-          android:layout_marginEnd="28dp"
-          android:text="@string/revision_navigation_cards_header"
-          android:textAlignment="@{viewModel.subtopicIndex == 1 ? View.TEXT_ALIGNMENT_TEXT_END : View.TEXT_ALIGNMENT_TEXT_START}"
-          android:textColor="@color/component_color_shared_primary_text_color"
-          android:textSize="20sp"
-          android:textStyle="bold"
-          android:visibility="@{viewModel.subtopicListSize == 1 ? View.INVISIBLE : View.VISIBLE}"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.button.MaterialButton
-          android:id="@+id/study_guide_previous_navigation_button"
-          style="@style/Widget.MaterialComponents.Button.TextButton"
+        <androidx.constraintlayout.widget.Guideline
+          android:id="@+id/study_guide_navigation_center_guideline"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:orientation="vertical"
+          app:layout_constraintGuide_percent="0.5" />
+
+        <com.google.android.material.button.MaterialButton
+          android:id="@+id/study_guide_see_all_navigation_button"
+          style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
           android:layout_marginStart="28dp"
-          android:layout_marginTop="16dp"
+          android:layout_marginEnd="8dp"
           android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
-          android:contentDescription="@{viewModel.computeContentDescriptionText(NavigationCardType.PREVIOUS, viewModel.previousSubtopicLiveData)}"
+          android:letterSpacing="0"
           android:minHeight="48dp"
-          android:onClick="@{() -> viewModel.onPreviousCardClicked()}"
-          android:text="@string/study_guide_previous_skill"
+          android:onClick="@{() -> viewModel.onSeeAllStudyGuidesClicked()}"
+          android:text="@string/study_guide_see_all_study_guides"
           android:textAllCaps="false"
           android:textColor="@color/component_color_shared_primary_text_color"
-          android:visibility="@{viewModel.subtopicIndex == 1 ? View.GONE : View.VISIBLE}"
-          app:icon="@drawable/ic_arrow_back_black_24_dp"
+          app:icon="@drawable/ic_profile_exit"
           app:iconGravity="textStart"
+          app:iconPadding="8dp"
+          app:iconSize="24dp"
           app:iconTint="@color/component_color_shared_primary_text_color"
+          app:layout_constraintEnd_toStartOf="@id/study_guide_navigation_center_guideline"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/study_guide_continue_studying_text_view" />
+          app:layout_constraintTop_toTopOf="parent"
+          app:strokeColor="@color/component_color_shared_button_active_stroke_color" />
 
         <com.google.android.material.button.MaterialButton
           android:id="@+id/study_guide_next_navigation_button"
-          style="@style/Widget.MaterialComponents.Button.TextButton"
-          android:layout_width="wrap_content"
+          style="@style/Widget.MaterialComponents.Button"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
+          android:layout_marginStart="8dp"
           android:layout_marginEnd="28dp"
           android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
-          android:contentDescription="@{viewModel.computeContentDescriptionText(NavigationCardType.NEXT, viewModel.nextSubtopicLiveData)}"
+          android:contentDescription="@{viewModel.computeContentDescriptionText(viewModel.nextSubtopicLiveData)}"
+          android:letterSpacing="0"
           android:minHeight="48dp"
           android:onClick="@{() -> viewModel.onNextCardClicked()}"
-          android:text="@string/study_guide_next_skill"
+          android:paddingStart="12dp"
+          android:paddingEnd="12dp"
+          android:text="@{viewModel.computeNextButtonText(viewModel.nextSubtopicLiveData)}"
           android:textAllCaps="false"
-          android:textColor="@color/component_color_shared_primary_text_color"
           android:visibility="@{viewModel.subtopicIndex &lt; viewModel.subtopicListSize ? View.VISIBLE : View.GONE}"
+          app:backgroundTint="@color/component_color_shared_primary_button_background_color"
           app:icon="@drawable/ic_arrow_forward_black_24dp"
-          app:iconGravity="textEnd"
-          app:iconTint="@color/component_color_shared_primary_text_color"
+          app:iconGravity="textStart"
+          app:iconPadding="8dp"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/study_guide_continue_studying_text_view" />
+          app:layout_constraintStart_toEndOf="@id/study_guide_navigation_center_guideline"
+          app:layout_constraintTop_toTopOf="parent" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
   </androidx.core.widget.NestedScrollView>
