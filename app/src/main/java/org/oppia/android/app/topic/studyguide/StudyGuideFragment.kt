@@ -82,10 +82,12 @@ class StudyGuideFragment : InjectableDialogFragment() {
     val subtopicIndex = args.subtopicIndex
     val profileId = arguments.extractCurrentUserProfileId()
     val subtopicListSize = args.subtopicListSize
-    val expandedSectionIndices = savedInstanceState?.getProto(
-      STUDY_GUIDE_FRAGMENT_SAVED_STATE_KEY,
-      StudyGuideFragmentStateBundle.getDefaultInstance()
-    )?.expandedSectionIndicesList
+    val expandedSectionIndices = savedInstanceState
+      ?.takeIf { it.containsKey(STUDY_GUIDE_FRAGMENT_SAVED_STATE_KEY) }
+      ?.getProto(
+        STUDY_GUIDE_FRAGMENT_SAVED_STATE_KEY,
+        StudyGuideFragmentStateBundle.getDefaultInstance()
+      )?.expandedSectionIndicesList
     return studyGuideFragmentPresenter.handleCreateView(
       inflater,
       container,
