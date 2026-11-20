@@ -31,7 +31,8 @@ data class TrackResponse(
     @Json(name = "versionCodes") val versionCodes: List<String>?,
     @Json(name = "status") val status: String,
     @Json(name = "userFraction") val userFraction: Double? = null,
-    @Json(name = "releaseNotes") val releaseNotes: List<LocalizedText>? = null
+    @Json(name = "releaseNotes") val releaseNotes: List<LocalizedText>? = null,
+    @Json(name = "name") val name: String? = null
   )
 
   /**
