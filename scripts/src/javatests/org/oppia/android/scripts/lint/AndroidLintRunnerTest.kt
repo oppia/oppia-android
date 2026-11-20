@@ -1664,6 +1664,11 @@ class AndroidLintRunnerTest {
   private fun setupFakeCommandExecutor() {
     val aarPath = createTestAarFile("test-library", "1.0.0").absolutePath
     val jarPath = createTestJarFile("test-library", "1.0.0").absolutePath
+    // Declared dependencies must physically exist, otherwise lint fails fast (see
+    // LintProjectDescription), so ensure the external JARs reported below are present. 'external/'
+    // paths are resolved against the faked Bazel output base reported below.
+    createExternalJar("external/junit/junit-4.12.jar")
+    createExternalJar("external/hamcrest/hamcrest-core-1.3.jar")
 
     fakeCommandExecutor.registerHandler("bazel") { _, args, outputStream, _ ->
       when {
@@ -1731,6 +1736,17 @@ class AndroidLintRunnerTest {
     }
 
     return aarFile
+  }
+
+  private fun createExternalJar(declaredPath: String): File {
+    val jarFile = File(File(tempFolder.root, "bazel-out"), declaredPath)
+    jarFile.parentFile?.mkdirs()
+    ZipOutputStream(FileOutputStream(jarFile)).use { zipOut ->
+      zipOut.putNextEntry(ZipEntry("META-INF/MANIFEST.MF"))
+      zipOut.write("Manifest-Version: 1.0\n".toByteArray())
+      zipOut.closeEntry()
+    }
+    return jarFile
   }
 
   private fun createTestJarFile(libraryName: String, version: String): File {
