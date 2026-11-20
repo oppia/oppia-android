@@ -27,10 +27,10 @@ import javax.inject.Inject
  * @property subtopicIndex the index of the subtopic being viewed
  * @property profileId the ID of the user profile
  * @property subtopicListSize the number of subtopics in the parent topic. This is used to determine
- *     whether or not to show the next/previous cards.
+ *     whether or not to show the next navigation button.
  */
 class StudyGuideViewModel private constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val topicController: TopicController,
   private val oppiaLogger: OppiaLogger,
   val entityType: String,
@@ -44,17 +44,12 @@ class StudyGuideViewModel private constructor(
 
   private val routeToStudyGuideListener = activity as RouteToStudyGuideListener
 
-  /** Called when the previous navigation card is clicked. */
-  fun onPreviousCardClicked() {
-    routeToStudyGuideListener.routeToStudyGuide(
-      profileId,
-      topicId,
-      subtopicIndex - 1,
-      subtopicListSize
-    )
+  /** Called when the "See all study guides" button is clicked; behaves like the back button. */
+  fun onSeeAllStudyGuidesClicked() {
+    activity.onBackPressedDispatcher.onBackPressed()
   }
 
-  /** Called when the next navigation card is clicked. */
+  /** Called when the next navigation button is clicked. */
   fun onNextCardClicked() {
     routeToStudyGuideListener.routeToStudyGuide(
       profileId,
@@ -106,14 +101,6 @@ class StudyGuideViewModel private constructor(
     Transformations.map(topicLiveData, ::processNextSubtopicData)
   }
 
-  /**
-   * The [LiveData] that will correspond to the previous study guide that may be navigated to (as
-   * a [EphemeralSubtopic]), or default instance of there isn't one.
-   */
-  val previousSubtopicLiveData: LiveData<EphemeralSubtopic> by lazy {
-    Transformations.map(topicLiveData, ::processPreviousSubtopicData)
-  }
-
   /** Returns the localised title of the subtopic. */
   fun computeTitleText(subtopic: EphemeralSubtopic?): String {
     return subtopic?.let {
@@ -124,44 +111,20 @@ class StudyGuideViewModel private constructor(
     } ?: ""
   }
 
-  /** Returns the content description for the given [navigationCardType]'s [subtopic]. */
-  fun computeContentDescriptionText(
-    navigationCardType: NavigationCardType,
-    subtopic: EphemeralSubtopic?
-  ): String {
-    return when (navigationCardType) {
-      NavigationCardType.PREVIOUS -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
-        R.string.previous_subtopic_talkback_text,
-        computeTitleText(subtopic)
-      )
-      NavigationCardType.NEXT -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
-        R.string.next_subtopic_talkback_text,
-        computeTitleText(subtopic)
-      )
-    }
+  /** Returns the next button's label, including the next [subtopic]'s title. */
+  fun computeNextButtonText(subtopic: EphemeralSubtopic?): String {
+    return appLanguageResourceHandler.getStringInLocaleWithWrapping(
+      R.string.study_guide_next_study_guide,
+      computeTitleText(subtopic)
+    )
   }
 
-  /** The type of adjacent-subtopic navigation card a content description corresponds to. */
-  enum class NavigationCardType {
-    /** The card that navigates to the previous subtopic. */
-    PREVIOUS,
-
-    /** The card that navigates to the next subtopic. */
-    NEXT
-  }
-
-  private fun processPreviousSubtopicData(
-    topicLiveData: AsyncResult<EphemeralTopic>
-  ): EphemeralSubtopic {
-    return when (topicLiveData) {
-      is AsyncResult.Success -> {
-        val topic = topicLiveData.value
-        topic.subtopicsList.find {
-          it.subtopic.subtopicId == subtopicIndex - 1
-        } ?: EphemeralSubtopic.getDefaultInstance()
-      }
-      else -> EphemeralSubtopic.getDefaultInstance()
-    }
+  /** Returns the content description for the next navigation button for the given [subtopic]. */
+  fun computeContentDescriptionText(subtopic: EphemeralSubtopic?): String {
+    return appLanguageResourceHandler.getStringInLocaleWithWrapping(
+      R.string.next_subtopic_talkback_text,
+      computeTitleText(subtopic)
+    )
   }
 
   private fun processNextSubtopicData(
