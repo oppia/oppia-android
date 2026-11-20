@@ -72,7 +72,10 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 
     // Hide toolbar as it's not needed in the onboarding layout. The toolbar is created by a shared
     // activity and is required in OptionsFragment.
-    if (parentScreen == ParentScreen.LEARNER_INTRO_SCREEN) {
+    if (
+      parentScreen == ParentScreen.LEARNER_INTRO_SCREEN ||
+      parentScreen == ParentScreen.ADDITIONAL_LEARNER_INTRO_SCREEN
+    ) {
       activity.findViewById<AppBarLayout>(R.id.reading_list_app_bar_layout).visibility = View.GONE
     }
 
@@ -220,8 +223,13 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   }
 
   private fun hideNavigationViews(parentScreen: ParentScreen) {
-    if (parentScreen == ParentScreen.OPTIONS_SCREEN) {
+    if (
+      parentScreen == ParentScreen.OPTIONS_SCREEN ||
+      parentScreen == ParentScreen.ADDITIONAL_LEARNER_INTRO_SCREEN
+    ) {
       binding.onboardingStepsCount?.visibility = View.GONE
+    }
+    if (parentScreen == ParentScreen.OPTIONS_SCREEN) {
       binding.onboardingNavigationBack.visibility = View.GONE
       binding.onboardingNavigationContinue.visibility = View.GONE
     }

@@ -57,6 +57,7 @@ import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.HINDI_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.model.AudioLanguageActivityParams
+import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen.ADDITIONAL_LEARNER_INTRO_SCREEN
 import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen.LEARNER_INTRO_SCREEN
 import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
 import org.oppia.android.app.model.LegacyProfileId
@@ -392,6 +393,18 @@ class AudioLanguageFragmentTest {
   fun testAudioLanguage_fromOnboarding_onboardingV2Enabled_toolbarIsNotDisplayed() {
     launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, LEARNER_INTRO_SCREEN).use {
       onView(withId(R.id.reading_list_app_bar_layout)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testAudioLanguage_additionalLearner_stepCountHidden_navigationButtonsDisplayed() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ADDITIONAL_LEARNER_INTRO_SCREEN).use {
+      onView(withId(R.id.onboarding_steps_count))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+      onView(withId(R.id.onboarding_navigation_back)).check(matches(isDisplayed()))
+      onView(withId(R.id.onboarding_navigation_continue)).check(matches(isDisplayed()))
+      onView(withId(R.id.reading_list_app_bar_layout))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
     }
   }
 

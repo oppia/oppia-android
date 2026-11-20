@@ -3,10 +3,14 @@ package org.oppia.android.app.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.annotation.ColorInt
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileLoginActivityParams
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
@@ -30,16 +34,63 @@ class ProfileLoginActivity :
   }
 
   companion object {
+    private const val LOGIN_FLOW_EXTRA = "ProfileLoginActivity.login_flow"
+    const val LOGIN_PARAMS_EXTRA = "ProfileLoginActivity.params"
+
+    enum class LoginFlow(val value: Int) {
+      OPEN_EXISTING_PROFILE(0),
+      ADD_NEW_LEARNER(1);
+
+      companion object {
+        fun fromValue(value: Int): LoginFlow =
+          values().firstOrNull { it.value == value } ?: OPEN_EXISTING_PROFILE
+      }
+    }
+
     /** Creates and returns an Intent to open a new [ProfileLoginActivity]. */
     fun createProfileLoginActivityIntent(
       context: Context,
-      profileId: LegacyProfileId
+      profileId: LegacyProfileId,
+      loginFlow: LoginFlow = LoginFlow.OPEN_EXISTING_PROFILE
     ): Intent {
       return Intent(context, ProfileLoginActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(ScreenName.PROFILE_LOGIN_ACTIVITY)
+        putExtra(LOGIN_FLOW_EXTRA, loginFlow.value)
       }
     }
+
+    /**
+     * Returns an intent for launching login as part of the add-profile flow.
+     *
+     * If [avatarColor] is `null`, the profile creation screen will select an available color.
+     */
+    fun createProfileLoginForAddProfileIntent(
+      context: Context,
+      profileId: LegacyProfileId,
+      newProfileType: ProfileType = ProfileType.ADDITIONAL_LEARNER,
+      @ColorInt avatarColor: Int? = null
+    ): Intent = createProfileLoginActivityIntent(
+      context,
+      profileId,
+      LoginFlow.ADD_NEW_LEARNER
+    ).apply {
+      putProtoExtra(
+        LOGIN_PARAMS_EXTRA,
+        ProfileLoginActivityParams.newBuilder().apply {
+          this.newProfileType = newProfileType
+          avatarColor?.let { this.avatarColor = it }
+        }.build()
+      )
+    }
+
+    fun extractLoginFlowFromIntent(intent: Intent): LoginFlow =
+      LoginFlow.fromValue(
+        intent.getIntExtra(
+          LOGIN_FLOW_EXTRA,
+          LoginFlow.OPEN_EXISTING_PROFILE.value
+        )
+      )
   }
 
   override fun routeToResetPinDialog(profileId: LegacyProfileId, profileName: String) {
