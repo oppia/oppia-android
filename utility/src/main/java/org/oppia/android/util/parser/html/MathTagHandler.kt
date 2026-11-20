@@ -165,7 +165,7 @@ class MathTagHandler(
 }
 
 /** An [ImageSpan] that vertically centers a LaTeX drawable within the surrounding text. */
-private class LatexImageSpan(
+internal class LatexImageSpan(
   imageDrawable: Drawable?,
   private val isInlineMode: Boolean
 ) : ImageSpan(imageDrawable ?: createEmptyDrawable()) {

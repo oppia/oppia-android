@@ -106,9 +106,16 @@ class LiTagHandler(
     formatImageSpans(output)
   }
 
-  /** Formats ImageSpans to ensure they render as block images with line breaks. */
+  /**
+   * Formats content ImageSpans to ensure they render as block images with line breaks.
+   *
+   * Math spans are skipped since they're laid out by [MathTagHandler] (which keeps inline
+   * expressions within their surrounding text), and they should be rendered the same way whether
+   * or not they're within a list.
+   */
   private fun formatImageSpans(output: Editable) {
     val imageSpans = output.getSpans(0, output.length, ImageSpan::class.java)
+      .filterNot { it is LatexImageSpan }
 
     imageSpans.sortedByDescending { output.getSpanStart(it) }.forEach { span ->
       val startIndex = output.getSpanStart(span)
