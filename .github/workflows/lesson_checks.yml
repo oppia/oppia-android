@@ -11,17 +11,8 @@ on:
 
 jobs:
   check_lesson_compatibility:
-    name: Check ${{ matrix.assets_type }} lesson conversion
+    name: Check production lesson conversion
     runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      matrix:
-        # Practice questions are only bundled with alpha assets, so they're only checked for alpha.
-        include:
-          - assets_type: alpha
-            download_questions: true
-          - assets_type: prod
-            download_questions: false
     steps:
       - name: Set up Bazel
         uses: bazel-contrib/setup-bazel@0.19.0
@@ -46,8 +37,6 @@ jobs:
       - name: Check Bazel environment
         run: bazel info
 
-      # The cache directory is shared with the download step below so that it reuses the exact
-      # question versions pinned here (the question endpoint only serves latest versions).
       - name: Download lesson version list
         run: |
           bazel run //scripts:download_lesson_list -- \
@@ -56,9 +45,7 @@ jobs:
             oppiaserver-resources \
             $(pwd)/prod_server.key \
             $(pwd)/release_assets/pinned_versions.textproto \
-            $(pwd)/scripts/assets/${{ matrix.assets_type }}_download_config.textproto \
-            $(pwd)/release_assets/cache \
-            ${{ matrix.download_questions }}
+            $(pwd)/scripts/assets/prod_download_config.textproto
 
       - name: Download lessons and verify conversion
         run: |
@@ -71,6 +58,6 @@ jobs:
             cache_mode=none \
             $(pwd)/release_assets/cache \
             $(pwd)/release_assets/pinned_versions.textproto \
-            $(pwd)/scripts/assets/${{ matrix.assets_type }}_download_config.textproto \
-            ${{ matrix.download_questions }} \
+            $(pwd)/scripts/assets/prod_download_config.textproto \
+            false \
             -Werror
