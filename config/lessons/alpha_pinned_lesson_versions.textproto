@@ -250,7 +250,7 @@ tracked_topic_info {
     }
     chapter_info {
       exploration_id: "9Y8ElcYGvvDO"
-      exploration_content_version: 36
+      exploration_content_version: 37
     }
     chapter_info {
       exploration_id: "p95j2UZqlD2Q"
@@ -408,13 +408,13 @@ tracked_topic_info {
 }
 tracked_topic_info {
   id: "VjCpR1DB2MVN"
-  content_version: 82
+  content_version: 86
   story_info {
     id: "Aadv1RN3npAP"
     content_version: 24
     chapter_info {
       exploration_id: "l0S8zoUrVQNd"
-      exploration_content_version: 110
+      exploration_content_version: 111
     }
     chapter_info {
       exploration_id: "YnhDmpzewUYI"
@@ -430,7 +430,7 @@ tracked_topic_info {
     }
     chapter_info {
       exploration_id: "jgGYHzds2WeL"
-      exploration_content_version: 72
+      exploration_content_version: 73
     }
     chapter_info {
       exploration_id: "WuyjwUCVJuIn"
@@ -438,19 +438,19 @@ tracked_topic_info {
     }
     chapter_info {
       exploration_id: "bf9RrsgNWZmI"
-      exploration_content_version: 65
+      exploration_content_version: 68
     }
     chapter_info {
       exploration_id: "Gh6AzOEDLcz2"
-      exploration_content_version: 73
+      exploration_content_version: 77
     }
     chapter_info {
       exploration_id: "FMH1Ii1ztP4j"
-      exploration_content_version: 56
+      exploration_content_version: 57
     }
     chapter_info {
       exploration_id: "xtbP46LKl1uj"
-      exploration_content_version: 50
+      exploration_content_version: 52
     }
   }
   subtopic_info {
@@ -475,7 +475,7 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 5
-    content_version: 2
+    content_version: 4
   }
   subtopic_info {
     index: 6
@@ -546,7 +546,7 @@ tracked_topic_info {
     content_version: 19
     chapter_info {
       exploration_id: "W50hotX4h_Up"
-      exploration_content_version: 405
+      exploration_content_version: 407
     }
     chapter_info {
       exploration_id: "BlhHWkwlpOPL"
@@ -1273,6 +1273,10 @@ tracked_skill_info {
 tracked_skill_info {
   id: "VjtMZUrbLf65"
   content_version: 8
+}
+tracked_skill_info {
+  id: "HJxstYl9bQt0"
+  content_version: 1
 }
 tracked_skill_info {
   id: "fnqyE7S35gaE"
