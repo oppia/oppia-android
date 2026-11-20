@@ -33,7 +33,10 @@ kt_android_library(
     srcs = [
         "PerformanceMetricsController.kt",
     ],
-    visibility = ["//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__"],
+    visibility = [
+        "//app:app_visibility",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__",
+    ],
     deps = [
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",

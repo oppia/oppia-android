@@ -13,6 +13,8 @@ import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedA
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 import org.oppia.android.app.devoptions.platformparameters.PlatformParametersActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
+import org.oppia.android.app.devoptions.viewlogs.ViewLogcatActivity
+import org.oppia.android.app.devoptions.viewlogs.ViewPerformanceMetricsActivity
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -77,6 +79,14 @@ class DeveloperOptionsActivity :
 
   override fun routeToViewEventLogs() {
     startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this))
+  }
+
+  override fun routeToViewLogcatLogs() {
+    startActivity(ViewLogcatActivity.createIntent(this))
+  }
+
+  override fun routeToViewPerformanceMetrics() {
+    startActivity(ViewPerformanceMetricsActivity.createIntent(this))
   }
 
   override fun routeToForceNetworkType() {
