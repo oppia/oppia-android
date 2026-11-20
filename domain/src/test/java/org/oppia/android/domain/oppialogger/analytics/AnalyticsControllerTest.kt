@@ -28,6 +28,7 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
@@ -36,6 +37,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileCacheStore
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -104,6 +106,7 @@ class AnalyticsControllerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var testSyncStatusManager: TestSyncStatusManager
   @Inject lateinit var profileManagementControllerProvider: Provider<ProfileManagementController>
+  @Inject lateinit var profileCacheStore: ProfileCacheStore
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var oppiaClock: OppiaClock
@@ -118,6 +121,230 @@ class AnalyticsControllerTest {
   @After
   fun tearDown() {
     TestPlatformParameterModule.reset()
+  }
+
+  @Test
+  fun testController_eligibleEvent_flagOff_capturesProfileWithoutType() {
+    setUpTestApplicationComponent()
+    val profileId = addNewProfileAndLogIn()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateProfileType(
+        profileId.toProfileIdPreservingZero(), ProfileType.SUPERVISOR
+      )
+    )
+
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), profileId, TEST_TIMESTAMP
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val context = fakeAnalyticsEventLogger.getMostRecentEvent().profileContext
+    assertThat(context.hasProfileId()).isTrue()
+    assertThat(context.profileId).isEqualTo(profileId)
+    assertThat(context.profileType).isEqualTo(ProfileType.PROFILE_TYPE_UNSPECIFIED)
+  }
+
+  @Test
+  fun testController_eligibleEvent_flagOn_capturesKnownProfileType() {
+    setUpTestApplicationComponent(enableOnboardingFlowV2 = true)
+    val profileId = addNewProfileAndLogIn()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateProfileType(
+        profileId.toProfileIdPreservingZero(), ProfileType.SOLE_LEARNER
+      )
+    )
+
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), profileId, TEST_TIMESTAMP
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val context = fakeAnalyticsEventLogger.getMostRecentEvent().profileContext
+    assertThat(context.profileId).isEqualTo(profileId)
+    assertThat(context.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+  }
+
+  @Test
+  fun testController_eligibleEvent_flagOn_unknownProfile_omitsType() {
+    setUpTestApplicationComponent(enableOnboardingFlowV2 = true)
+    val profileId = LegacyProfileId.newBuilder().setInternalId(100).build()
+
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), profileId, TEST_TIMESTAMP
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val context = fakeAnalyticsEventLogger.getMostRecentEvent().profileContext
+    assertThat(context.profileId).isEqualTo(profileId)
+    assertThat(context.profileType).isEqualTo(ProfileType.PROFILE_TYPE_UNSPECIFIED)
+  }
+
+  @Test
+  fun testController_eligibleEvent_flagOn_unknownProfileType_omitsType() {
+    setUpTestApplicationComponent(enableOnboardingFlowV2 = true)
+    val profileId = addNewProfileAndLogIn()
+    profileCacheStore.store.storeDataAsync(updateInMemoryCache = true) { database ->
+      database.toBuilder().putProfiles(
+        profileId.internalId,
+        database.profilesMap.getValue(profileId.internalId).toBuilder()
+          .setProfileTypeValue(100).build()
+      ).build()
+    }.waitForSuccessfulResult()
+
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), profileId, TEST_TIMESTAMP
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val context = fakeAnalyticsEventLogger.getMostRecentEvent().profileContext
+    assertThat(context.profileId).isEqualTo(profileId)
+    assertThat(context.profileType).isEqualTo(ProfileType.PROFILE_TYPE_UNSPECIFIED)
+  }
+
+  @Test
+  fun testController_eligibleEvent_flagOn_unspecifiedProfileType_omitsType() {
+    setUpTestApplicationComponent(enableOnboardingFlowV2 = true)
+    val profileId = addNewProfileAndLogIn()
+    profileCacheStore.store.storeDataAsync(updateInMemoryCache = true) { database ->
+      database.toBuilder().putProfiles(
+        profileId.internalId,
+        database.profilesMap.getValue(profileId.internalId).toBuilder()
+          .clearProfileType().build()
+      ).build()
+    }.waitForSuccessfulResult()
+
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), profileId, TEST_TIMESTAMP
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val context = fakeAnalyticsEventLogger.getMostRecentEvent().profileContext
+    assertThat(context.profileId).isEqualTo(profileId)
+    assertThat(context.profileType).isEqualTo(ProfileType.PROFILE_TYPE_UNSPECIFIED)
+  }
+
+  @Test
+  fun testController_cachedEvent_afterProfileSwitch_retainsOriginalProfile() {
+    setUpTestApplicationComponent(enableOnboardingFlowV2 = true)
+    val firstProfileId = addNewProfileAndLogIn()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateProfileType(
+        firstProfileId.toProfileIdPreservingZero(), ProfileType.SOLE_LEARNER
+      )
+    )
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), firstProfileId, TEST_TIMESTAMP
+    )
+    testCoroutineDispatchers.runCurrent()
+    addNewProfileAndLogIn(internalId = 1)
+
+    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    monitorFactory.waitForAllNextResults { analyticsController.uploadEventLogs() }
+
+    val originalEvent = checkNotNull(
+      fakeAnalyticsEventLogger.getLoggedEvent { it.timestamp == TEST_TIMESTAMP }
+    )
+    assertThat(originalEvent.profileContext.profileId).isEqualTo(firstProfileId)
+    assertThat(originalEvent.profileContext.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+  }
+
+  @Test
+  fun testController_eligibleEvent_invalidProfileId_omitsProfileContext() {
+    setUpTestApplicationComponent()
+
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      LegacyProfileId.newBuilder().setInternalId(-1).build(), TEST_TIMESTAMP
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent().hasProfileContext()).isFalse()
+  }
+
+  @Test
+  fun testController_eligibleEvent_withoutProfile_omitsProfileContext() {
+    setUpTestApplicationComponent(enableOnboardingFlowV2 = true)
+
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent().hasProfileContext()).isFalse()
+  }
+
+  @Test
+  fun testController_sensitiveEvent_withProfile_omitsProfileContext() {
+    setUpTestApplicationComponent(enableOnboardingFlowV2 = true)
+    val profileId = addNewProfileAndLogIn()
+
+    analyticsController.logImportantEvent(
+      EventLog.Context.newBuilder()
+        .setSubmitAnswerContext(EventLog.SubmitAnswerContext.getDefaultInstance()).build(),
+      profileId, TEST_TIMESTAMP
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent().hasProfileContext()).isFalse()
+  }
+
+  @Test
+  fun testController_cachedEvent_afterProfileTypeChanges_preservesCapturedType() {
+    setUpTestApplicationComponent(enableOnboardingFlowV2 = true)
+    val profileId = addNewProfileAndLogIn()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateProfileType(
+        profileId.toProfileIdPreservingZero(), ProfileType.SOLE_LEARNER
+      )
+    )
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), profileId, TEST_TIMESTAMP
+    )
+    testCoroutineDispatchers.runCurrent()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateProfileType(
+        profileId.toProfileIdPreservingZero(), ProfileType.SUPERVISOR
+      )
+    )
+
+    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    monitorFactory.waitForAllNextResults { analyticsController.uploadEventLogs() }
+
+    val context = checkNotNull(
+      fakeAnalyticsEventLogger.getLoggedEvent { it.context.hasOpenInfoTab() }
+    ).profileContext
+    assertThat(context.profileId).isEqualTo(profileId)
+    assertThat(context.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+  }
+
+  @Test
+  fun testController_cachedEvent_afterProfileDeleted_retainsCapturedProfile() {
+    setUpTestApplicationComponent(enableOnboardingFlowV2 = true)
+    val profileId = addNewProfileAndLogIn()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateProfileType(
+        profileId.toProfileIdPreservingZero(), ProfileType.SOLE_LEARNER
+      )
+    )
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), profileId, TEST_TIMESTAMP
+    )
+    testCoroutineDispatchers.runCurrent()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.deleteProfile(profileId.toProfileIdPreservingZero())
+    )
+
+    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    monitorFactory.waitForAllNextResults { analyticsController.uploadEventLogs() }
+
+    val context = checkNotNull(
+      fakeAnalyticsEventLogger.getLoggedEvent { it.context.hasOpenInfoTab() }
+    ).profileContext
+    assertThat(context.profileId).isEqualTo(profileId)
+    assertThat(context.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
   }
 
   @Test
@@ -1184,8 +1411,12 @@ class AnalyticsControllerTest {
     }
   }
 
-  private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
+  private fun setUpTestApplicationComponent(
+    enableLearnerStudyAnalytics: Boolean = false,
+    enableOnboardingFlowV2: Boolean = false
+  ) {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(enableOnboardingFlowV2)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
@@ -1262,9 +1493,9 @@ class AnalyticsControllerTest {
     }.waitForSuccessfulResult()
   }
 
-  private fun addNewProfileAndLogIn(): LegacyProfileId {
+  private fun addNewProfileAndLogIn(internalId: Int = 0): LegacyProfileId {
     val addProfileProvider = profileManagementController.addProfile(
-      name = "Test Profile",
+      name = if (internalId == 0) "Test Profile" else "Second Test Profile",
       pin = "",
       avatarImagePath = null,
       allowDownloadAccess = false,
@@ -1273,7 +1504,7 @@ class AnalyticsControllerTest {
     )
     monitorFactory.ensureDataProviderExecutes(addProfileProvider)
 
-    return LegacyProfileId.newBuilder().apply { internalId = 0 }.build().also { expectedProfileId ->
+    return LegacyProfileId.newBuilder().setInternalId(internalId).build().also { expectedProfileId ->
       val logInProvider =
         profileManagementController.loginToProfile(expectedProfileId.toProfileIdPreservingZero())
       monitorFactory.waitForNextSuccessfulResult(logInProvider) // Ensure that the login succeeds.

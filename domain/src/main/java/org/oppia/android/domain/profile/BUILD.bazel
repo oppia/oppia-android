@@ -5,12 +5,24 @@ Domain definitions and controllers for managing profiles.
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
+    name = "profile_cache_store",
+    srcs = ["ProfileCacheStore.kt"],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
     name = "profile_management_controller",
     srcs = [
         "ProfileManagementController.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":profile_cache_store",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
