@@ -84,7 +84,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/tablet_shared_margin_xl"
       android:fontFamily="sans-serif-medium"
-      android:text="@string/create_profile_activity_header"
+      android:text="@{viewModel.screenHeader}"
       android:textColor="@color/component_color_onboarding_create_profile_header_text_color"
       android:textSize="@dimen/onboarding_shared_text_size_large"
       app:layout_constraintEnd_toEndOf="parent"

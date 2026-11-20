@@ -3,6 +3,7 @@ package org.oppia.android.app.topic
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -34,6 +35,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
@@ -44,6 +46,7 @@ import org.oppia.android.app.test.R
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -201,6 +204,48 @@ class TopicActivityTest {
       // Verify that the question activity is started with the correct profile ID.
       intended(hasComponent(QuestionPlayerActivity::class.java.name))
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
+    }
+  }
+
+  @Test
+  fun testTopicActivity_recreated_resetsFontScaleToMedium() {
+    launchTopicActivity(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use { scenario ->
+      lateinit var originalActivity: TopicActivity
+      scenario.onActivity { activity ->
+        originalActivity = activity
+        val fontScaleConfigUtil = FontScaleConfigurationUtil()
+        fontScaleConfigUtil.adjustFontScale(activity, ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+        assertThat(activity.resources.configuration.fontScale).isEqualTo(1.4f)
+      }
+      scenario.recreate()
+      scenario.onActivity { recreatedActivity ->
+        assertThat(recreatedActivity).isNotSameInstanceAs(originalActivity)
+        assertThat(recreatedActivity.resources.configuration.fontScale).isEqualTo(1.0f)
+      }
+    }
+  }
+
+  @Test
+  fun testTopicActivity_stoppedAndResumed_resetsFontScaleToMedium() {
+    launchTopicActivity(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use { scenario ->
+      lateinit var originalActivity: TopicActivity
+      scenario.onActivity { activity ->
+        originalActivity = activity
+        val fontScaleConfigUtil = FontScaleConfigurationUtil()
+        fontScaleConfigUtil.adjustFontScale(activity, ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
+
+      // Move the activity to STOPPED and back to RESUMED. Unlike scenario.recreate()
+      // (which destroys and rebuilds the activity, calling onCreate()), this triggers
+      // onPause() -> onStop() -> onRestart() -> onStart() -> onResume() on the SAME
+      // activity instance, directly exercising handleOnRestart().
+      scenario.moveToState(Lifecycle.State.CREATED)
+      scenario.moveToState(Lifecycle.State.RESUMED)
+
+      scenario.onActivity { restartedActivity ->
+        assertThat(restartedActivity).isSameInstanceAs(originalActivity)
+        assertThat(restartedActivity.resources.configuration.fontScale).isEqualTo(1.0f)
+      }
     }
   }
 

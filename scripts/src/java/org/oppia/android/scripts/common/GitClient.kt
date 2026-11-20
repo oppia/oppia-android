@@ -21,6 +21,9 @@ class GitClient(
   /** The hash of of the latest commit common between the current & HEAD branches. */
   val branchMergeBase: String by lazy { retrieveBranchMergeBase() }
 
+  /** Whether the local Git repository is a shallow clone. */
+  val isShallowRepository: Boolean by lazy { retrieveIsShallowRepository() }
+
   private val resolvedBaseCommit: String by lazy {
     executeGitCommandWithOneLineOutput("rev-parse $baseCommit")
   }
@@ -57,6 +60,10 @@ class GitClient(
         println("WARNING: Provided base commit $resolvedBaseCommit doesn't match merge-base: $it.")
       }
     }
+  }
+
+  private fun retrieveIsShallowRepository(): Boolean {
+    return executeGitCommandWithOneLineOutput("rev-parse --is-shallow-repository").toBooleanStrict()
   }
 
   private fun retrieveChangedFilesWithPotentialDuplicates(): List<String> =

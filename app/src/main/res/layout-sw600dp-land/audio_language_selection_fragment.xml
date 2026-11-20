@@ -106,6 +106,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/tablet_shared_margin_large"
       android:text="@string/onboarding_navigation_back"
+      android:textColor="@color/component_color_onboarding_audio_language_back_button_text_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent" />
 

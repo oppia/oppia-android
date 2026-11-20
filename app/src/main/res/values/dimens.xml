@@ -779,6 +779,17 @@
   <dimen name="topic_lessons_summary_linear_layout_margin_end">12dp</dimen>
   <dimen name="topic_lessons_summary_story_name_chapter_count_container_margin_start">12dp</dimen>
 
+  <!-- Locked Chapter Prerequisite Tooltip -->
+  <dimen name="locked_chapter_prerequisite_tooltip_margin_start">8dp</dimen>
+  <dimen name="locked_chapter_prerequisite_tooltip_margin_top">4dp</dimen>
+  <dimen name="locked_chapter_prerequisite_tooltip_margin_end">8dp</dimen>
+  <dimen name="locked_chapter_prerequisite_tooltip_margin_bottom">8dp</dimen>
+  <dimen name="locked_chapter_prerequisite_tooltip_padding_start">12dp</dimen>
+  <dimen name="locked_chapter_prerequisite_tooltip_padding_top">8dp</dimen>
+  <dimen name="locked_chapter_prerequisite_tooltip_padding_end">12dp</dimen>
+  <dimen name="locked_chapter_prerequisite_tooltip_padding_bottom">8dp</dimen>
+  <dimen name="locked_chapter_prerequisite_tooltip_text_size">14sp</dimen>
+
   <!-- OptionsStoryTextSize -->
   <dimen name="option_story_text_size_padding_start">16dp</dimen>
   <dimen name="option_story_text_size_padding_end">16dp</dimen>

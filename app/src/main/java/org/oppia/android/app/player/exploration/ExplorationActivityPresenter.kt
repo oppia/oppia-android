@@ -415,6 +415,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   /** Selects the appropriate way to close the activity based on the parent screen. */
   fun backPressActivitySelector() {
+    fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
     when (parentScreen) {
       ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
       ExplorationActivityParams.ParentScreen.STORY_SCREEN -> activity.finish()

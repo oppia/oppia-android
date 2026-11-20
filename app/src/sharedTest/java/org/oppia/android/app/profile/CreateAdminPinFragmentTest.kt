@@ -2,6 +2,7 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.semantics.Role
@@ -23,6 +24,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.text.AnnotatedString
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -54,6 +56,7 @@ import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
+import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
@@ -148,9 +151,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_onLaunch_allTextViewsHaveCorrectContent() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_header))
         .assertIsDisplayed()
@@ -174,9 +175,7 @@ class CreateAdminPinFragmentTest {
   @Test
   @Config(qualifiers = "+land")
   fun testFragment_landscapeMode_onLaunch_allTextViewsHaveCorrectContent() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_header))
         .assertIsDisplayed()
@@ -199,9 +198,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_withEmptyPin_continueButtonIsDisabled() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       composeRule.onNode(continueButtonMatcher())
         .assertIsNotEnabled()
     }
@@ -209,9 +206,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_withFilledPinAndEmptyConfirmPin_continueButtonIsDisabled() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       composeRule.onNode(enterPinFieldMatcher())
         .performTextInput("12345")
 
@@ -222,9 +217,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_clickContinue_withMismatchedPins_showsMismatchError_continueButtonIsDisabled() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       composeRule.onNode(enterPinFieldMatcher())
         .performTextInput("12345")
 
@@ -241,9 +234,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_inputThreeDigitPin_showsPinLengthError_continueButtonIsDisabled() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       composeRule.onNode(enterPinFieldMatcher())
         .performTextInput("123")
 
@@ -257,9 +248,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_inputMatchingShortPins_doesNotShowMismatchError_continueButtonIsDisabled() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       composeRule.onNode(enterPinFieldMatcher())
         .performTextInput("123")
 
@@ -281,9 +270,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_inputShortPin_inputDiffShortConfirmPin_showsErrorForBoth_continueIsDisabled() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       composeRule.onNode(enterPinFieldMatcher())
         .performTextInput("123")
 
@@ -303,9 +290,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_validPin_shortConfirm_showsMismatchError_continueDisabled() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       composeRule.onNode(enterPinFieldMatcher())
         .performTextInput("12345")
 
@@ -325,9 +310,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_enterMatchingConfirmPin_afterPinLengthError_enablesContinueButton() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       // Start with a short PIN to trigger length error.
       composeRule.onNode(enterPinFieldMatcher())
         .performTextInput("12")
@@ -357,9 +340,7 @@ class CreateAdminPinFragmentTest {
   @Test
   fun testFragment_imeActionDone_withMatchingValidPins_navigatesToProfileChooser() {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       composeRule.onNode(enterPinFieldMatcher())
         .performTextInput("12345")
 
@@ -460,10 +441,8 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_onBackButtonClicked_currentScreenIsDestroyed() {
-    launch(CreateAdminPinActivity::class.java).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-
-      scenario.onActivity { activity ->
+    runWithLaunchedActivityAndAddedFragment {
+      onActivity { activity ->
         composeRule.onNode(backButtonMatcher())
           .performClick()
 
@@ -474,9 +453,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_inputPin_onlyAcceptsDigits() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       // Try to input non-digit characters.
       composeRule.onNode(enterPinFieldMatcher())
         .performTextInput("abc12def")
@@ -489,9 +466,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_inputConfirmPin_onlyAcceptsDigits() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       // Try to input non-digit characters.
       composeRule.onNode(confirmPinFieldMatcher())
         .performTextInput("abc12def")
@@ -504,9 +479,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_inputPin_limitsToFiveDigits() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       // Try to input more than 5 digits.
       composeRule.onNode(enterPinFieldMatcher())
         .performTextInput("123456789")
@@ -521,9 +494,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_inputConfirmPin_limitsToFiveDigits() {
-    launch(CreateAdminPinActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment {
       // Try to input more than 5 digits.
       composeRule.onNode(confirmPinFieldMatcher())
         .performTextInput("123456789")
@@ -568,6 +539,27 @@ class CreateAdminPinFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivityAndAddedFragment(
+    testBlock: ActivityScenario<TestActivity>.() -> Unit
+  ) {
+    val fragment = CreateAdminPinFragment().apply {
+      arguments = Bundle().apply {
+        decorateWithUserProfileId(
+          LegacyProfileId.newBuilder().setInternalId(TEST_PROFILE_ID).build()
+        )
+      }
+    }
+    launch(TestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.supportFragmentManager.beginTransaction()
+          .add(R.id.test_fragment_placeholder, fragment)
+          .commitNow()
+      }
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -658,5 +650,9 @@ class CreateAdminPinFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private companion object {
+    private const val TEST_PROFILE_ID = 0
   }
 }
