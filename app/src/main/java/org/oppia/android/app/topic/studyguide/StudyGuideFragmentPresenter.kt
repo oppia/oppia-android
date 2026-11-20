@@ -158,8 +158,9 @@ class StudyGuideFragmentPresenter @Inject constructor(
     headingViewModel: StudyGuideSectionHeadingViewModel
   ) {
     binding.viewModel = headingViewModel
-    headingViewModel.setExpansionToggleListener {
-      bindingAdapter.notifyDataSetChanged()
+    headingViewModel.setExpansionToggleListener { sectionIndex ->
+      val contentPosition = sectionIndex * 2 + 1
+      bindingAdapter.notifyItemChanged(contentPosition)
     }
     binding.executePendingBindings()
   }
