@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Looper
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -151,9 +152,11 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -223,7 +226,6 @@ class HomeActivityTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     Intents.init()
   }
 
@@ -365,7 +367,9 @@ class HomeActivityTest {
 
   @Test
   fun testPromotedStorySpotlight_setToShowOnSecondLogin_notSeenBefore_checkSpotlightShown() {
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     setUpTestWithOnboardingV2Disabled()
+    markSpotlightSeen(profileId1, Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER)
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -376,11 +380,14 @@ class HomeActivityTest {
 
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_pressDone_checkSpotlightNotShown() {
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     setUpTestWithOnboardingV2Disabled()
+    markSpotlightSeen(profileId1, Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER)
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_spotlight_button)).perform(click())
+      shadowOf(Looper.getMainLooper()).idleFor(700, TimeUnit.MILLISECONDS)
       testCoroutineDispatchers.runCurrent()
     }
 
@@ -393,6 +400,7 @@ class HomeActivityTest {
 
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_checkNotShownOnFirstLogin() {
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     setUpTestApplicationComponent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -2072,9 +2080,44 @@ class HomeActivityTest {
     profileTestHelper.initializeProfiles()
   }
 
-  private fun markSpotlightSeen(profileId: LegacyProfileId) {
-    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.PROMOTED_STORIES)
+  private fun markSpotlightSeen(
+    profileId: LegacyProfileId,
+    feature: Spotlight.FeatureCase = Spotlight.FeatureCase.PROMOTED_STORIES
+  ) {
+    spotlightStateController.markSpotlightViewed(profileId, feature)
     testCoroutineDispatchers.runCurrent()
+  }
+
+  @Test
+  fun testHomeSpotlight_allTopicsHeader_whenNotSeen_shows() {
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    // Launch HomeActivity directly for admin profile 0.
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.home_all_topics_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testHomeSpotlight_allTopicsHeader_whenMarkedSeen_notShown() {
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+    dataProviderTestMonitor
+      .waitForNextSuccessfulResult(
+        spotlightStateController.markSpotlightViewed(
+          profileId,
+          Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
+        )
+      )
+
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.home_all_topics_spotlight_hint)).check(doesNotExist())
+    }
   }
 
   private fun createHomeActivityIntent(internalProfileId: Int): Intent {

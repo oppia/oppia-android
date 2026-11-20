@@ -6,6 +6,8 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileChooserFragmentArguments
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
@@ -48,6 +50,7 @@ class ProfileChooserActivityPresenter @Inject constructor(
       EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
     }
     activity.setContentView(R.layout.profile_chooser_activity)
+
     if (getProfileChooserFragment() == null) {
       val profileChooserFragment = ProfileChooserFragment()
 
@@ -69,6 +72,14 @@ class ProfileChooserActivityPresenter @Inject constructor(
         ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT
       ).commitNow()
     }
+
+    if (getSpotlightFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.profile_spotlight_fragment_placeholder,
+        SpotlightFragment.newInstance(profileId.internalId),
+        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+      ).commitNow()
+    }
   }
 
   private fun getProfileChooserFragment(): ProfileChooserFragment? {
@@ -77,5 +88,11 @@ class ProfileChooserActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.profile_chooser_fragment_placeholder
       ) as ProfileChooserFragment?
+  }
+
+  private fun getSpotlightFragment(): SpotlightFragment? {
+    return activity.supportFragmentManager.findFragmentById(
+      R.id.profile_spotlight_fragment_placeholder
+    ) as? SpotlightFragment
   }
 }
