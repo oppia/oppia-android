@@ -23,6 +23,7 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -59,10 +60,12 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
@@ -126,6 +129,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -154,6 +158,7 @@ import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.lang.reflect.InvocationTargetException
 import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -230,6 +235,52 @@ class QuestionPlayerActivityTest {
       // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
       // correct string when it's read out.
       assertThat(title).isEqualTo(context.getString(R.string.question_player_activity_title))
+    }
+  }
+
+  /**
+   * Tests that when answer classification fails with an internal exception during question player play,
+   * an [IllegalStateException] is thrown on the main thread, preserving the classifier error cause.
+   */
+  @Test
+  fun testQuestionPlayer_submitAnswer_classificationFails_throwsIllegalStateException() {
+    launchForSkillList(SKILL_ID_LIST).use { scenario ->
+      val mismatchedAnswer = UserAnswer.newBuilder()
+        .setAnswer(InteractionObject.newBuilder().setBoolValue(true).build())
+        .build()
+
+      scenario.onActivity { activity ->
+        val fragment = activity.supportFragmentManager
+          .findFragmentByTag(TAG_QUESTION_PLAYER_FRAGMENT) as QuestionPlayerFragment
+        fragment.onAnswerReadyForSubmission(mismatchedAnswer)
+      }
+
+      val exception = assertThrows<Exception> {
+        testCoroutineDispatchers.runCurrent()
+      }
+      val outcomeException = (exception as? InvocationTargetException)?.cause ?: exception
+      assertThat(outcomeException).isInstanceOf(IllegalStateException::class.java)
+      assertThat(outcomeException).hasMessageThat().contains("Failed to retrieve answer outcome")
+      assertThat(outcomeException).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+      assertThat(outcomeException).hasCauseThat()
+        .hasMessageThat()
+        .contains("Failed when classifying answer")
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_submitEmptyTextInputAnswer_showsEmptyInputError() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      selectMultipleChoiceOption(optionPosition = 2)
+      clickContinueNavigationButton()
+
+      clickSubmitAnswerButton()
+
+      scrollToViewType(TEXT_INPUT_INTERACTION)
+      onView(withId(R.id.text_input_error))
+        .check(matches(withText(R.string.text_error_empty_input)))
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
