@@ -12,8 +12,7 @@
 
   <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:visibility="@{viewModel.isExpanded ? View.VISIBLE : View.GONE}">
+    android:layout_height="wrap_content">
 
     <!-- The text is set by StudyGuideFragmentPresenter after parsing viewModel.contentHtml. -->
     <TextView
@@ -22,7 +21,8 @@
       android:layout_marginStart="28dp"
       android:layout_marginEnd="28dp"
       android:paddingTop="8dp"
-      android:textColorLink="@color/component_color_shared_link_text_color" />
+      android:textColorLink="@color/component_color_shared_link_text_color"
+      android:visibility="@{viewModel.isExpanded ? View.VISIBLE : View.GONE}" />
 
   </FrameLayout>
 </layout>
