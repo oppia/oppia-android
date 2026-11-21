@@ -3,8 +3,8 @@ package org.oppia.android.app.topic.questionplayer
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.QuestionPlayerActivityBinding
@@ -13,6 +13,7 @@ import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.QuestionPlayerActivityParams
+import org.oppia.android.app.model.QuestionPlayerFragmentArguments
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -26,7 +27,9 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionTrainingController
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -51,9 +54,28 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
   private lateinit var readingTextSize: ReadingTextSize
+  private var sessionStartResult: DataProvider<Any?>? = null
+  private var isStartingTrainingSession = false
+  private var isStoppingTrainingSession = false
 
-  fun handleOnCreate(profileId: LegacyProfileId) {
+  fun handleOnCreate(profileId: LegacyProfileId, isRecreated: Boolean) {
     this.profileId = profileId
+    if (isRecreated) {
+      sessionStartResult = questionTrainingController.getCurrentSessionStartResult()
+    }
+    if (!questionTrainingController.hasStartedTrainingSession()) {
+      // Fragments survive process restoration, but the training session is only kept in memory.
+      // Remove the restored views before they subscribe to the uninitialized controller.
+      val restoredFragments = activity.supportFragmentManager.fragments.filter {
+        it is QuestionPlayerFragment || it is HintsAndSolutionQuestionManagerFragment ||
+          it is HintsAndSolutionDialogFragment
+      }
+      if (restoredFragments.isNotEmpty()) {
+        activity.supportFragmentManager.beginTransaction().apply {
+          restoredFragments.forEach { remove(it) }
+        }.commitNow()
+      }
+    }
 
     if (enableEdgeToEdge.value) {
       EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
@@ -80,6 +102,12 @@ class QuestionPlayerActivityPresenter @Inject constructor(
       activity.onBackPressedDispatcher.onBackPressed()
     }
 
+    if (isRecreated) {
+      questionTrainingController.getCurrentSessionStopResult()?.let {
+        isStoppingTrainingSession = true
+        subscribeToStopResult(it)
+      }
+    }
     retrieveReadingTextSize().observe(
       activity as QuestionPlayerActivity
     ) { result ->
@@ -87,30 +115,54 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     }
   }
 
-  private fun loadQuestionPlayerFragment(readingTextSize: ReadingTextSize) {
+  private fun loadQuestionPlayerFragment() {
+    if (isStartingTrainingSession) return
+    isStartingTrainingSession = true
     startTrainingSessionWithCallback {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.question_player_fragment_placeholder,
-        QuestionPlayerFragment.newInstance(profileId, readingTextSize),
-        TAG_QUESTION_PLAYER_FRAGMENT
-      ).commitNow()
+      isStartingTrainingSession = false
+      if (isStoppingTrainingSession) return@startTrainingSessionWithCallback
+      if (getQuestionPlayerFragment() == null) {
+        activity.supportFragmentManager.beginTransaction().add(
+          R.id.question_player_fragment_placeholder,
+          QuestionPlayerFragment.newInstance(profileId, readingTextSize),
+          TAG_QUESTION_PLAYER_FRAGMENT
+        ).commitNow()
+      }
     }
   }
 
   fun loadFragments(readingTextSize: ReadingTextSize) {
     this.readingTextSize = readingTextSize
-    if (getQuestionPlayerFragment() == null) {
-      loadQuestionPlayerFragment(readingTextSize)
-    } else {
+    if (isStoppingTrainingSession) return
+    val playerFragment = getQuestionPlayerFragment()
+    if (playerFragment == null) {
+      loadQuestionPlayerFragment()
+    } else if (
+      playerFragment.requireArguments().getProto(
+        QuestionPlayerFragment.ARGUMENTS_KEY,
+        QuestionPlayerFragmentArguments.getDefaultInstance()
+      ).readingTextSize != readingTextSize
+    ) {
+      // Recreate the views for a new text size while retaining the session and pending answer.
+      val savedState = activity.supportFragmentManager.saveFragmentInstanceState(playerFragment)
+      val replacement = QuestionPlayerFragment.newInstance(profileId, readingTextSize).apply {
+        setInitialSavedState(savedState)
+      }
       activity.supportFragmentManager.beginTransaction()
-        .remove(getQuestionPlayerFragment() as Fragment).commitNow()
-      loadQuestionPlayerFragment(readingTextSize)
+        .remove(playerFragment)
+        .add(R.id.question_player_fragment_placeholder, replacement, TAG_QUESTION_PLAYER_FRAGMENT)
+        .commitNow()
     }
 
+    loadHintsAndSolutionQuestionManagerFragment()
+  }
+
+  private fun loadHintsAndSolutionQuestionManagerFragment() {
     if (getHintsAndSolutionExplorationManagerFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.question_player_fragment_placeholder,
-        HintsAndSolutionQuestionManagerFragment()
+        HintsAndSolutionQuestionManagerFragment(),
+        TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER
       ).commitNow()
     }
   }
@@ -152,25 +204,26 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   }
 
   fun stopTrainingSession() {
-    stopTrainingSessionWithCallback {
-      activity.finish()
-    }
+    if (isStoppingTrainingSession) return
+    isStoppingTrainingSession = true
+    subscribeToStopResult(questionTrainingController.stopQuestionTrainingSession())
   }
 
   fun restartSession() {
-    stopTrainingSessionWithCallback {
-      getQuestionPlayerFragment()?.let { fragment ->
-        activity.supportFragmentManager.beginTransaction().remove(fragment).commitNow()
-      }
-      startTrainingSessionWithCallback {
-        // Re-add the player fragment when the new session is ready.
-        activity.supportFragmentManager.beginTransaction().add(
-          R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment.newInstance(profileId, readingTextSize),
-          TAG_QUESTION_PLAYER_FRAGMENT
-        ).commitNow()
-      }
-    }
+    if (isStartingTrainingSession || isStoppingTrainingSession) return
+    val playerFragment = getQuestionPlayerFragment() ?: return
+    // Restored players can handle Replay before the profile's reading size has loaded.
+    val currentReadingTextSize = playerFragment.requireArguments().getProto(
+      QuestionPlayerFragment.ARGUMENTS_KEY,
+      QuestionPlayerFragmentArguments.getDefaultInstance()
+    ).readingTextSize
+    activity.supportFragmentManager.beginTransaction().apply {
+      remove(playerFragment)
+      getHintsAndSolutionExplorationManagerFragment()?.let { remove(it) }
+    }.commitNow()
+    // Starting a training session replaces the previous one without an intermediate stop callback.
+    sessionStartResult = null
+    loadFragments(currentReadingTextSize)
   }
 
   private fun startTrainingSessionWithCallback(callback: () -> Unit) {
@@ -186,43 +239,57 @@ class QuestionPlayerActivityPresenter @Inject constructor(
       "Expected $QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY to be in intent extras."
     }
 
-    val startDataProvider =
-      questionTrainingController.startQuestionTrainingSession(profileId, skillIds)
-    startDataProvider.toLiveData().observe(
+    val startDataProvider = sessionStartResult ?: questionTrainingController
+      .startQuestionTrainingSession(profileId, skillIds).also { sessionStartResult = it }
+    val startLiveData = startDataProvider.toLiveData()
+    startLiveData.observe(
       activity,
-      {
-        when (it) {
-          is AsyncResult.Pending ->
-            oppiaLogger.d("QuestionPlayerActivity", "Starting training session")
-          is AsyncResult.Failure -> {
-            oppiaLogger.e("QuestionPlayerActivity", "Failed to start training session", it.error)
-            activity.finish() // Can't recover from the session failing to start.
-          }
-          is AsyncResult.Success -> {
-            oppiaLogger.d("QuestionPlayerActivity", "Successfully started training session")
-            callback()
+      object : Observer<AsyncResult<Any?>> {
+        override fun onChanged(result: AsyncResult<Any?>) {
+          when (result) {
+            is AsyncResult.Pending ->
+              oppiaLogger.d("QuestionPlayerActivity", "Starting training session")
+            is AsyncResult.Failure -> {
+              startLiveData.removeObserver(this)
+              oppiaLogger.e(
+                "QuestionPlayerActivity", "Failed to start training session", result.error
+              )
+              activity.finish() // Can't recover from the session failing to start.
+            }
+            is AsyncResult.Success -> {
+              startLiveData.removeObserver(this)
+              oppiaLogger.d("QuestionPlayerActivity", "Successfully started training session")
+              callback()
+            }
           }
         }
       }
     )
   }
 
-  private fun stopTrainingSessionWithCallback(callback: () -> Unit) {
-    questionTrainingController.stopQuestionTrainingSession().toLiveData().observe(
+  private fun subscribeToStopResult(stopDataProvider: DataProvider<Any?>) {
+    val stopLiveData = stopDataProvider.toLiveData()
+    stopLiveData.observe(
       activity,
-      {
-        when (it) {
-          is AsyncResult.Pending ->
-            oppiaLogger.d("QuestionPlayerActivity", "Stopping training session")
-          is AsyncResult.Failure -> {
-            oppiaLogger.e("QuestionPlayerActivity", "Failed to stop training session", it.error)
-            setReadingTextSizeNormal()
-            activity.finish() // Can't recover from the session failing to stop.
-          }
-          is AsyncResult.Success -> {
-            oppiaLogger.d("QuestionPlayerActivity", "Successfully stopped training session")
-            setReadingTextSizeNormal()
-            callback()
+      object : Observer<AsyncResult<Any?>> {
+        override fun onChanged(result: AsyncResult<Any?>) {
+          when (result) {
+            is AsyncResult.Pending ->
+              oppiaLogger.d("QuestionPlayerActivity", "Stopping training session")
+            is AsyncResult.Failure -> {
+              stopLiveData.removeObserver(this)
+              oppiaLogger.e(
+                "QuestionPlayerActivity", "Failed to stop training session", result.error
+              )
+              setReadingTextSizeNormal()
+              activity.finish() // Can't recover from the session failing to stop.
+            }
+            is AsyncResult.Success -> {
+              stopLiveData.removeObserver(this)
+              oppiaLogger.d("QuestionPlayerActivity", "Successfully stopped training session")
+              setReadingTextSizeNormal()
+              activity.finish()
+            }
           }
         }
       }

@@ -5,6 +5,28 @@ Tests for lightweight exploration player domain components.
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
+    name = "QuestionRetrieverTest",
+    srcs = ["QuestionRetrieverTest.kt"],
+    custom_package = "org.oppia.android.domain.question",
+    test_class = "org.oppia.android.domain.question.QuestionRetrieverTest",
+    test_manifest = "//domain:test_manifest",
+    deps = [
+        "//domain",
+        "//domain:domain_dev_assets",
+        "//domain/src/main/java/org/oppia/android/domain/util:asset",
+        "//domain/src/main/java/org/oppia/android/domain/util:retriever",
+        "//testing",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_mockito_mockito-core",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
+    ],
+)
+
+oppia_android_test(
     name = "QuestionAssessmentProgressControllerTest",
     srcs = ["QuestionAssessmentProgressControllerTest.kt"],
     custom_package = "org.oppia.android.domain.question",

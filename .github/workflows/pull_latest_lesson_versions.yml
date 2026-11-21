@@ -75,6 +75,11 @@ jobs:
           echo "$PROD_SERVER_LESSON_SECRET" > prod_server.key
 
       # Both alpha and prod versions are committed together into a single branch and PR.
+      #
+      # Practice questions are only bundled with alpha assets, so only the alpha steps pass 'true'
+      # for question downloads (prod keeps them disabled). The question endpoint only serves the
+      # latest version of each question, so alpha pin generation and alpha verification share one
+      # cache directory: verification then reuses the exact question versions that were pinned.
       - name: Download alpha pinned lesson versions
         run: |
           bazel run //scripts:download_lesson_list -- \
@@ -83,7 +88,9 @@ jobs:
             oppiaserver-resources \
             $(pwd)/prod_server.key \
             $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto \
-            $(pwd)/scripts/assets/alpha_download_config.textproto
+            $(pwd)/scripts/assets/alpha_download_config.textproto \
+            /tmp/verification_cache/alpha \
+            true
 
       - name: Download prod pinned lesson versions
         run: |
@@ -109,7 +116,7 @@ jobs:
             /tmp/verification_cache/alpha \
             $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto \
             $(pwd)/scripts/assets/alpha_download_config.textproto \
-            false
+            true
 
       - name: Download prod lessons and verify conversion
         run: |

@@ -129,6 +129,9 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val monitoredQuestionListDataProvider: NestedTransformedDataProvider<Any?> =
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
 
+  /** Returns whether a training session has been initialized in this process. */
+  internal fun hasStartedTrainingSession(): Boolean = mostRecentSessionId != null
+
   /**
    * Begins a training session based on the specified question list data provider and [LegacyProfileId],
    * and returns a [DataProvider] indicating whether the session was successfully started.
@@ -468,19 +471,17 @@ class QuestionAssessmentProgressController @Inject constructor(
     lazyFailureMessage: () -> String
   ) {
     val commandQueue = mostRecentCommandQueue
-    val flowResult: AsyncResult<T> = when {
+    // A command can finish before trySend returns. Reset its result before scheduling it so that
+    // a fast success or failure is not overwritten with a pending result.
+    message.callbackFlow?.value = AsyncResult.Pending()
+    val failure: AsyncResult.Failure<T>? = when {
       commandQueue == null ->
         AsyncResult.Failure(IllegalStateException("Session isn't initialized yet."))
       !commandQueue.trySend(message).isSuccess ->
         AsyncResult.Failure(IllegalStateException(lazyFailureMessage()))
-      // Ensure that the result is first reset since there will be a delay before the message is
-      // processed (if there's a flow).
-      else -> AsyncResult.Pending()
+      else -> null
     }
-
-    // This must be assigned separately since flowResult should always be calculated, even if
-    // there's no callbackFlow to report it.
-    message.callbackFlow?.value = flowResult
+    failure?.let { message.callbackFlow?.value = it }
   }
 
   private suspend fun maybeSendReceiveQuestionListEvent(

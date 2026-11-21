@@ -4102,7 +4102,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionRetriever.kt"
-  test_file_not_required: true
+  source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionSessionMetrics.kt"
