@@ -18,6 +18,7 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
@@ -288,6 +289,15 @@ class StudyGuideFragmentTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
           position = 3,
           targetViewId = R.id.study_guide_section_content_text
         )
@@ -302,6 +312,15 @@ class StudyGuideFragmentTest {
       subtopicIndex = 1,
       subtopicListSize = 1
     ) {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       val workedExampleContent = atPositionOnView(
         recyclerViewId = R.id.study_guide_section_recycler_view,
         position = 3,
@@ -330,6 +349,15 @@ class StudyGuideFragmentTest {
       subtopicIndex = 1,
       subtopicListSize = 1
     ) {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       val workedExampleContent = atPositionOnView(
         recyclerViewId = R.id.study_guide_section_recycler_view,
         position = 3,
@@ -398,13 +426,7 @@ class StudyGuideFragmentTest {
         )
       ).check(matches(withContentDescription(R.string.collapse_section)))
 
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.study_guide_section_recycler_view,
-          position = 3,
-          targetViewId = R.id.study_guide_section_content_text
-        )
-      ).check(matches(not(isDisplayed())))
+      onView(withText(containsString("test_skill_id_0 concept card"))).check(doesNotExist())
       onView(
         atPositionOnView(
           recyclerViewId = R.id.study_guide_section_recycler_view,
@@ -481,13 +503,7 @@ class StudyGuideFragmentTest {
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.study_guide_section_recycler_view,
-          position = 3,
-          targetViewId = R.id.study_guide_section_content_text
-        )
-      ).check(matches(not(isDisplayed())))
+      onView(withText(containsString("test_skill_id_0 concept card"))).check(doesNotExist())
       onView(
         atPositionOnView(
           recyclerViewId = R.id.study_guide_section_recycler_view,
@@ -773,6 +789,15 @@ class StudyGuideFragmentTest {
       updateContentLanguage(profileId, OppiaLanguage.ARABIC)
       testCoroutineDispatchers.runCurrent()
 
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       val workedExampleContent = atPositionOnView(
         recyclerViewId = R.id.study_guide_section_recycler_view,
         position = 3,
@@ -802,6 +827,16 @@ class StudyGuideFragmentTest {
           targetViewId = R.id.study_guide_section_content_text
         )
       ).check(matches(withText(containsString("وصف الموضوع الفرعي هنا"))))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       val workedExampleContent = atPositionOnView(
         recyclerViewId = R.id.study_guide_section_recycler_view,
         position = 3,
