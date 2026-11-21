@@ -18,6 +18,7 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
@@ -288,6 +289,15 @@ class StudyGuideFragmentTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
           position = 3,
           targetViewId = R.id.study_guide_section_content_text
         )
@@ -302,6 +312,15 @@ class StudyGuideFragmentTest {
       subtopicIndex = 1,
       subtopicListSize = 1
     ) {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       val workedExampleContent = atPositionOnView(
         recyclerViewId = R.id.study_guide_section_recycler_view,
         position = 3,
@@ -330,6 +349,15 @@ class StudyGuideFragmentTest {
       subtopicIndex = 1,
       subtopicListSize = 1
     ) {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       val workedExampleContent = atPositionOnView(
         recyclerViewId = R.id.study_guide_section_recycler_view,
         position = 3,
@@ -354,6 +382,15 @@ class StudyGuideFragmentTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
           position = 3,
           targetViewId = R.id.study_guide_section_content_text
         )
@@ -364,6 +401,190 @@ class StudyGuideFragmentTest {
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
         .check(matches(withText("An important skill")))
+    }
+  }
+
+  @Test
+  fun testStudyGuide_defaultState_firstSectionExpandedAndSecondSectionCollapsed() {
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 1,
+          targetViewId = R.id.study_guide_section_content_text
+        )
+      ).check(matches(isDisplayed()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 0,
+          targetViewId = R.id.study_guide_section_arrow_icon
+        )
+      ).check(matches(withContentDescription(R.string.collapse_section)))
+
+      onView(withText(containsString("test_skill_id_0 concept card"))).check(doesNotExist())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_arrow_icon
+        )
+      ).check(matches(withContentDescription(R.string.expand_section)))
+    }
+  }
+
+  @Test
+  fun testStudyGuide_clickSecondSectionHeading_expandsSecondSectionContent() {
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 3,
+          targetViewId = R.id.study_guide_section_content_text
+        )
+      ).check(matches(isDisplayed()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_arrow_icon
+        )
+      ).check(matches(withContentDescription(R.string.collapse_section)))
+    }
+  }
+
+  @Test
+  fun testStudyGuide_clickSecondSectionHeadingTwice_collapsesSecondSectionContent() {
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 3,
+          targetViewId = R.id.study_guide_section_content_text
+        )
+      ).check(matches(isDisplayed()))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(containsString("test_skill_id_0 concept card"))).check(doesNotExist())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_arrow_icon
+        )
+      ).check(matches(withContentDescription(R.string.expand_section)))
+    }
+  }
+
+  @Test
+  fun testStudyGuide_secondSectionExpanded_afterConfigurationChange_remainsExpanded() {
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 3,
+          targetViewId = R.id.study_guide_section_content_text
+        )
+      ).check(matches(isDisplayed()))
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 3,
+          targetViewId = R.id.study_guide_section_content_text
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStudyGuide_firstSectionCollapsed_afterConfigurationChange_remainsCollapsed() {
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 0,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 1,
+          targetViewId = R.id.study_guide_section_content_text
+        )
+      ).check(matches(not(isDisplayed())))
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 1,
+          targetViewId = R.id.study_guide_section_content_text
+        )
+      ).check(matches(not(isDisplayed())))
     }
   }
 
@@ -568,6 +789,15 @@ class StudyGuideFragmentTest {
       updateContentLanguage(profileId, OppiaLanguage.ARABIC)
       testCoroutineDispatchers.runCurrent()
 
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       val workedExampleContent = atPositionOnView(
         recyclerViewId = R.id.study_guide_section_recycler_view,
         position = 3,
@@ -597,6 +827,16 @@ class StudyGuideFragmentTest {
           targetViewId = R.id.study_guide_section_content_text
         )
       ).check(matches(withText(containsString("وصف الموضوع الفرعي هنا"))))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 2,
+          targetViewId = R.id.study_guide_section_heading_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       val workedExampleContent = atPositionOnView(
         recyclerViewId = R.id.study_guide_section_recycler_view,
         position = 3,

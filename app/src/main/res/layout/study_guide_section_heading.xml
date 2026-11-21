@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -8,16 +9,44 @@
       type="org.oppia.android.app.topic.studyguide.StudyGuideSectionHeadingViewModel" />
   </data>
 
-  <TextView
-    android:id="@+id/study_guide_section_heading_text"
-    style="@style/TextViewStart"
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/study_guide_section_heading_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="28dp"
-    android:layout_marginTop="24dp"
-    android:layout_marginEnd="28dp"
-    android:text="@{viewModel.headingText}"
-    android:textColor="@color/component_color_shared_primary_text_color"
-    android:textSize="18sp"
-    android:textStyle="bold" />
+    android:clickable="true"
+    android:focusable="true"
+    android:minHeight="48dp"
+    android:onClick="@{() -> viewModel.onHeadingClicked()}">
+
+    <TextView
+      android:id="@+id/study_guide_section_heading_text"
+      style="@style/TextViewStart"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="28dp"
+      android:layout_marginTop="24dp"
+      android:layout_marginEnd="8dp"
+      android:text="@{viewModel.headingText}"
+      android:textColor="@color/component_color_shared_primary_text_color"
+      android:textSize="18sp"
+      android:textStyle="bold"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/study_guide_section_arrow_icon"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+      android:id="@+id/study_guide_section_arrow_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="28dp"
+      android:contentDescription="@{viewModel.isExpanded ? @string/collapse_section : @string/expand_section}"
+      app:isRotationAnimationClockwise="@{viewModel.isExpanded}"
+      app:rotationAnimationAngle="@{180f}"
+      app:layout_constraintBottom_toBottomOf="@+id/study_guide_section_heading_text"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/study_guide_section_heading_text"
+      app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
+      app:tint="@color/component_color_shared_primary_text_color" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
