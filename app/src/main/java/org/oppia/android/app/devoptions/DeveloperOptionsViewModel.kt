@@ -2,6 +2,7 @@ package org.oppia.android.app.devoptions
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
+import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsAddAndDeleteProfilesViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsItemViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsModifyLessonProgressViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsOverrideAppBehaviorsViewModel
@@ -9,6 +10,8 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsViewLogsViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
 /**
@@ -18,7 +21,9 @@ import javax.inject.Inject
 @FragmentScope
 class DeveloperOptionsViewModel @Inject constructor(
   activity: AppCompatActivity,
-  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
+  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController,
+  private val profileManagementController: ProfileManagementController,
+  private val oppiaLogger: OppiaLogger
 ) {
   private val forceCrashButtonClickListener = activity as ForceCrashButtonClickListener
   private val forceDownloadRemoteParametersButtonClickListener =
@@ -35,6 +40,12 @@ class DeveloperOptionsViewModel @Inject constructor(
     activity as RouteToMathExpressionParserTestListener
   private val routeToFeatureFlagsListener = activity as RouteToFeatureFlagsListener
   private val routeToPlatformParametersListener = activity as RouteToPlatformParametersListener
+  private val addOneProfileButtonClickListener =
+    activity as AddOneProfileButtonClickListener
+  private val addThreeProfilesButtonClickListener =
+    activity as AddThreeProfilesButtonClickListener
+  private val deleteAllNonAdminProfilesButtonClickListener =
+    activity as DeleteAllNonAdminProfilesButtonClickListener
 
   /**
    * List of [DeveloperOptionsItemViewModel] used to populate recyclerview of
@@ -60,7 +71,14 @@ class DeveloperOptionsViewModel @Inject constructor(
         routeToFeatureFlagsListener,
         routeToPlatformParametersListener
       ),
-      DeveloperOptionsTestParsersViewModel(routeToMathExpressionParserTestListener)
+      DeveloperOptionsTestParsersViewModel(routeToMathExpressionParserTestListener),
+      DeveloperOptionsAddAndDeleteProfilesViewModel(
+        addOneProfileButtonClickListener,
+        addThreeProfilesButtonClickListener,
+        deleteAllNonAdminProfilesButtonClickListener,
+        profileManagementController,
+        oppiaLogger
+      )
     )
   }
 }
