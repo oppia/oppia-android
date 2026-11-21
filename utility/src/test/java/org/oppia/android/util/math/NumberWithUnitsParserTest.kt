@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.NumberUnitExpression
 import org.oppia.android.app.model.NumberUnitExpression.SiPrefix
 import org.oppia.android.app.model.NumberUnitExpression.Unit
 import org.oppia.android.app.model.NumberWithUnitsExpression
@@ -14,6 +15,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunner
 import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.NumberWithUnitsSubject.Companion.assertThat
 import org.oppia.android.util.math.NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult
+import org.oppia.android.util.math.NumberWithUnitsParser.Companion.toUnitString
 import org.oppia.android.util.math.NumberWithUnitsParsingError.DuplicateCurrencyError
 import org.oppia.android.util.math.NumberWithUnitsParsingError.EmptyExpressionError
 import org.oppia.android.util.math.NumberWithUnitsParsingError.InvalidTokenError
@@ -26,7 +28,6 @@ import org.oppia.android.util.math.NumberWithUnitsParsingError.TrailingTokensErr
 import org.oppia.android.util.math.NumberWithUnitsParsingError.UnbalancedParenthesesError
 import org.oppia.android.util.math.NumberWithUnitsParsingError.UnitExpectedAfterDivisionError
 import org.oppia.android.util.math.NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError
-import org.oppia.android.util.math.NumberWithUnitsParsingError.UnitExpectedError
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -55,27 +56,39 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
-  fun testParser_integerOnly_noUnit_returnsUnitExpectedError() {
-    val error = parseNumberWithUnitsExpectingFailure("42")
-    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
+  fun testParser_integerOnly_noUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("42")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(42.0)
+      hasUnitCountThat().isEqualTo(0)
+    }
   }
 
   @Test
-  fun testParser_realNumberOnly_noUnit_returnsUnitExpectedError() {
-    val error = parseNumberWithUnitsExpectingFailure("3.14")
-    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
+  fun testParser_realNumberOnly_noUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("3.14")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(3.14)
+      hasUnitCountThat().isEqualTo(0)
+    }
   }
 
   @Test
-  fun testParser_negativeIntegerOnly_noUnit_returnsUnitExpectedError() {
-    val error = parseNumberWithUnitsExpectingFailure("-5")
-    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
+  fun testParser_negativeIntegerOnly_noUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("-5")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(-5.0)
+      hasUnitCountThat().isEqualTo(0)
+    }
   }
 
   @Test
-  fun testParser_negativeRealOnly_noUnit_returnsUnitExpectedError() {
-    val error = parseNumberWithUnitsExpectingFailure("-2.5")
-    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
+  fun testParser_negativeRealOnly_noUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("-2.5")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(-2.5)
+      hasUnitCountThat().isEqualTo(0)
+    }
   }
 
   @Test
@@ -1582,9 +1595,16 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
-  fun testParser_fractionOnlyNoUnit_returnsUnitExpectedError() {
-    val error = parseNumberWithUnitsExpectingFailure("1/2")
-    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
+  fun testParser_fractionOnlyNoUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("1/2")
+    assertThat(result).apply {
+      hasFractionValueThat().apply {
+        hasNegativePropertyThat().isFalse()
+        hasNumeratorThat().isEqualTo(1)
+        hasDenominatorThat().isEqualTo(2)
+      }
+      hasUnitCountThat().isEqualTo(0)
+    }
   }
 
   @Test
@@ -3703,6 +3723,83 @@ class NumberWithUnitsParserTest {
         hasUnitThat().isEqualTo(Unit.METER)
         hasExponentThat().isEqualTo(1)
       }
+    }
+  }
+
+  @Test
+  fun testToUnitString_unprefixedUnit_returnsCanonicalSymbol() {
+    assertThat(createUnit(Unit.LITER).toUnitString()).isEqualTo("L")
+  }
+
+  @Test
+  fun testToUnitString_siPrefixedUnit_returnsCanonicalPrefixAndSymbol() {
+    assertThat(createUnit(Unit.METER, SiPrefix.KILO).toUnitString()).isEqualTo("km")
+  }
+
+  @Test
+  fun testToUnitString_currencyUnitWithPrefixSymbol_returnsPrefixSymbol() {
+    assertThat(createUnit(Unit.DOLLAR).toUnitString()).isEqualTo("$")
+    assertThat(createUnit(Unit.RUPEE).toUnitString()).isEqualTo("Rs")
+  }
+
+  @Test
+  fun testToUnitString_currencyUnitWithoutPrefixSymbol_returnsSuffixSymbol() {
+    assertThat(createUnit(Unit.CENT).toUnitString()).isEqualTo("¢")
+  }
+
+  @Test
+  fun testToUnitString_unspecifiedUnit_returnsEmptyString() {
+    assertThat(createUnit(Unit.UNIT_UNSPECIFIED).toUnitString()).isEmpty()
+  }
+
+  @Test
+  fun testToUnitString_everyUnit_parsesBackToSameUnit() {
+    val units = Unit.values().filter { it != Unit.UNIT_UNSPECIFIED && it != Unit.UNRECOGNIZED }
+    for (unit in units) {
+      val unitString = createUnit(unit).toUnitString()
+      val expression = if (unit == Unit.DOLLAR || unit == Unit.RUPEE) {
+        "$unitString 1"
+      } else "1 $unitString"
+
+      val result = parseNumberWithUnitsExpectingSuccess(expression)
+
+      assertThat(result).hasUnitCountThat().isEqualTo(1)
+      assertThat(result.getOnlyUnit()).isEqualTo(createUnit(unit))
+    }
+  }
+
+  @Test
+  fun testToUnitString_everySiPrefixWithMeter_parsesBackToSameUnit() {
+    val prefixes = SiPrefix.values().filter {
+      it != SiPrefix.SI_PREFIX_UNSPECIFIED && it != SiPrefix.UNRECOGNIZED
+    }
+    for (prefix in prefixes) {
+      val unit = createUnit(Unit.METER, prefix)
+
+      val result = parseNumberWithUnitsExpectingSuccess("1 ${unit.toUnitString()}")
+
+      assertThat(result.getOnlyUnit()).isEqualTo(unit)
+    }
+  }
+
+  private fun createUnit(
+    unit: Unit,
+    siPrefix: SiPrefix = SiPrefix.SI_PREFIX_UNSPECIFIED
+  ): NumberUnitExpression {
+    return NumberUnitExpression.newBuilder().apply {
+      this.unit = unit
+      this.siPrefix = siPrefix
+      exponent = 1
+    }.build()
+  }
+
+  private fun NumberWithUnitsExpression.getOnlyUnit(): NumberUnitExpression {
+    return when (expressionFormatCase) {
+      NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_EXPRESSION ->
+        prefixValueExpression.prefixUnitsList.single()
+      NumberWithUnitsExpression.ExpressionFormatCase.VALUE_SUFFIX_EXPRESSION ->
+        valueSuffixExpression.suffixUnitsList.single()
+      else -> error("Expected exactly one unit in: $this")
     }
   }
 
