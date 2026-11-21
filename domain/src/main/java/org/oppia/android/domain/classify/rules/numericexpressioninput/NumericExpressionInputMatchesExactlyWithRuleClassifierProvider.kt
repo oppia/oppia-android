@@ -45,8 +45,6 @@ class NumericExpressionInputMatchesExactlyWithRuleClassifierProvider @Inject con
     return answerExpression.isApproximatelyEqualTo(inputExpression.stripRedundantGroups())
   }
 
-  // TODO(#4345): Add tests for this & other math expression classifiers to verifying that rule
-  //  inputs can include minor errors (particularly, redundant parentheses).
   private fun parseExpression(
     rawExpression: String,
     checkingMode: ErrorCheckingMode

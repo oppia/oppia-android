@@ -321,6 +321,34 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest
     assertThat(matches).isFalse()
   }
 
+  @Test
+  @Iteration("redundant groups 1", "answer=x=y", "input=(x)=y")
+  @Iteration("redundant groups 2", "answer=x=y", "input=(((x)))=y")
+  @Iteration("redundant groups 3", "answer=x+3=y", "input=(x)+(3)=y")
+  @Iteration("redundant groups 4", "answer=sqrt(x)=y", "input=(sqrt((x)))=y")
+  fun testMatches_ruleInputWithRedundantGroups_returnsTrue() {
+    val matches = matchesClassifier(createMathExpression(answer), createMathExpression(input))
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  @Iteration("invalid or different groups 1", "answer=x+3*4=y", "input=(x+3)*4=y")
+  @Iteration("invalid or different groups 2", "answer=x=y", "input=((x)=y")
+  fun testMatches_ruleInputWithInvalidOrDifferentGroups_returnsFalse() {
+    val matches = matchesClassifier(createMathExpression(answer), createMathExpression(input))
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  @Iteration("redundant learner answer", "answer=(x)=y", "input=x=y")
+  fun testMatches_answerWithRedundantGroups_returnsFalse() {
+    val matches = matchesClassifier(createMathExpression(answer), createMathExpression(input))
+
+    assertThat(matches).isFalse()
+  }
+
   private fun matchesClassifier(
     answerExpression: InteractionObject,
     inputExpression: InteractionObject,

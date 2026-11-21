@@ -435,6 +435,20 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  fun testInitializeLearnerId_missingProfile_returnsFailure() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    addTestProfiles()
+
+    val result = profileManagementController.initializeLearnerId(PROFILE_ID_6)
+
+    val error = monitorFactory.waitForNextFailureResult(result)
+    assertThat(error).isInstanceOf(
+      ProfileManagementController.ProfileNotFoundException::class.java
+    )
+    assertThat(profileManagementController.getCurrentProfileId()).isNull()
+  }
+
+  @Test
   fun testGetCurrentProfileId_noProfileLoggedIn_returnsNull() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     addTestProfiles()
