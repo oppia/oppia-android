@@ -3,6 +3,7 @@ package org.oppia.android.domain.platformparameter
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.util.platformparameter.EnableAdminUnlockChapters
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
@@ -142,6 +143,11 @@ class FeatureFlagBindingModule {
   @EnableWorkedExamples
   fun provideEnableWorkedExamples(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.WORKED_EXAMPLES)
+
+  @Provides
+  @EnableAdminUnlockChapters
+  fun provideEnableAdminUnlockChapters(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.ADMIN_UNLOCK_CHAPTERS)
 
   private companion object {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(
