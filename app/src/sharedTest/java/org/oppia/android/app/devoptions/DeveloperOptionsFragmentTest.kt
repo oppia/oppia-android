@@ -813,10 +813,7 @@ class DeveloperOptionsFragmentTest {
   }
 
   private fun createDeveloperOptionsTestActivityIntent(internalProfileId: Int): Intent {
-    return DeveloperOptionsTestActivity.createDeveloperOptionsTestIntent(
-      context,
-      internalProfileId
-    )
+    return DeveloperOptionsTestActivity.createDeveloperOptionsTestIntent(context, internalProfileId)
   }
 
   private fun verifyItemDisplayedOnDeveloperOptionsListItem(
