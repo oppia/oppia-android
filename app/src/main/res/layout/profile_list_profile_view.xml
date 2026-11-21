@@ -37,15 +37,18 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="20dp"
+      android:layout_marginTop="12dp"
       android:layout_marginEnd="20dp"
       android:fontFamily="sans-serif"
       android:text="@{profile.name}"
       android:textColor="@color/component_color_shared_primary_dark_text_color"
       android:textSize="16sp"
-      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/profile_list_admin_text"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@id/profile_list_image"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_chainStyle="packed"
+      app:layout_goneMarginBottom="12dp" />
 
     <TextView
       android:id="@+id/profile_list_admin_text"
@@ -54,12 +57,14 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="20dp"
       android:layout_marginEnd="20dp"
+      android:layout_marginBottom="12dp"
       android:fontFamily="sans-serif"
       android:text="@string/profile_chooser_admin"
       android:textColor="@color/component_color_profile_list_activity_profile_view_designation_text_color"
       android:textSize="12sp"
       android:textStyle="italic"
       android:visibility="@{profile.isAdmin ? View.VISIBLE : View.GONE}"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@id/profile_list_image"
       app:layout_constraintTop_toBottomOf="@id/profile_list_name" />
