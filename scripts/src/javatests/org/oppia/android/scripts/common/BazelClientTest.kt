@@ -326,6 +326,41 @@ class BazelClientTest {
   }
 
   @Test
+  fun testRetrieveTransitiveWorkspaceFiles_forTarget_returnsSourceAndBuildFilesOfItsDeps() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.rootBuildFile.writeText(
+      """
+      filegroup(name = "app", srcs = ["App.txt", "//lib:lib"])
+      filegroup(name = "other", srcs = ["Other.txt"])
+      """.trimIndent()
+    )
+    tempFolder.newFolder("lib")
+    tempFolder.newFile("lib/BUILD.bazel").writeText(
+      """filegroup(name = "lib", srcs = ["Lib.txt"], visibility = ["//visibility:public"])"""
+    )
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+
+    val workspaceFiles = bazelClient.retrieveTransitiveWorkspaceFiles("//:app")
+
+    assertThat(workspaceFiles).containsAtLeast(
+      "App.txt", "BUILD.bazel", "lib/Lib.txt", "lib/BUILD.bazel"
+    )
+    assertThat(workspaceFiles).doesNotContain("Other.txt")
+  }
+
+  @Test
+  fun testRetrieveTransitiveWorkspaceFiles_forNonExistentTarget_throwsException() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+
+    val exception = assertThrows<IllegalStateException>() {
+      bazelClient.retrieveTransitiveWorkspaceFiles("//:nonexistent_target")
+    }
+
+    assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
+  }
+
+  @Test
   fun testRetrieveMavenDepsList_binaryDependsOnArtifactViaThirdParty_returnsArtifact() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(

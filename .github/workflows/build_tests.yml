@@ -18,25 +18,105 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  compute_flavors_to_build:
+    name: Compute app flavors to build
+    runs-on: ubuntu-24.04
+    outputs:
+      flavors: ${{ steps.check_all.outputs.flavors || steps.compute.outputs.flavors }}
+    env:
+      CACHE_DIRECTORY: ~/.bazel_cache
+    steps:
+      # Always build all flavors outside of PRs (such as for develop & merge queue runs).
+      - name: Check whether all flavors should be built
+        id: check_all
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [[ "${{ github.event_name }}" != "pull_request" || "$PR_TITLE" == *"[RunAllTests]"* ]]; then
+            echo 'flavors=["dev","alpha","beta","ga"]' >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/checkout@v6
+        if: ${{ !steps.check_all.outputs.flavors }}
+        with:
+          fetch-depth: 0
+
+      - name: Set up Bazel
+        if: ${{ !steps.check_all.outputs.flavors }}
+        uses: bazel-contrib/setup-bazel@0.19.0
+        with:
+          bazelisk-cache: true
+
+      - name: Set up build environment
+        if: ${{ !steps.check_all.outputs.flavors }}
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - uses: actions/cache@v5
+        if: ${{ !steps.check_all.outputs.flavors }}
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-
+
+      - name: Configure Bazel to use a local cache
+        if: ${{ !steps.check_all.outputs.flavors }}
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
+
+      - name: Compute flavors to build
+        id: compute
+        if: ${{ !steps.check_all.outputs.flavors }}
+        env:
+          base_commit_hash: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git fetch origin $base_commit_hash --depth=1
+          FLAVORS=()
+          for FLAVOR in dev alpha beta ga; do
+            # The script exits with 0 only if no rebuild is needed (any failure results in a rebuild).
+            if ! bazel run //scripts:check_whether_target_needs_rebuild -- $(pwd) $base_commit_hash //:oppia_$FLAVOR; then
+              FLAVORS+=("\"$FLAVOR\"")
+            fi
+          done
+          echo "flavors=[$(IFS=,; echo "${FLAVORS[*]}")]" >> $GITHUB_OUTPUT
+
   build_oppia_aab:
     name: Build Oppia AAB (${{ matrix.flavor }} flavor)
+    needs: compute_flavors_to_build
+    # Always run (even if computing the flavors failed) so that the required build checks are only
+    # reported as passing when the flavor was either built or verified to be unaffected.
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
     strategy:
       matrix:
         flavor: [dev, alpha, beta, ga]
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
+      NEEDS_BUILD: ${{ needs.compute_flavors_to_build.result != 'success' || contains(needs.compute_flavors_to_build.outputs.flavors, format('"{0}"', matrix.flavor)) }}
     steps:
+      - name: Skip unaffected flavor
+        if: ${{ env.NEEDS_BUILD != 'true' }}
+        run: |
+          echo "Skipping the build since no changes affect it. If this is wrong, you can add '[RunAllTests]' to the PR title to force a rebuild."
+
       - uses: actions/checkout@v6
+        if: ${{ env.NEEDS_BUILD == 'true' }}
         with:
           fetch-depth: 0
 
       - name: Set up Bazel
+        if: ${{ env.NEEDS_BUILD == 'true' }}
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
           bazelisk-cache: true
 
       - name: Set up build environment
+        if: ${{ env.NEEDS_BUILD == 'true' }}
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
       # For reference on this & the later cache actions, see:
@@ -46,6 +126,7 @@ jobs:
       # benefit from incremental build performance (assuming that actions/cache aggressively removes
       # older caches due to the 5GB cache limit size & Bazel's large cache size).
       - uses: actions/cache@v5
+        if: ${{ env.NEEDS_BUILD == 'true' }}
         id: cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -61,6 +142,7 @@ jobs:
       # few slower CI actions around the time cache is detected to be too large, but it should
       # incrementally improve thereafter.
       - name: Ensure cache size
+        if: ${{ env.NEEDS_BUILD == 'true' }}
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
@@ -79,6 +161,7 @@ jobs:
           fi
 
       - name: Configure Bazel to use a local cache
+        if: ${{ env.NEEDS_BUILD == 'true' }}
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
@@ -88,9 +171,11 @@ jobs:
         shell: bash
 
       - name: Check Bazel environment
+        if: ${{ env.NEEDS_BUILD == 'true' }}
         run: bazel info
 
       - name: Build Oppia ${{ matrix.flavor }} AAB
+        if: ${{ env.NEEDS_BUILD == 'true' }}
         run: |
           if [[ "${{ matrix.flavor }}" == "dev" ]]; then
             # Build oppia_dev_binary_deploy.jar first, then shutdown Bazel to release compiler
