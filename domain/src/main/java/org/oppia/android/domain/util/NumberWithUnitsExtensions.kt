@@ -8,13 +8,11 @@ import org.oppia.android.app.model.NumberUnit
 import org.oppia.android.app.model.NumberUnitExpression
 import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.NumberWithUnitsExpression
+import org.oppia.android.util.math.NumberWithUnitsParser.Companion.isCurrencyPrefixUnitString
 import org.oppia.android.util.math.NumberWithUnitsParser.Companion.toUnitString
 import org.oppia.android.util.math.toDouble
 import java.math.BigDecimal
 import kotlin.math.pow
-
-/** Unit strings that are written before the numeric value (e.g. "$5" or "Rs 5"). */
-private val PREFIX_UNIT_STRINGS = setOf("$", "Rs", "₹")
 
 /**
  * Returns a raw expression representing [this] value that can be parsed by
@@ -30,7 +28,7 @@ fun NumberWithUnits.toRawExpression(): String {
     else -> ""
   }
   val (prefixUnits, suffixUnits) =
-    unitList.partition { it.unit in PREFIX_UNIT_STRINGS && it.exponent == 1 }
+    unitList.partition { isCurrencyPrefixUnitString(it.unit) && it.exponent == 1 }
   return (prefixUnits.map { it.unit } + valueString + suffixUnits.map { it.toRawExpression() })
     .filter { it.isNotEmpty() }
     .joinToString(separator = " ")
