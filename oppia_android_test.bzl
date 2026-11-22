@@ -13,6 +13,7 @@ def oppia_android_layer_level_test(
         test_class = None,
         test_path_prefix = "src/test/java/",
         additional_srcs = [],
+        plugins = [],
         **kwargs):
     """
     Creates individual tests for a test file at the layer level.
@@ -28,6 +29,7 @@ def oppia_android_layer_level_test(
         test_path_prefix: str|None. The prefix of the test path (which is used to extract the
             qualified class name of the test suite).
         additional_srcs: list of str. Additional source files to build into the test binary.
+        plugins: list of str. The list of compiler plugins needed to compile this test.
         **kwargs: additional parameters to pass to oppia_android_test.
     """
     if name not in filtered_tests:
@@ -38,6 +40,7 @@ def oppia_android_layer_level_test(
                 test_class or _remove_prefix_suffix(name, test_path_prefix, ".kt").replace("/", ".")
             ),
             deps = deps,
+            plugins = plugins,
             **kwargs
         )
 
@@ -50,6 +53,7 @@ def oppia_android_test(
         deps,
         assets = None,
         assets_dir = None,
+        plugins = [],
         **kwargs):
     """
     Creates a local Oppia test target with Kotlin support.
@@ -66,6 +70,7 @@ def oppia_android_test(
       deps: list of str. The list of dependencies needed to run the tests.
       assets: list of str. A list of assets needed to run the tests.
       assets_dir: str. The path to the assets directory.
+      plugins: list of str. The list of compiler plugins needed to compile this test.
       **kwargs: additional parameters to pass to android_local_test.
     """
 
@@ -78,6 +83,7 @@ def oppia_android_test(
         manifest = test_manifest,
         assets = assets,
         assets_dir = assets_dir,
+        plugins = plugins,
     )
     native.android_local_test(
         name = name,

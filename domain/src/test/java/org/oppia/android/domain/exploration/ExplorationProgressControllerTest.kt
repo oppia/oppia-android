@@ -137,8 +137,6 @@ private const val INVALID_EXPLORATION_ID = "invalid_exp_id"
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationProgressControllerTest.TestApplication::class)
 class ExplorationProgressControllerTest {
-  // TODO(#3646): Add much more thorough tests for the integration pathway.
-
   // TODO(#59): Once AsyncDataSubscriptionManager can be replaced with a fake, add the following
   //  tests once careful testing timing can be controlled:
   //  - testMoveToNext_whileSubmittingAnswer_failsWithError
@@ -927,6 +925,60 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  fun testSubmitHintIsRevealed_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testSubmitHintIsViewed_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.submitHintIsViewed(hintIndex = 0)
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testSubmitSolutionIsRevealed_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.submitSolutionIsRevealed()
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testSubmitSolutionIsViewed_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.submitSolutionIsViewed()
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testMoveToFlashback_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.moveToFlashback("Introduction")
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testMoveBackToLatest_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.moveBackToLatest()
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
   fun testHintsAndSolution_pauseHints_timerPauses_solutionNotVisibleAfterDelay() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startPlayingNewExploration(
@@ -990,6 +1042,101 @@ class ExplorationProgressControllerTest {
     ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(SHOW_SOLUTION)
+  }
+
+  @Test
+  fun testHintsAndSolution_pauseThenSubmitWrongAnswer_timerRemainsPausedUntilResume() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    val pauseResult = explorationProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    submitWrongAnswerForPrototypeState2()
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+    var ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET)
+
+    val resumeResult = explorationProgressController.resumeHints()
+    monitorFactory.waitForNextSuccessfulResult(resumeResult)
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(49))
+    ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET)
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(1))
+    ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(NEXT_AVAILABLE_HINT_INDEX)
+    assertThat(ephemeralState.pendingState.helpIndex.nextAvailableHintIndex).isEqualTo(0)
+  }
+
+  @Test
+  fun testHintsAndSolution_pauseThenRevealHint_timerRemainsPausedUntilResume() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    val pauseResult = explorationProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+    var ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(LATEST_REVEALED_HINT_INDEX)
+
+    val resumeResult = explorationProgressController.resumeHints()
+    monitorFactory.waitForNextSuccessfulResult(resumeResult)
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(29))
+    ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(LATEST_REVEALED_HINT_INDEX)
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(1))
+    ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(SHOW_SOLUTION)
+  }
+
+  @Test
+  fun testHintsAndSolution_pauseThenMoveToNextState_newStateHintTimerIsNotPaused() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+
+    val pauseResult = explorationProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    playThroughPrototypeState1AndMoveToNextState()
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+    testCoroutineDispatchers.runCurrent()
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.state.name).isEqualTo("Fractions")
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(NEXT_AVAILABLE_HINT_INDEX)
+    assertThat(ephemeralState.pendingState.helpIndex.nextAvailableHintIndex).isEqualTo(0)
   }
 
   @Test

@@ -424,6 +424,11 @@ class StateRetriever @Inject constructor() {
           mathExpression = inputJson.getStringFromObject("math_expression")
         }.build()
       }
+      "NumberWithUnits" -> {
+        InteractionObject.newBuilder().apply {
+          numberWithUnits = parseNumberWithUnitsObject(inputJson)
+        }.build()
+      }
       else -> error("Encountered unsupported interaction ID for solutions: $interactionId")
     }
   }
@@ -527,7 +532,7 @@ class StateRetriever @Inject constructor() {
         createMultipleChoiceInputCustomizationArgsMap(customizationArgsJson)
       }
       "NumericInput" -> {
-        mutableMapOf()
+        createNumericInputCustomizationArgsMap(customizationArgsJson)
       }
       "TextInput" -> {
         createTextInputCustomizationArgsMap(customizationArgsJson)
@@ -650,6 +655,17 @@ class StateRetriever @Inject constructor() {
       parseSubtitledHtmlListForCustomizationArgs(
         customizationArgsJson.getJSONObject("choices").getJSONArray("value")
       )
+    return customizationArgsMap
+  }
+
+  private fun createNumericInputCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
+    customizationArgsJson.optJSONObject("allowExponentialNotation")?.let {
+      customizationArgsMap["allowExponentialNotation"] =
+        parseBooleanSchemaObject(it.optBoolean("value", false))
+    }
     return customizationArgsMap
   }
 

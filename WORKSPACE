@@ -7,6 +7,16 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
 load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION", "KOTLIN_COMPILER_VERSION")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "get_maven_dependencies")
 
+# rules_android setup
+http_archive(
+    name = "rules_android",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_android"]["sha"],
+    strip_prefix = "rules_android-%s" % HTTP_DEPENDENCY_VERSIONS["rules_android"]["version"],
+    urls = ["https://github.com/bazelbuild/rules_android/archive/v%s.zip" % HTTP_DEPENDENCY_VERSIONS["rules_android"]["version"]],
+)
+
+load("@rules_android//android:rules.bzl", "android_sdk_repository")
+
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
 # TODO(#1542): Sync Android SDK version with the manifest.
@@ -14,6 +24,15 @@ android_sdk_repository(
     name = "androidsdk",
     api_level = BUILD_SDK_VERSION,
     build_tools_version = BUILD_TOOLS_VERSION,
+)
+
+http_archive(
+    name = "rules_license",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_license"]["sha"],
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_license/releases/download/{0}/rules_license-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_license"]["version"]),
+        "https://github.com/bazelbuild/rules_license/releases/download/{0}/rules_license-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_license"]["version"]),
+    ],
 )
 
 # The rules_java contains the java_lite_proto_library rule used for Java generated protos.
@@ -50,6 +69,14 @@ git_repository(
 
 load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
 
+# Declare rules_kotlin before initializeDepsForWorkspace to override the version
+# pulled in by protobuf_deps.
+http_archive(
+    name = "io_bazel_rules_kotlin",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
+    url = "https://github.com/bazelbuild/rules_kotlin/releases/download/v{0}/rules_kotlin-v{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]),
+)
+
 initializeDepsForWorkspace()
 
 load("@oppia_proto_api//repo:toolchains.bzl", "initializeToolchainsForWorkspace")
@@ -61,24 +88,38 @@ http_archive(
     name = "rules_jvm_external",
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["sha"],
     strip_prefix = "rules_jvm_external-%s" % HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["version"],
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["version"],
+    url = "https://github.com/bazelbuild/rules_jvm_external/releases/download/{0}/rules_jvm_external-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["version"]),
 )
 
-# Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
 http_archive(
-    name = "io_bazel_rules_kotlin",
-    patches = ["//tools/kotlin:remove_processor_duplicates.patch"],
-    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
-    urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
+    name = "bazel_features",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["bazel_features"]["sha"],
+    strip_prefix = "bazel_features-%s" % HTTP_DEPENDENCY_VERSIONS["bazel_features"]["version"],
+    url = "https://github.com/bazel-contrib/bazel_features/releases/download/v{0}/bazel_features-v{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["bazel_features"]["version"]),
 )
 
-load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
+load("@bazel_features//:deps.bzl", "bazel_features_deps")
 
-# Use the 1.6 compiler since Kotlin 1.6 is the current supported version in the repository.
+bazel_features_deps()
+
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version", "ksp_version")
+
+# Explicitly pin the Kotlin compiler release to match the Kotlin stdlib version in
+# //third_party:versions.bzl. Even when a lower language_version/api_version is configured on
+# define_kt_toolchain (or include_stdlibs = "none" on kt_kotlinc_options), rules_kotlin
+# unconditionally injects the compiler archive's kotlin-stdlib into target JavaInfo dependencies
+# without exposing jvm_stdlibs/jvm_runtime on define_kt_toolchain. Leaving compiler_release at
+# rules_kotlin's default causes split-stdlib version skew against Maven's kotlin-stdlib (such as
+# ProGuard/R8 unresolved reference errors on refactored internal stdlib classes), so this explicit
+# compiler pin should be kept in sync whenever Kotlin is upgraded.
 kotlin_repositories(
     compiler_release = kotlinc_version(
         release = KOTLIN_COMPILER_VERSION,
-        sha256 = "432267996d0d6b4b17ca8de0f878e44d4a099b7e9f1587a98edc4d27e76c215a",
+        sha256 = "1fc50d805f9809e92de43e91f089cc8618567c1a350faebdabf8a40c5048bee8",
+    ),
+    ksp_compiler_release = ksp_version(
+        release = "%s-1.0.12" % KOTLIN_COMPILER_VERSION,
+        sha256 = "451bf769621930964d68d117f0176026c661be7668c7c1c783f1350a0746e43f",
     ),
 )
 
@@ -100,11 +141,12 @@ bind(
 )
 
 # The rules_proto contains the proto_library rule used for proto generation.
+
 http_archive(
     name = "rules_proto",
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_proto"]["sha"],
     strip_prefix = "rules_proto-%s" % HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"],
-    urls = ["https://github.com/bazelbuild/rules_proto/archive/%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"]],
+    url = "https://github.com/bazelbuild/rules_proto/releases/download/{0}/rules_proto-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"]),
 )
 
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")
@@ -122,7 +164,7 @@ http_archive(
     urls = ["https://github.com/google/dagger/archive/dagger-%s.zip" % HTTP_DEPENDENCY_VERSIONS["dagger"]["version"]],
 )
 
-load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
+load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS")
 
 # Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
@@ -233,7 +275,9 @@ maven_install(
     override_targets = {
         "com.google.guava:guava": "@//third_party:com_google_guava_guava",
     },
-    repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
+    # Omit DAGGER_REPOSITORIES: MAVEN_REPOSITORIES already covers maven.google.com and Maven
+    # Central, whereas DAGGER_REPOSITORIES adds the defunct oss.sonatype.org snapshots repository.
+    repositories = MAVEN_REPOSITORIES,
     strict_visibility = True,
 )
 
@@ -251,7 +295,7 @@ pinned_maven_install()
                 HTTP_DEPENDENCY_VERSIONS["guava_%s" % guava_type]["version"],
                 guava_type,
             )
-            for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+            for url_base in MAVEN_REPOSITORIES
         ],
     )
     for guava_type in [
@@ -263,6 +307,6 @@ pinned_maven_install()
 # Pinned lesson download pipeline script branch.
 git_repository(
     name = "oppia_android_asset_pipeline",
-    commit = "95a872ec3f873bedcba65d7d875c4042d154cd1b",
+    commit = "b1fb787fcf3ea9778e097e627a51489bfa14e122",
     remote = "https://github.com/oppia/oppia-android.git",
 )

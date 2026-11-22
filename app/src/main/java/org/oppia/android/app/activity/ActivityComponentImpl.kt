@@ -52,6 +52,7 @@ import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.profile.AddProfileActivity
 import org.oppia.android.app.profile.AdminAuthActivity
 import org.oppia.android.app.profile.AdminPinActivity
+import org.oppia.android.app.profile.CreateAdminPinActivity
 import org.oppia.android.app.profile.PinPasswordActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.profile.ProfileLoginActivity
@@ -84,6 +85,7 @@ import org.oppia.android.app.testing.InputInteractionViewTestActivity
 import org.oppia.android.app.testing.MarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.MathExpressionInteractionsViewTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
+import org.oppia.android.app.testing.NumberWithUnitsInputInteractionViewTestActivity
 import org.oppia.android.app.testing.PoliciesFragmentTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.testing.ProfileEditFragmentTestActivity
@@ -165,6 +167,11 @@ interface ActivityComponentImpl :
   fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
   fun inject(imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity)
   fun inject(inputInteractionViewTestActivity: InputInteractionViewTestActivity)
+  fun inject(
+    numberWithUnitsInputInteractionViewTestActivity:
+      NumberWithUnitsInputInteractionViewTestActivity
+  )
+
   fun inject(textInputInteractionViewTestActivity: TextInputInteractionViewTestActivity)
   fun inject(mathExpressionInteractionsViewTestActivity: MathExpressionInteractionsViewTestActivity)
   fun inject(ratioInputInteractionViewTestActivity: RatioInputInteractionViewTestActivity)
@@ -236,4 +243,5 @@ interface ActivityComponentImpl :
   fun inject(introActivity: IntroActivity)
   fun inject(profileLoginActivity: ProfileLoginActivity)
   fun inject(adminIntroActivity: AdminIntroActivity)
+  fun inject(createAdminPinActivity: CreateAdminPinActivity)
 }

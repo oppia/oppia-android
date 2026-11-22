@@ -126,7 +126,7 @@ class ProfileChooserFragmentLocalTest {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     launch<ProfileChooserActivity>(
-      createProfileChooserActivityIntent(ParentScreen.ADMIN_INTRO_SCREEN)
+      createProfileChooserActivityIntent(ParentScreen.CREATE_ADMIN_PIN_SCREEN)
     ).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -172,7 +172,7 @@ class ProfileChooserFragmentLocalTest {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
 
     launch<ProfileChooserActivity>(
-      createProfileChooserActivityIntent(ParentScreen.ADMIN_INTRO_SCREEN)
+      createProfileChooserActivityIntent(ParentScreen.CREATE_ADMIN_PIN_SCREEN)
     ).use {
       testCoroutineDispatchers.runCurrent()
 

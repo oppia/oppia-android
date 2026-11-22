@@ -20,6 +20,10 @@
     <item name="android:statusBarColor">@color/component_color_shared_activity_status_bar_color</item>
   </style>
 
+  <style name="CreateAdminPinActivityTheme" parent="OppiaThemeWithoutActionBar">
+    <item name="android:windowBackground">@color/component_color_shared_screen_primary_background_color</item>
+  </style>
+
   <style name="RevisionCardActivityTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
     <item name="colorPrimaryDark">@color/component_color_revision_card_activity_status_bar_color</item>
   </style>

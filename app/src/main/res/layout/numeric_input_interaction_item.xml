@@ -23,11 +23,10 @@
     <org.oppia.android.app.customview.interaction.NumericInputInteractionView
       android:id="@+id/numeric_input_interaction_view"
       style="@style/InputInteractionEditText"
-      android:digits="0123456789.-"
       android:hint="@string/numeric_input_hint"
-      android:inputType="numberDecimal"
       android:text="@={viewModel.answerText}"
       android:textColorHint="@color/component_color_shared_edit_text_hint_color"
+      app:allowExponentialNotation="@{viewModel.allowExponentialNotation}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
