@@ -773,8 +773,10 @@ class ProfileAndDeviceIdFragmentTest {
 
   @Test
   fun testFragment_multipleProfiles_clickShareIdsAndLogs_sendsIntentWithIdsAndLogsText() {
-    // Use fake time so that the generated event logs are consistent across runs.
+    // Use fake time so that the generated event logs are consistent across runs. Note that the time
+    // needs to be non-zero since a zero hand-off time indicates an unconfirmed upload.
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(TEST_FIXED_TIME_MS)
     profileTestHelper.addMoreProfiles(numProfiles = 2)
     runWithLaunchedActivityAndAddedFragment {
       disconnectNetwork() // Ensure events are cached.
@@ -801,14 +803,18 @@ class ProfileAndDeviceIdFragmentTest {
         - Profile name: Admin, learner ID: 8dcbbd21
           - Uploading learner events: 3
           - Uploaded learner events: 2
+          - Upload attempted \(unconfirmed\) learner events: 0
           - Uploading uncategorized events: 1
           - Uploaded uncategorized events: 4
+          - Upload attempted \(unconfirmed\) uncategorized events: 0
         - Profile name: A, learner ID: 208663b0
           - Uploading learner events: 2
           - Uploaded learner events: 1
+          - Upload attempted \(unconfirmed\) learner events: 0
         - Profile name: B, learner ID: 92d0c6e2
           - Uploading learner events: 1
           - Uploaded learner events: 2
+          - Upload attempted \(unconfirmed\) learner events: 0
         Current sync status: Waiting to schedule data uploading worker….
         Event log encoding integrity checks:
         - First 40 chars of encoded string: ([\p{Alnum}/\\+=]+)
@@ -854,6 +860,64 @@ class ProfileAndDeviceIdFragmentTest {
       assertThat(eventLogs.uploadedEventLogsList[6]).hasCommonPropsWithProfile(LEARNER_PROFILE_ID_1)
       assertThat(eventLogs.uploadedEventLogsList[7]).hasCommonPropsWithProfile(LEARNER_PROFILE_ID_1)
       assertThat(eventLogs.uploadedEventLogsList[8]).hasCommonPropsWithNoProfileId()
+    }
+  }
+
+  @Test
+  fun testFragment_adminEvents_confirmedAndUnconfirmedUploads_onlyReportsConfirmedAsUploaded() {
+    runWithLaunchedActivityAndAddedFragment {
+      connectNetwork() // Ensure events are uploaded immediately.
+
+      // Upload two events successfully, then attempt to upload one more that fails to hand off.
+      logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
+      fakeAnalyticsEventLogger.setFailure(Exception("Forced failure."))
+      logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+      fakeAnalyticsEventLogger.setFailure(null)
+
+      // Only the two confirmed events should be reported as uploaded.
+      onAwaitingUploadLearnerEventsCountAt(position = 1).check(matches(withText("0")))
+      onUploadedLearnerEventsCountAt(position = 1).check(matches(withText("2")))
+    }
+  }
+
+  @Test
+  fun testFragment_confirmedAndUnconfirmedUploads_clickShareIdsAndLogs_reportsCountsSeparately() {
+    profileTestHelper.addMoreProfiles(numProfiles = 1)
+    runWithLaunchedActivityAndAddedFragment {
+      connectNetwork() // Ensure events are uploaded immediately.
+
+      // Upload a mix of confirmed and unconfirmed events, for both the admin and the learner.
+      logTwoAnalyticsEvents(profileId = ADMIN_PROFILE_ID)
+      logAnalyticsEvent(profileId = LEARNER_PROFILE_ID_0)
+      fakeAnalyticsEventLogger.setFailure(Exception("Forced failure."))
+      logAnalyticsEvent(profileId = ADMIN_PROFILE_ID)
+      logTwoAnalyticsEvents(profileId = LEARNER_PROFILE_ID_0)
+      logThreeAnalyticsEvents(profileId = null)
+      fakeAnalyticsEventLogger.setFailure(null)
+
+      onShareIdsAndEventsButtonAt(position = 4).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      val extraText = getIntents().single().getStringExtra(Intent.EXTRA_TEXT)
+      val adminLines =
+        """
+          - Profile name: Admin, learner ID: 8dcbbd21
+            - Uploading learner events: 0
+            - Uploaded learner events: 2
+            - Upload attempted (unconfirmed) learner events: 1
+            - Uploading uncategorized events: 0
+            - Uploaded uncategorized events: 0
+            - Upload attempted (unconfirmed) uncategorized events: 3
+        """.trimIndent()
+      val learnerLines =
+        """
+          - Profile name: A, learner ID: 208663b0
+            - Uploading learner events: 0
+            - Uploaded learner events: 1
+            - Upload attempted (unconfirmed) learner events: 2
+        """.trimIndent()
+      assertThat(extraText).contains(adminLines)
+      assertThat(extraText).contains(learnerLines)
     }
   }
 
@@ -1057,7 +1121,7 @@ class ProfileAndDeviceIdFragmentTest {
 
   private fun EventLogSubject.hasCommonProperties() {
     hasNoLanguageInformation()
-    hasTimestampThat().isEqualTo(0)
+    hasTimestampThat().isEqualTo(TEST_FIXED_TIME_MS)
     isEssentialPriority()
     hasAppInForegroundContextThat().hasDefaultIds()
   }
@@ -1193,6 +1257,7 @@ class ProfileAndDeviceIdFragmentTest {
     private const val DEFAULT_APPLICATION_ID = 123456789L
     private const val TEST_LEARNER_ID = "test_learner_id"
     private const val TEST_INSTALLATION_ID = "test_install_id"
+    private const val TEST_FIXED_TIME_MS = 1_700_000_000_000L
 
     private val ADMIN_PROFILE_ID = createProfileId(internalProfileId = 0)
     private val LEARNER_PROFILE_ID_0 = createProfileId(internalProfileId = 1)

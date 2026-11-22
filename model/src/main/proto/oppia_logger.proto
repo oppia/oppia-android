@@ -45,7 +45,9 @@ message EventLog {
 
   // The time at which this event was handed off to the analytics service, or 0 if the hand-off
   // wasn't confirmed to complete (e.g. due to an upload failure or app crash). This is only set for
-  // events retained in OppiaEventLogs.uploaded_event_logs, and is never logged remotely.
+  // events retained in OppiaEventLogs.uploaded_event_logs, and is never logged remotely. Note that
+  // events recorded before this field was added will also have a value of 0, even if their hand-off
+  // completed.
   int64 upload_hand_off_timestamp_ms = 10;
 
   // Structure of an activity context.
