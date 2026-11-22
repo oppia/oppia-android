@@ -15,6 +15,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunner
 import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.NumberWithUnitsSubject.Companion.assertThat
 import org.oppia.android.util.math.NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult
+import org.oppia.android.util.math.NumberWithUnitsParser.Companion.isCurrencyPrefixUnitString
 import org.oppia.android.util.math.NumberWithUnitsParser.Companion.toUnitString
 import org.oppia.android.util.math.NumberWithUnitsParsingError.DuplicateCurrencyError
 import org.oppia.android.util.math.NumberWithUnitsParsingError.EmptyExpressionError
@@ -3780,6 +3781,31 @@ class NumberWithUnitsParserTest {
 
       assertThat(result.getOnlyUnit()).isEqualTo(unit)
     }
+  }
+
+  @Test
+  fun testIsCurrencyPrefixUnitString_prefixCurrencySymbols_returnsTrue() {
+    assertThat(isCurrencyPrefixUnitString("$")).isTrue()
+    assertThat(isCurrencyPrefixUnitString("Rs")).isTrue()
+    assertThat(isCurrencyPrefixUnitString("₹")).isTrue()
+  }
+
+  @Test
+  fun testIsCurrencyPrefixUnitString_suffixCurrencyUnits_returnsFalse() {
+    assertThat(isCurrencyPrefixUnitString("¢")).isFalse()
+    assertThat(isCurrencyPrefixUnitString("dollars")).isFalse()
+    assertThat(isCurrencyPrefixUnitString("rupees")).isFalse()
+  }
+
+  @Test
+  fun testIsCurrencyPrefixUnitString_nonCurrencyUnit_returnsFalse() {
+    assertThat(isCurrencyPrefixUnitString("km")).isFalse()
+    assertThat(isCurrencyPrefixUnitString("")).isFalse()
+  }
+
+  @Test
+  fun testIsCurrencyPrefixUnitString_unsupportedCurrencySymbol_returnsFalse() {
+    assertThat(isCurrencyPrefixUnitString("€")).isFalse()
   }
 
   private fun createUnit(
