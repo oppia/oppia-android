@@ -2,6 +2,7 @@
 This library provides data to the rest of the application.
 """
 
+load("@rules_android//android:rules.bzl", "android_library")
 load("//data:data_test.bzl", "data_test")
 
 filegroup(

@@ -529,10 +529,9 @@ class ExplorationActiveTimeController @Inject constructor(
     ) { topicLearningTimeDatabase ->
       topicLearningTimeDatabase.toBuilder().apply {
         val topicLearningTime =
-          aggregateTopicLearningTimeMap.getOrDefault(
-            topicId,
+          aggregateTopicLearningTimeMap.getOrElse(topicId) {
             TopicLearningTime.newBuilder().setTopicId(topicId).build()
-          ).toBuilder().apply {
+          }.toBuilder().apply {
             topicLearningTimeMs = if (isLastUpdatedTimestampStale(lastUpdatedTimeMs))
               sessionDuration
             else

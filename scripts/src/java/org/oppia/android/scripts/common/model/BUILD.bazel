@@ -8,6 +8,7 @@ kt_jvm_library(
     name = "github_issue",
     testonly = True,
     srcs = ["GitHubIssue.kt"],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
 )
