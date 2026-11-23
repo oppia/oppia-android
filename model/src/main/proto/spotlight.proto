@@ -46,6 +46,9 @@ message Spotlight {
 
     // Corresponds to the All Topics header on the Home screen.
     SpotlightViewState home_all_topics_header = 12;
+
+    // Corresponds to the navigation drawer button on the Home screen.
+    SpotlightViewState home_navigation_drawer_button = 13;
   }
 }
 
@@ -99,4 +102,7 @@ message SpotlightStateDatabase {
 
   // Corresponds to the All Topics header on the Home screen.
   SpotlightViewState home_all_topics_header = 12;
+
+  // Corresponds to the navigation drawer button on the Home screen.
+  SpotlightViewState home_navigation_drawer_button = 13;
 }

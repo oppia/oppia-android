@@ -241,6 +241,9 @@
   <string name="set_up_multiple_profiles_description">Add up to 10 users to your account. Perfect for families and classrooms.</string>
   <string name="profile_chooser_administrator_controls">Administrator Controls</string>
   <string name="profile_chooser_language">Language</string>
+  <string name="profile_chooser_spotlight_admin_controls">Tap here to explore administrator controls</string>
+  <string name="profile_chooser_spotlight_admin_profile">Tap here to enter your account and explore lessons as a learner</string>
+  <string name="profile_chooser_spotlight_add_learner">Tap here to create a profile for a learner</string>
   <string name="profile_selection_header">Select your profile to explore the lessons</string>
   <string name="profile_selection_profile_icon_description">User\'s profile picture</string>
   <string name="profile_selection_add_icon_description">Add another profile</string>
@@ -362,6 +365,8 @@
   <string name="home_activity_title">Home</string>
   <string name="promoted_story_spotlight_hint">From now, you can see lessons recommended for you here.</string>
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
+  <string name="home_all_topics_spotlight_hint">Select a topic to start learning</string>
+  <string name="home_navigation_drawer_spotlight_hint">Tap here to change the app language, see options, and more!</string>
   <!--  ClassroomListActivity-->
   <string name="classroom_list_activity_title">Home</string>
   <string name="classrooms_list_activity_section_header">Classrooms</string>
@@ -775,10 +780,4 @@
   <string name="create_admin_pin_activity_blank_error">Type a 5-Digit PIN</string>
   <string name="create_admin_pin_activity_length_error">Your PIN should be 5 digits long</string>
   <string name="create_admin_pin_activity_mismatch_error">Please make sure that both PINs match</string>
-
-  <!-- Spotlight hints for profile chooser (Onboarding V2). -->
-  <string name="profile_chooser_spotlight_admin_controls">Tap here to explore administrator controls</string>
-  <string name="profile_chooser_spotlight_admin_profile">Tap here to enter your account and explore lessons as a learner</string>
-  <string name="profile_chooser_spotlight_add_learner">Tap here to create a profile for a learner</string>
-  <string name="home_all_topics_spotlight_hint">Select a topic to start learning</string>
 </resources>

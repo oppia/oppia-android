@@ -22,6 +22,7 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.spotlight.SpotlightManager
@@ -33,6 +34,7 @@ import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -52,6 +54,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
+  private val spotlightStateController: SpotlightStateController,
   private val topicListController: TopicListController,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
@@ -209,20 +212,28 @@ class HomeFragmentPresenter @Inject constructor(
         setViewModel = { binding, viewModel ->
           binding.viewModel = viewModel
           if (!hasRequestedAllTopicsSpotlight) {
-            val manager = activity.supportFragmentManager.findFragmentByTag(
-              SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-            ) as? SpotlightManager
-            if (manager != null) {
-              manager.requestSpotlightViewWithDelayedLayout(
-                SpotlightTarget(
-                  anchor = binding.allTopicsTextView,
-                  hint = resourceHandler.getStringInLocale(
-                    R.string.home_all_topics_spotlight_hint
-                  ),
-                  feature = Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
+            hasRequestedAllTopicsSpotlight = true
+            spotlightStateController.retrieveSpotlightViewState(
+              profileId,
+              Spotlight.FeatureCase.HOME_NAVIGATION_DRAWER_BUTTON
+            ).toLiveData().observe(fragment) { result ->
+              if (
+                result is AsyncResult.Success &&
+                result.value == SpotlightViewState.SPOTLIGHT_SEEN
+              ) {
+                val manager = activity.supportFragmentManager.findFragmentByTag(
+                  SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+                ) as? SpotlightManager
+                manager?.requestSpotlightViewWithDelayedLayout(
+                  SpotlightTarget(
+                    anchor = binding.allTopicsTextView,
+                    hint = resourceHandler.getStringInLocale(
+                      R.string.home_all_topics_spotlight_hint
+                    ),
+                    feature = Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
+                  )
                 )
-              )
-              hasRequestedAllTopicsSpotlight = true
+              }
             }
           }
         },
