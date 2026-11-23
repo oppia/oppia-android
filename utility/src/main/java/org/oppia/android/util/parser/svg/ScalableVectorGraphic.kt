@@ -8,7 +8,6 @@ import com.caverock.androidsvg.androidrendering.RenderOptionsBase
 import com.caverock.androidsvg.androidrendering.SVG
 import com.caverock.androidsvg.model.PreserveAspectRatio
 import org.oppia.android.util.parser.image.ImageTransformation
-import kotlin.math.ceil
 
 /**
  * The app's representation of SVG images. This should be used analogically with Android's bitmap
@@ -137,28 +136,29 @@ class ScalableVectorGraphic {
    * By default, the picture has the SVG's own size and so it's stretched when drawn at a rendered
    * size (from [computeSizeSpecs]) with a different aspect ratio. If the graphic was initialized
    * with 'preserveAspectRatio' set (see [initializeWithExtractedDimensions]), the picture instead
-   * has the same aspect ratio as the rendered size, with the SVG drawn at its own size in the
-   * middle (see [computeLetterboxedPictureSize]). This matches how browsers (and thus Oppia web)
-   * fit an SVG image into a box of a different shape, per the default 'xMidYMid meet' value of the
-   * SVG's preserveAspectRatio attribute. SVGs that explicitly opt into stretching
+   * has exactly the rendered size, with the SVG scaled evenly to fit inside it and centered (see
+   * [computeLetterboxedPictureSize]). This matches how browsers (and thus Oppia web) fit an SVG
+   * image into a box of a different shape, per the default 'xMidYMid meet' value of the SVG's
+   * preserveAspectRatio attribute. SVGs that explicitly opt into stretching
    * (preserveAspectRatio="none") are still stretched.
    */
   fun renderToBlockPicture(): Picture {
     val svg = parsedSvg.value
-    val letterboxSize =
-      if (shouldPreserveAspectRatio && !svg.isStretchingAllowed()) {
-        computeLetterboxedPictureSize()
-      } else null
-    if (letterboxSize == null) return svg.renderToPicture()
+    val naturalPicture = svg.renderToPicture()
+    if (!shouldPreserveAspectRatio || svg.isStretchingAllowed()) return naturalPicture
+    val letterboxSize = computeLetterboxedPictureSize(naturalPicture) ?: return naturalPicture
 
-    val (pictureWidth, pictureHeight, documentViewPort) = letterboxSize
-    val options = RenderOptions().viewPort(
-      documentViewPort.left,
-      documentViewPort.top,
-      documentViewPort.width(),
-      documentViewPort.height()
-    ) as RenderOptions
-    return svg.renderToPicture(ceil(pictureWidth).toInt(), ceil(pictureHeight).toInt(), options)
+    val (pictureWidth, pictureHeight, documentBounds, documentScale) = letterboxSize
+    return Picture().also { picture ->
+      picture.beginRecording(pictureWidth, pictureHeight).apply {
+        translate(documentBounds.left, documentBounds.top)
+        scale(documentScale, documentScale)
+        // Note that the natural picture isn't clipped to its own bounds, so any content that
+        // overflows the SVG's viewBox stays visible in the padding (like it does on web).
+        drawPicture(naturalPicture)
+      }
+      picture.endRecording()
+    }
   }
 
   /**
@@ -166,44 +166,55 @@ class ScalableVectorGraphic {
    * distorting it, or null if no letterboxing is needed (either because the SVG's own size has the
    * same aspect ratio as its rendered size, or because the SVG has no intrinsic size to preserve).
    */
-  fun computeLetterboxedPictureSize(): LetterboxedPictureSize? {
-    if (!hasIntrinsicSize()) return null
-    val (intrinsicWidth, intrinsicHeight, renderedWidth, renderedHeight) = computeSizeSpecs()
+  fun computeLetterboxedPictureSize(): LetterboxedPictureSize? =
+    computeLetterboxedPictureSize(naturalPicture = parsedSvg.value.renderToPicture())
 
-    // Scale the rendered size down (or up) so that it fully contains the SVG at its own size. One
-    // dimension matches the SVG exactly (it's assigned directly to avoid floating point error) and
-    // the other will be at least as large.
-    val isLimitedByWidth = renderedWidth / intrinsicWidth <= renderedHeight / intrinsicHeight
-    val pictureWidth =
-      if (isLimitedByWidth) intrinsicWidth else renderedWidth * intrinsicHeight / renderedHeight
-    val pictureHeight =
-      if (isLimitedByWidth) renderedHeight * intrinsicWidth / renderedWidth else intrinsicHeight
-    val horizontalPadding = (pictureWidth - intrinsicWidth) / 2f
-    val verticalPadding = (pictureHeight - intrinsicHeight) / 2f
+  private fun computeLetterboxedPictureSize(naturalPicture: Picture): LetterboxedPictureSize? {
+    val (documentWidth, documentHeight) = computeDocumentSize(naturalPicture) ?: return null
+    val (_, _, renderedWidth, renderedHeight) = computeSizeSpecs()
+
+    // The picture has exactly the size that SvgPictureDrawable draws it at, so that drawing it is
+    // an even scale (rounding the picture to a different size would stretch it a little, and make
+    // the padding uneven).
+    val pictureWidth = renderedWidth.toInt()
+    val pictureHeight = renderedHeight.toInt()
+    if (pictureWidth <= 0 || pictureHeight <= 0) return null
+
+    val documentScale = minOf(pictureWidth / documentWidth, pictureHeight / documentHeight)
+    val horizontalPadding = (pictureWidth - documentWidth * documentScale) / 2f
+    val verticalPadding = (pictureHeight - documentHeight * documentScale) / 2f
 
     // Avoid changing how images are drawn when the difference is smaller than a rendered pixel
-    // (which is expected since the sizes in image filenames are rounded). Note that the padding is
-    // in the SVG's own pixels, so it's converted to rendered pixels before being checked.
-    val renderedPixelsPerPicturePixel = renderedWidth / pictureWidth
-    val largestRenderedPadding =
-      maxOf(horizontalPadding, verticalPadding) * renderedPixelsPerPicturePixel
-    if (largestRenderedPadding < MIN_LETTERBOX_PADDING_RENDERED_PX) return null
+    // (which is expected since the sizes in image filenames are rounded).
+    if (maxOf(horizontalPadding, verticalPadding) < MIN_LETTERBOX_PADDING_RENDERED_PX) return null
 
-    val documentViewPort = RectF(
+    val documentBounds = RectF(
       horizontalPadding,
       verticalPadding,
-      horizontalPadding + intrinsicWidth,
-      verticalPadding + intrinsicHeight
+      pictureWidth - horizontalPadding,
+      pictureHeight - verticalPadding
     )
-    return LetterboxedPictureSize(pictureWidth, pictureHeight, documentViewPort)
+    return LetterboxedPictureSize(pictureWidth, pictureHeight, documentBounds, documentScale)
   }
 
-  private fun hasIntrinsicSize(): Boolean {
+  /**
+   * Returns the size of the SVG's content within [naturalPicture] (the picture that AndroidSVG
+   * renders for the SVG by default), or null if the SVG has no intrinsic size.
+   */
+  private fun computeDocumentSize(naturalPicture: Picture): Pair<Float, Float>? {
+    val svg = parsedSvg.value
     val options = RenderOptionsBase()
-    val viewBox: RectF? = parsedSvg.value.documentViewBox
-    val hasWidth = parsedSvg.value.getDocumentWidthOrNull(options) != null || viewBox != null
-    val hasHeight = parsedSvg.value.getDocumentHeightOrNull(options) != null || viewBox != null
-    return hasWidth && hasHeight
+    val documentWidth = svg.getDocumentWidthOrNull(options)
+    val documentHeight = svg.getDocumentHeightOrNull(options)
+    return when {
+      // Prefer the exact (unrounded) document size when AndroidSVG can provide it.
+      documentWidth != null && documentHeight != null -> documentWidth to documentHeight
+      // Otherwise, AndroidSVG sized the picture from the viewBox, and from the root 'height'
+      // attribute for SVGs that only specify a height (which AndroidSVG doesn't otherwise expose).
+      svg.documentViewBox != null && naturalPicture.width > 0 && naturalPicture.height > 0 ->
+        naturalPicture.width.toFloat() to naturalPicture.height.toFloat()
+      else -> null
+    }
   }
 
   /**
@@ -271,15 +282,17 @@ class ScalableVectorGraphic {
    * The size of a [Picture] that letterboxes this SVG so that it can be drawn at its rendered size
    * without being distorted.
    *
-   * @property pictureWidth the width of the picture, in the SVG's own pixels
-   * @property pictureHeight the height of the picture, in the SVG's own pixels
-   * @property documentViewPort where the SVG document is drawn within the picture (it's centered,
-   *     and kept at the SVG's own size)
+   * @property pictureWidth the width of the picture, in rendered pixels (i.e. the rendered width)
+   * @property pictureHeight the height of the picture, in rendered pixels (i.e. the rendered height)
+   * @property documentBounds where the SVG is drawn within the picture (it's centered, and scaled
+   *     evenly to fit)
+   * @property documentScale how much the SVG's own size is scaled to fit in [documentBounds]
    */
   data class LetterboxedPictureSize(
-    val pictureWidth: Float,
-    val pictureHeight: Float,
-    val documentViewPort: RectF
+    val pictureWidth: Int,
+    val pictureHeight: Int,
+    val documentBounds: RectF,
+    val documentScale: Float
   )
 
   private companion object {

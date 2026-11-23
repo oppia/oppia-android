@@ -107,9 +107,10 @@ class ScalableVectorGraphicTest {
     val letterboxSize = svg.computeLetterboxedPictureSize()
 
     assertThat(letterboxSize).isNotNull()
-    assertThat(letterboxSize?.pictureWidth).isEqualTo(10f)
-    assertThat(letterboxSize?.pictureHeight).isWithin(TOLERANCE).of(10.5f)
-    assertThat(letterboxSize?.documentViewPort?.top).isWithin(TOLERANCE).of(0.25f)
+    assertThat(letterboxSize?.pictureWidth).isEqualTo(600)
+    assertThat(letterboxSize?.pictureHeight).isEqualTo(630)
+    assertThat(letterboxSize?.documentScale).isWithin(TOLERANCE).of(60f)
+    assertThat(letterboxSize?.documentBounds).isEqualTo(RectF(0f, 15f, 600f, 615f))
   }
 
   @Test
@@ -121,9 +122,13 @@ class ScalableVectorGraphicTest {
     val letterboxSize = svg.computeLetterboxedPictureSize()
 
     assertThat(letterboxSize).isNotNull()
-    assertThat(letterboxSize?.pictureWidth).isEqualTo(216f)
-    assertThat(letterboxSize?.pictureHeight).isEqualTo(108f)
-    assertThat(letterboxSize?.documentViewPort).isEqualTo(RectF(36f, 0f, 180f, 108f))
+    assertThat(letterboxSize?.pictureWidth).isEqualTo(600)
+    assertThat(letterboxSize?.pictureHeight).isEqualTo(300)
+    val documentBounds = checkNotNull(letterboxSize?.documentBounds)
+    assertThat(documentBounds.left).isWithin(TOLERANCE).of(100f)
+    assertThat(documentBounds.top).isWithin(TOLERANCE).of(0f)
+    assertThat(documentBounds.right).isWithin(TOLERANCE).of(500f)
+    assertThat(documentBounds.bottom).isWithin(TOLERANCE).of(300f)
   }
 
   @Test
@@ -134,13 +139,14 @@ class ScalableVectorGraphicTest {
     val letterboxSize = svg.computeLetterboxedPictureSize()
 
     assertThat(letterboxSize).isNotNull()
-    assertThat(letterboxSize?.pictureWidth).isWithin(TOLERANCE).of(250f)
-    assertThat(letterboxSize?.pictureHeight).isWithin(TOLERANCE).of(266.6667f)
-    val documentViewPort = checkNotNull(letterboxSize?.documentViewPort)
-    assertThat(documentViewPort.left).isWithin(TOLERANCE).of(0f)
-    assertThat(documentViewPort.top).isWithin(TOLERANCE).of(10.83333f)
-    assertThat(documentViewPort.width()).isWithin(TOLERANCE).of(250f)
-    assertThat(documentViewPort.height()).isWithin(TOLERANCE).of(245f)
+    assertThat(letterboxSize?.pictureWidth).isEqualTo(150)
+    assertThat(letterboxSize?.pictureHeight).isEqualTo(160)
+    assertThat(letterboxSize?.documentScale).isWithin(TOLERANCE).of(0.6f)
+    val documentBounds = checkNotNull(letterboxSize?.documentBounds)
+    assertThat(documentBounds.left).isWithin(TOLERANCE).of(0f)
+    assertThat(documentBounds.top).isWithin(TOLERANCE).of(6.5f)
+    assertThat(documentBounds.width()).isWithin(TOLERANCE).of(150f)
+    assertThat(documentBounds.height()).isWithin(TOLERANCE).of(147f)
   }
 
   @Test
@@ -152,9 +158,26 @@ class ScalableVectorGraphicTest {
     val letterboxSize = svg.computeLetterboxedPictureSize()
 
     assertThat(letterboxSize).isNotNull()
-    assertThat(letterboxSize?.pictureWidth).isEqualTo(200f)
-    assertThat(letterboxSize?.pictureHeight).isEqualTo(100f)
-    assertThat(letterboxSize?.documentViewPort).isEqualTo(RectF(50f, 0f, 150f, 100f))
+    assertThat(letterboxSize?.pictureWidth).isEqualTo(200)
+    assertThat(letterboxSize?.pictureHeight).isEqualTo(100)
+    assertThat(letterboxSize?.documentBounds).isEqualTo(RectF(50f, 0f, 150f, 100f))
+  }
+
+  @Test
+  fun testComputeLetterboxedPictureSize_onlyHeightAndViewBox_usesHeightForSvgSize() {
+    // AndroidSVG draws this SVG at 200x200 (its width comes from its height and viewBox), so it
+    // should fill the height of a 400x200 box rather than being treated as the viewBox's 100x100.
+    val svg =
+      ScalableVectorGraphic(SVG_HEIGHT_200_VIEW_BOX_100_BY_100)
+        .withFilenameSize(width = 400, height = 200)
+
+    val letterboxSize = svg.computeLetterboxedPictureSize()
+
+    assertThat(letterboxSize).isNotNull()
+    assertThat(letterboxSize?.pictureWidth).isEqualTo(400)
+    assertThat(letterboxSize?.pictureHeight).isEqualTo(200)
+    assertThat(letterboxSize?.documentScale).isWithin(TOLERANCE).of(1f)
+    assertThat(letterboxSize?.documentBounds).isEqualTo(RectF(100f, 0f, 300f, 200f))
   }
 
   @Test
@@ -175,6 +198,16 @@ class ScalableVectorGraphicTest {
   }
 
   @Test
+  fun testRenderToBlockPicture_onlyHeightAndViewBox_noFilenameSize_pictureDerivesWidthFromHeight() {
+    val svg = ScalableVectorGraphic(SVG_HEIGHT_200_VIEW_BOX_100_BY_100)
+
+    val picture = svg.renderToBlockPicture()
+
+    assertThat(picture.width).isEqualTo(200)
+    assertThat(picture.height).isEqualTo(200)
+  }
+
+  @Test
   fun testRenderToBlockPicture_preserving_sameAspectRatio_pictureHasDocumentSize() {
     val svg = ScalableVectorGraphic(SVG_250_BY_245)
       .withFilenameSizePreservingAspectRatio(width = 500, height = 490)
@@ -192,9 +225,9 @@ class ScalableVectorGraphicTest {
 
     val picture = svg.renderToBlockPicture()
 
-    // The picture is 2:1 (like the filename) so that drawing it at 600x300 doesn't stretch it.
-    assertThat(picture.width).isEqualTo(216)
-    assertThat(picture.height).isEqualTo(108)
+    // The picture has the filename's size so that drawing it at 600x300 doesn't stretch it.
+    assertThat(picture.width).isEqualTo(600)
+    assertThat(picture.height).isEqualTo(300)
   }
 
   @Test
@@ -204,8 +237,35 @@ class ScalableVectorGraphicTest {
 
     val picture = svg.renderToBlockPicture()
 
-    assertThat(picture.width).isEqualTo(250)
-    assertThat(picture.height).isEqualTo(267)
+    assertThat(picture.width).isEqualTo(150)
+    assertThat(picture.height).isEqualTo(160)
+  }
+
+  @Test
+  fun testRenderToBlockPicture_preserving_smallSvgInSlightlyTallerBox_drawsSquareWithEvenPadding() {
+    // The SVG is a 10x10 square shown in a 600x630 box, so it should be drawn as a 600x600 square
+    // with 15 pixels of padding above and below. Note that Robolectric's legacy graphics can't
+    // rasterize pictures, so this checks where SvgPictureDrawable maps the square to when it draws
+    // the picture into the box, rather than reading back the bitmap's pixels.
+    val svg = ScalableVectorGraphic(SVG_VIEW_BOX_10_BY_10)
+      .withFilenameSizePreservingAspectRatio(width = 600, height = 630)
+
+    val drawnSquare = svg.computeDrawnDocumentBounds(boxWidth = 600, boxHeight = 630)
+
+    assertThat(drawnSquare.width()).isWithin(TOLERANCE).of(600f)
+    assertThat(drawnSquare.height()).isWithin(TOLERANCE).of(600f)
+    assertThat(drawnSquare.top).isWithin(TOLERANCE).of(15f) // Padding above.
+    assertThat(630f - drawnSquare.bottom).isWithin(TOLERANCE).of(15f) // Padding below.
+  }
+
+  @Test
+  fun testRenderToBlockPicture_preserving_onlyHeightAndViewBox_drawsSvgAtFullHeightInMiddle() {
+    val svg = ScalableVectorGraphic(SVG_HEIGHT_200_VIEW_BOX_100_BY_100)
+      .withFilenameSizePreservingAspectRatio(width = 400, height = 200)
+
+    val drawnSquare = svg.computeDrawnDocumentBounds(boxWidth = 400, boxHeight = 200)
+
+    assertThat(drawnSquare).isEqualTo(RectF(100f, 0f, 300f, 200f))
   }
 
   @Test
@@ -255,7 +315,7 @@ class ScalableVectorGraphicTest {
     assertThat(transformedSvg.transformations).containsExactly(ImageTransformation.BLUR)
     assertThat(transformedSvg.computeSizeSpecs().renderedWidth).isEqualTo(600f)
     // The transformed graphic should still keep its aspect ratio when rendered.
-    assertThat(transformedSvg.renderToBlockPicture().width).isEqualTo(216)
+    assertThat(transformedSvg.computeLetterboxedPictureSize()).isNotNull()
   }
 
   private fun ScalableVectorGraphic.withFilenameSize(width: Int, height: Int) =
@@ -263,6 +323,27 @@ class ScalableVectorGraphicTest {
 
   private fun ScalableVectorGraphic.withFilenameSizePreservingAspectRatio(width: Int, height: Int) =
     also { it.initializeWithExtractedDimensions(width, height, preserveAspectRatio = true) }
+
+  /**
+   * Returns where the SVG ends up within a [boxWidth] x [boxHeight] box when the picture from
+   * [ScalableVectorGraphic.renderToBlockPicture] is drawn into it, like SvgPictureDrawable does
+   * (which scales the picture's bounds to fill the box).
+   */
+  private fun ScalableVectorGraphic.computeDrawnDocumentBounds(
+    boxWidth: Int,
+    boxHeight: Int
+  ): RectF {
+    val picture = renderToBlockPicture()
+    val documentBounds = checkNotNull(computeLetterboxedPictureSize()).documentBounds
+    val scaleX = boxWidth.toFloat() / picture.width
+    val scaleY = boxHeight.toFloat() / picture.height
+    return RectF(
+      documentBounds.left * scaleX,
+      documentBounds.top * scaleY,
+      documentBounds.right * scaleX,
+      documentBounds.bottom * scaleY
+    )
+  }
 
   private companion object {
     private const val TOLERANCE = 1e-3f
@@ -282,6 +363,10 @@ class ScalableVectorGraphicTest {
     private const val SVG_VIEW_BOX_10_BY_10 =
       "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 10 10\">" +
         "<rect width=\"10\" height=\"10\"/></svg>"
+
+    private const val SVG_HEIGHT_200_VIEW_BOX_100_BY_100 =
+      "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"200\" viewBox=\"0 0 100 100\">" +
+        "<rect width=\"100\" height=\"100\"/></svg>"
 
     private const val SVG_100_BY_100_WITHOUT_VIEW_BOX =
       "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\">" +
