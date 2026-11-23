@@ -2,7 +2,12 @@ package org.oppia.android.util.parser.image
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.RectF
+import android.graphics.drawable.Drawable
 import android.os.Looper
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
@@ -16,11 +21,19 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyFloat
+import org.mockito.ArgumentMatchers.eq
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -287,6 +300,100 @@ class UrlImageParserTest {
 
     val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
     assertThat(mathDrawables).hasSize(4)
+  }
+
+  @Test
+  fun testGetDrawable_svg_createsBlockImageProxyDrawable() {
+    val drawable = urlImageParser.getDrawable("test_image.svg")
+
+    assertThat(drawable).isInstanceOf(UrlImageParser.ProxyDrawable::class.java)
+    val proxyDrawable = drawable as UrlImageParser.ProxyDrawable
+    assertThat(proxyDrawable.isBlockImage).isTrue()
+  }
+
+  @Test
+  fun testLoadDrawable_blockImage_createsBlockImageProxyDrawable() {
+    val drawable = urlImageParser.loadDrawable("test_image.png", BLOCK_IMAGE)
+
+    assertThat(drawable).isInstanceOf(UrlImageParser.ProxyDrawable::class.java)
+    val proxyDrawable = drawable as UrlImageParser.ProxyDrawable
+    assertThat(proxyDrawable.isBlockImage).isTrue()
+  }
+
+  @Test
+  fun testLoadMathDrawable_createsNonBlockImageProxyDrawable() {
+    val drawable = urlImageParser.loadMathDrawable(
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = BLOCK_IMAGE,
+      equationColor = Color.BLACK
+    )
+
+    assertThat(drawable).isInstanceOf(UrlImageParser.ProxyDrawable::class.java)
+    val proxyDrawable = drawable as UrlImageParser.ProxyDrawable
+    assertThat(proxyDrawable.isBlockImage).isFalse()
+  }
+
+  @Test
+  fun testProxyDrawable_draw_blockImageWithOpaqueBackground_drawsRoundedBackground() {
+    val proxyDrawable = UrlImageParser.ProxyDrawable(context, isBlockImage = true)
+    proxyDrawable.backgroundPaint.color = Color.WHITE
+    val mockDrawable = mock(Drawable::class.java)
+    val mockCanvas = mock(Canvas::class.java)
+    val bounds = Rect(0, 0, 100, 100)
+    proxyDrawable.initialize(mockDrawable, bounds)
+
+    proxyDrawable.draw(mockCanvas)
+
+    val rectCaptor = ArgumentCaptor.forClass(RectF::class.java)
+    verify(mockCanvas).drawRoundRect(
+      capture(rectCaptor),
+      eq(proxyDrawable.cornerRadius),
+      eq(proxyDrawable.cornerRadius),
+      eq(proxyDrawable.backgroundPaint)
+    )
+    assertThat(rectCaptor.value).isEqualTo(RectF(bounds))
+    verify(mockDrawable).draw(mockCanvas)
+  }
+
+  @Test
+  fun testProxyDrawable_draw_blockImageWithTransparentBackground_doesNotDrawBackground() {
+    val proxyDrawable = UrlImageParser.ProxyDrawable(context, isBlockImage = true)
+    proxyDrawable.backgroundPaint.color = Color.TRANSPARENT
+    val mockDrawable = mock(Drawable::class.java)
+    val mockCanvas = mock(Canvas::class.java)
+    val bounds = Rect(0, 0, 100, 100)
+    proxyDrawable.initialize(mockDrawable, bounds)
+
+    proxyDrawable.draw(mockCanvas)
+
+    verify(mockCanvas, never()).drawRoundRect(
+      any(RectF::class.java),
+      anyFloat(),
+      anyFloat(),
+      any(Paint::class.java)
+    )
+    verify(mockDrawable).draw(mockCanvas)
+  }
+
+  @Test
+  fun testProxyDrawable_draw_nonBlockImage_doesNotDrawBackground() {
+    val proxyDrawable = UrlImageParser.ProxyDrawable(context, isBlockImage = false)
+    proxyDrawable.backgroundPaint.color = Color.WHITE
+    val mockDrawable = mock(Drawable::class.java)
+    val mockCanvas = mock(Canvas::class.java)
+    val bounds = Rect(0, 0, 100, 100)
+    proxyDrawable.initialize(mockDrawable, bounds)
+
+    proxyDrawable.draw(mockCanvas)
+
+    verify(mockCanvas, never()).drawRoundRect(
+      any(RectF::class.java),
+      anyFloat(),
+      anyFloat(),
+      any(Paint::class.java)
+    )
+    verify(mockDrawable).draw(mockCanvas)
   }
 
   private fun setUpTestApplicationComponent() {

@@ -213,6 +213,7 @@ kt_android_library(
         ":image_parsing_annonations",
         ":image_targets",
         ":text_picture_drawable",
+        "//third_party:androidx_annotation_annotation",
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:javax_inject_javax_inject",
         "//utility",

@@ -3,9 +3,12 @@ package org.oppia.android.util.parser.image
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.ColorFilter
+import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
@@ -15,6 +18,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import androidx.annotation.VisibleForTesting
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -81,7 +86,6 @@ class UrlImageParser private constructor(
       imageDownloadUrlTemplate.formatForMachines(entityType, entityId, filename)
     }
     val imageUrl = "$gcsPrefix/$gcsResourceName/$imagePath"
-    val proxyDrawable = ProxyDrawable()
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
     val isSvg = machineLocale.run {
       imageUrl.endsWithIgnoreCase("svg") || imageUrl.endsWithIgnoreCase("svgz")
@@ -91,6 +95,7 @@ class UrlImageParser private constructor(
       consoleLogger.w("UrlImageParser", "Forcing image $filename to block image")
       BLOCK_IMAGE
     } else type
+    val proxyDrawable = ProxyDrawable(context, isBlockImage = adjustedType == BLOCK_IMAGE)
 
     return when (adjustedType) {
       INLINE_TEXT_IMAGE -> {
@@ -131,7 +136,7 @@ class UrlImageParser private constructor(
     equationColor: Int,
     type: ImageRetriever.Type
   ): Drawable {
-    return ProxyDrawable().also { drawable ->
+    return ProxyDrawable(context, isBlockImage = false).also { drawable ->
       imageLoader.loadMathDrawable(
         rawLatex,
         lineHeight,
@@ -444,8 +449,26 @@ class UrlImageParser private constructor(
    * A [Drawable] that can be created & used immediately, but whose drawing properties will be
    * defined later, asynchronously.
    */
-  private class ProxyDrawable : Drawable() {
+  @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+  class ProxyDrawable(
+    private val context: Context,
+    val isBlockImage: Boolean
+  ) : Drawable() {
     private var drawable: Drawable? = null
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val backgroundPaint by lazy {
+      Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = ResourcesCompat.getColor(
+          context.resources,
+          R.color.component_color_shared_block_image_background_color,
+          null
+        )
+      }
+    }
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val cornerRadius by lazy {
+      context.resources.getDimension(R.dimen.block_image_background_corner_radius)
+    }
 
     /** Initializes the drawable with the specified root [Drawable] and [bounds]. */
     fun initialize(drawable: Drawable, bounds: Rect) {
@@ -454,11 +477,13 @@ class UrlImageParser private constructor(
     }
 
     override fun draw(canvas: Canvas) {
-      val currentDrawable = drawable
-      drawable?.apply {
-        bounds = this@ProxyDrawable.bounds
+      val currentDrawable = drawable ?: return
+      if (isBlockImage && Color.alpha(backgroundPaint.color) > 0 && !bounds.isEmpty) {
+        val rectF = RectF(bounds)
+        canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, backgroundPaint)
       }
-      currentDrawable?.draw(canvas)
+      currentDrawable.bounds = bounds
+      currentDrawable.draw(canvas)
     }
 
     override fun setAlpha(alpha: Int) {
