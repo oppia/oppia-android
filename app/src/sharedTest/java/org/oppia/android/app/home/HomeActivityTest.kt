@@ -387,7 +387,10 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_spotlight_button)).perform(click())
-      shadowOf(Looper.getMainLooper()).idleFor(700, TimeUnit.MILLISECONDS)
+      shadowOf(Looper.getMainLooper()).idleFor(
+        SPOTLIGHT_DISMISSAL_WAIT_MILLIS,
+        TimeUnit.MILLISECONDS
+      )
       testCoroutineDispatchers.runCurrent()
     }
 
@@ -405,6 +408,38 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testHomeSpotlight_allTopicsHeader_whenNotSeen_shows() {
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    // Launch HomeActivity directly for admin profile 0.
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.home_all_topics_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testHomeSpotlight_allTopicsHeader_whenMarkedSeen_notShown() {
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+    dataProviderTestMonitor
+      .waitForNextSuccessfulResult(
+        spotlightStateController.markSpotlightViewed(
+          profileId,
+          Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
+        )
+      )
+
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.home_all_topics_spotlight_hint)).check(doesNotExist())
     }
   }
 
@@ -2088,38 +2123,6 @@ class HomeActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  @Test
-  fun testHomeSpotlight_allTopicsHeader_whenNotSeen_shows() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
-    setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles(autoLogIn = false)
-    // Launch HomeActivity directly for admin profile 0.
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.home_all_topics_spotlight_hint)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testHomeSpotlight_allTopicsHeader_whenMarkedSeen_notShown() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
-    setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles(autoLogIn = false)
-    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
-    dataProviderTestMonitor
-      .waitForNextSuccessfulResult(
-        spotlightStateController.markSpotlightViewed(
-          profileId,
-          Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
-        )
-      )
-
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.home_all_topics_spotlight_hint)).check(doesNotExist())
-    }
-  }
-
   private fun createHomeActivityIntent(internalProfileId: Int): Intent {
     val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     return HomeActivity.createHomeActivity(context, profileId)
@@ -2332,6 +2335,8 @@ class HomeActivityTest {
   }
 
   private companion object {
+    // Allows the 500 ms spotlight dismissal animation and state update to finish.
+    private const val SPOTLIGHT_DISMISSAL_WAIT_MILLIS = 700L
     private val BRAZIL_PORTUGUESE_LOCALE = Locale.Builder()
       .setLanguage("pt")
       .setRegion("BR")

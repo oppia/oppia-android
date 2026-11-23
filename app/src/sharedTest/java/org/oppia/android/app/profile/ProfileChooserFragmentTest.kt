@@ -61,10 +61,12 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.onboarding.IntroActivity
+import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_PARAMS_KEY
@@ -123,6 +125,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -132,6 +135,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.oppia.android.util.profile.toProfileIdPreservingZero
@@ -322,6 +326,88 @@ class ProfileChooserFragmentTest {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
 
+      onView(withText(R.string.profile_chooser_spotlight_admin_profile)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testProfileChooser_landscape_adminControlsSpotlightNotSeen_showsHint() {
+    setUpProfileChooserSpotlightTest()
+    markProfileChooserSpotlightsSeen(
+      Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB,
+      Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
+    )
+
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.profile_chooser_spotlight_admin_controls))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testProfileChooser_landscape_addLearnerSpotlightNotSeen_showsHint() {
+    setUpProfileChooserSpotlightTest()
+    markProfileChooserSpotlightsSeen(
+      Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM,
+      Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
+    )
+
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.profile_chooser_spotlight_add_learner))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testProfileChooser_landscape_adminProfileSpotlightNotSeen_showsHint() {
+    setUpProfileChooserSpotlightTest()
+    markProfileChooserSpotlightsSeen(
+      Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM,
+      Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB
+    )
+
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.profile_chooser_spotlight_admin_profile))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileChooser_onboardingV1_spotlightsNotShown() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.profile_chooser_spotlight_admin_controls)).check(doesNotExist())
+      onView(withText(R.string.profile_chooser_spotlight_add_learner)).check(doesNotExist())
+      onView(withText(R.string.profile_chooser_spotlight_admin_profile)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testProfileChooser_onboardingV2_withoutOnboardingParent_spotlightsNotShown() {
+    setUpProfileChooserSpotlightTest()
+    val intent = ProfileChooserActivity
+      .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
+
+    launch<ProfileChooserActivity>(intent).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.profile_chooser_spotlight_admin_controls)).check(doesNotExist())
+      onView(withText(R.string.profile_chooser_spotlight_add_learner)).check(doesNotExist())
       onView(withText(R.string.profile_chooser_spotlight_admin_profile)).check(doesNotExist())
     }
   }
@@ -1970,6 +2056,15 @@ class ProfileChooserFragmentTest {
   private fun createProfileChooserActivityIntent(): Intent {
     return ProfileChooserActivity
       .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
+      .apply {
+        decorateWithUserProfileId(testProfileId)
+        putProtoExtra(
+          PROFILE_CHOOSER_PARAMS_KEY,
+          ProfileChooserActivityParams.newBuilder()
+            .setParentScreen(ProfileChooserActivityParams.ParentScreen.SPLASH_SCREEN)
+            .build()
+        )
+      }
   }
 
   private fun scrollToPosition(recyclerViewId: Int = R.id.profiles_list, position: Int) {

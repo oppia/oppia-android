@@ -209,19 +209,21 @@ class HomeFragmentPresenter @Inject constructor(
         setViewModel = { binding, viewModel ->
           binding.viewModel = viewModel
           if (!hasRequestedAllTopicsSpotlight) {
-            hasRequestedAllTopicsSpotlight = true
             val manager = activity.supportFragmentManager.findFragmentByTag(
               SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
             ) as? SpotlightManager
-            manager?.requestSpotlightViewWithDelayedLayout(
-              SpotlightTarget(
-                anchor = binding.allTopicsTextView,
-                hint = resourceHandler.getStringInLocale(
-                  R.string.home_all_topics_spotlight_hint
-                ),
-                feature = Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
+            if (manager != null) {
+              manager.requestSpotlightViewWithDelayedLayout(
+                SpotlightTarget(
+                  anchor = binding.allTopicsTextView,
+                  hint = resourceHandler.getStringInLocale(
+                    R.string.home_all_topics_spotlight_hint
+                  ),
+                  feature = Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
+                )
               )
-            )
+              hasRequestedAllTopicsSpotlight = true
+            }
           }
         },
         transformViewModel = { it as AllTopicsViewModel }

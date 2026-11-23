@@ -51,6 +51,14 @@ class ProfileChooserActivityPresenter @Inject constructor(
     }
     activity.setContentView(R.layout.profile_chooser_activity)
 
+    if (getSpotlightFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.profile_spotlight_fragment_placeholder,
+        SpotlightFragment.newInstance(profileId.internalId), // No logged in user, assume admin id.
+        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+      ).commitNow()
+    }
+
     if (getProfileChooserFragment() == null) {
       val profileChooserFragment = ProfileChooserFragment()
 
@@ -70,14 +78,6 @@ class ProfileChooserActivityPresenter @Inject constructor(
         R.id.profile_chooser_fragment_placeholder,
         profileChooserFragment,
         ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT
-      ).commitNow()
-    }
-
-    if (getSpotlightFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.profile_spotlight_fragment_placeholder,
-        SpotlightFragment.newInstance(profileId.internalId),
-        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
   }

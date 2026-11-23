@@ -97,6 +97,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private lateinit var binding: ProfileSelectionFragmentBinding
   private var isBecomeAdministratorNoticeShowing = false
   private var hasRequestedAdminProfileSpotlight = false
+  private var shouldRequestProfileChooserSpotlights = false
 
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
@@ -126,12 +127,15 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
     logProfileChooserEvent()
 
-    requestSpotlight(
-      anchor = binding.profileSelectionSettingIcon,
-      hintId = R.string.profile_chooser_spotlight_admin_controls,
-      feature = Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM
-    )
-    if (binding.addProfileButton.visibility == View.VISIBLE) {
+    shouldRequestProfileChooserSpotlights =
+      parentScreen == ParentScreen.SPLASH_SCREEN ||
+      parentScreen == ParentScreen.CREATE_ADMIN_PIN_SCREEN
+    if (shouldRequestProfileChooserSpotlights) {
+      requestSpotlight(
+        anchor = binding.profileSelectionSettingIcon,
+        hintId = R.string.profile_chooser_spotlight_admin_controls,
+        feature = Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM
+      )
       requestSpotlight(
         anchor = binding.addProfileButton,
         hintId = R.string.profile_chooser_spotlight_add_learner,
@@ -292,11 +296,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = viewModel
     if (
+      shouldRequestProfileChooserSpotlights &&
       viewModel.profile.profileType == ProfileType.SUPERVISOR &&
       !hasRequestedAdminProfileSpotlight
     ) {
-      hasRequestedAdminProfileSpotlight = true
-      requestSpotlight(
+      hasRequestedAdminProfileSpotlight = requestSpotlight(
         anchor = binding.root,
         hintId = R.string.profile_chooser_spotlight_admin_profile,
         feature = Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
@@ -308,18 +312,16 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     anchor: View,
     hintId: Int,
     feature: Spotlight.FeatureCase
-  ) {
-    // This fragment is attached immediately before the spotlight host. Post the lookup so that
-    // requests made during view creation are delivered after the host has been attached.
-    anchor.post {
-      getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
-        SpotlightTarget(
-          anchor = anchor,
-          hint = resourceHandler.getStringInLocale(hintId),
-          feature = feature
-        )
+  ): Boolean {
+    val spotlightManager = getSpotlightManager() ?: return false
+    spotlightManager.requestSpotlightViewWithDelayedLayout(
+      SpotlightTarget(
+        anchor = anchor,
+        hint = resourceHandler.getStringInLocale(hintId),
+        feature = feature
       )
-    }
+    )
+    return true
   }
 
   private fun addProfileButtonClickListener() {
