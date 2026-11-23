@@ -1,19 +1,13 @@
 package org.oppia.android.app.home
 
 import android.view.View
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.forEach
 import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
-import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
-import org.oppia.android.app.spotlight.SpotlightShape
-import org.oppia.android.app.spotlight.SpotlightTarget
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
@@ -26,7 +20,6 @@ const val TAG_HOME_FRAGMENT = "HOME_FRAGMENT"
 @ActivityScope
 class HomeActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val resourceHandler: AppLanguageResourceHandler,
   @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
@@ -52,7 +45,6 @@ class HomeActivityPresenter @Inject constructor(
         SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
-    requestNavigationDrawerSpotlight()
 
     if (getHomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
@@ -60,32 +52,6 @@ class HomeActivityPresenter @Inject constructor(
         HomeFragment(),
         TAG_HOME_FRAGMENT
       ).commitNow()
-    }
-  }
-
-  private fun requestNavigationDrawerSpotlight() {
-    val spotlightManager = activity.supportFragmentManager.findFragmentByTag(
-      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as? SpotlightManager ?: return
-    val toolbar = activity.findViewById<Toolbar>(R.id.home_activity_toolbar)
-    // ActionBarDrawerToggle installs its navigation button in a posted syncState call. Queue this
-    // lookup after that call so that the button exists before trying to use it as an anchor.
-    toolbar.post {
-      toolbar.forEach { toolbarChild ->
-        if (toolbarChild is ImageButton) {
-          spotlightManager.requestSpotlightViewWithDelayedLayout(
-            SpotlightTarget(
-              anchor = toolbarChild,
-              hint = resourceHandler.getStringInLocale(
-                R.string.home_navigation_drawer_spotlight_hint
-              ),
-              shape = SpotlightShape.Circle,
-              feature = Spotlight.FeatureCase.HOME_NAVIGATION_DRAWER_BUTTON
-            )
-          )
-          return@post
-        }
-      }
     }
   }
 

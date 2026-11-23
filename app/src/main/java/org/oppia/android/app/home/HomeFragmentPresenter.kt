@@ -3,8 +3,11 @@ package org.oppia.android.app.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.app.databinding.databinding.AllTopicsBinding
@@ -26,6 +29,7 @@ import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -74,6 +78,7 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
   private var profileId: LegacyProfileId = LegacyProfileId.getDefaultInstance()
+  private var hasRequestedNavigationDrawerSpotlight = false
   private var hasRequestedAllTopicsSpotlight = false
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -211,6 +216,7 @@ class HomeFragmentPresenter @Inject constructor(
         inflateDataBinding = AllTopicsBinding::inflate,
         setViewModel = { binding, viewModel ->
           binding.viewModel = viewModel
+          requestNavigationDrawerSpotlight()
           if (!hasRequestedAllTopicsSpotlight) {
             hasRequestedAllTopicsSpotlight = true
             spotlightStateController.retrieveSpotlightViewState(
@@ -246,6 +252,30 @@ class HomeFragmentPresenter @Inject constructor(
         transformViewModel = { it as TopicSummaryViewModel }
       )
       .build()
+  }
+
+  private fun requestNavigationDrawerSpotlight() {
+    if (hasRequestedNavigationDrawerSpotlight) return
+    val manager = activity.supportFragmentManager.findFragmentByTag(
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+    ) as? SpotlightManager ?: return
+    val toolbar = activity.findViewById<Toolbar>(R.id.home_activity_toolbar)
+    toolbar.forEach { toolbarChild ->
+      if (toolbarChild is ImageButton) {
+        manager.requestSpotlightViewWithDelayedLayout(
+          SpotlightTarget(
+            anchor = toolbarChild,
+            hint = resourceHandler.getStringInLocale(
+              R.string.home_navigation_drawer_spotlight_hint
+            ),
+            shape = SpotlightShape.Circle,
+            feature = Spotlight.FeatureCase.HOME_NAVIGATION_DRAWER_BUTTON
+          )
+        )
+        hasRequestedNavigationDrawerSpotlight = true
+        return
+      }
+    }
   }
 
   private enum class ViewType {

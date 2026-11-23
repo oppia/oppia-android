@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Looper
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -152,11 +151,9 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -396,11 +393,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_spotlight_button)).perform(click())
-      shadowOf(Looper.getMainLooper()).idleFor(
-        SPOTLIGHT_DISMISSAL_WAIT_MILLIS,
-        TimeUnit.MILLISECONDS
-      )
-      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.advanceTimeBy(SPOTLIGHT_DISMISSAL_WAIT_MILLIS)
     }
 
     // Re-launch the activity.
