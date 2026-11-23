@@ -236,7 +236,13 @@ class AnalyticsController @Inject constructor(
       // The most recent matching entry is the one for this hand-off (identical entries are
       // interchangeable).
       val index = oppiaEventLogs.uploadedEventLogsList.lastIndexOf(eventLog)
-      if (index == -1) return@storeDataAsync oppiaEventLogs
+      if (index == -1) {
+        consoleLogger.w(
+          "AnalyticsController",
+          "Could not find uploaded event to record its hand-off time; it will show as unconfirmed."
+        )
+        return@storeDataAsync oppiaEventLogs
+      }
       oppiaEventLogs.toBuilder().setUploadedEventLogs(
         index, eventLog.toBuilder().setUploadHandOffTimestampMs(handOffTimestampMs)
       ).build()

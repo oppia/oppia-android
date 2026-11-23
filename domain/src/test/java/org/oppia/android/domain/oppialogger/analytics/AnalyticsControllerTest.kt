@@ -1178,6 +1178,7 @@ class AnalyticsControllerTest {
 
     val eventLogs =
       monitorFactory.waitForNextSuccessfulResult(analyticsController.getEventLogStore())
+    assertThat(eventLogs.uploadedEventLogsList).hasSize(2)
     assertThat(eventLogs.uploadedEventLogsList.map { it.uploadHandOffTimestampMs })
       .doesNotContain(0L)
   }
