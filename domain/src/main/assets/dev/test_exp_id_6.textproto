@@ -1,0 +1,508 @@
+id: "test_exp_id_6"
+states {
+  key: "Comparison Practice"
+  value {
+    name: "Comparison Practice"
+    content {
+      html: "<p>Omar was at the sports club and saw Coach Kim.</p><p>\342\200\234Good morning Coach Kim,\342\200\235 Omar said.</p><p>\342\200\234Hi Omar!\342\200\235 Coach Kim replied.</p><p>Omar looked at the leaderboard with each club member\342\200\231s long jump measurements on it. \342\200\234I want to know how to convert units, so that the leaderboard measurements are all in the same units.\342\200\235 he said.</p><p>\342\200\234Let\342\200\231s start by reviewing how to compare measurements that are in the same unit,\342\200\235 Coach Kim replied. \342\200\234Which of these would be the longest long jump?\342\200\235</p>"
+      content_id: "content_0"
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Unit Conversion Intro"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_2"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              signed_int: 0
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Comparison Practice"
+        feedback {
+          html: "<p>No, that\'s not correct.</p>"
+          content_id: "default_outcome_1"
+        }
+      }
+      customization_args {
+        key: "showChoicesInShuffledOrder"
+        value {
+          bool_value: true
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Congratulations"
+  value {
+    name: "Congratulations"
+    content {
+      html: "<p>Congratulations on completing this lesson about unit conversion!</p>"
+      content_id: "content_7"
+    }
+    interaction {
+      id: "EndExploration"
+    }
+  }
+}
+states {
+  key: "Happy Ending"
+  value {
+    name: "Happy Ending"
+    content {
+      html: "<p>Omar looked at the sorted leaderboard. \342\200\234I\342\200\231m in second place!\342\200\235 he said.</p>"
+      content_id: "content_8"
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "Congratulations"
+      }
+    }
+  }
+}
+states {
+  key: "Introduction"
+  value {
+    name: "Introduction"
+    content {
+      html: "<p>Omar wants to be the best long jumper in his sports club. He jumped 321 cm on his first try, but the club\342\200\231s leaderboard measurements are all in different units, so Omar can\342\200\231t compare his measurement with the others. Let\342\200\231s follow Omar as he learns about unit conversion.</p><p>Learning about measurements will require concentration, so find a quiet place to go through this story. If you make a mistake or get stuck, focus on understanding rather than just getting the correct answer as fast as possible. Try to learn from any mistakes!</p><p>Once you\342\200\231re ready, click Continue to get started!</p>"
+      content_id: "content_11"
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "Comparison Practice"
+      }
+      customization_args {
+        key: "buttonText"
+        value {
+          normalized_string: "Continue"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Leaderboard"
+  value {
+    name: "Leaderboard"
+    content {
+      html: "<p>How far did Bob jump in cm?</p>"
+      content_id: "content_14"
+    }
+    interaction {
+      id: "NumberWithUnits"
+      answer_groups {
+        outcome {
+          dest_state_name: "Leaderboard 2"
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "f"
+            value {
+              number_with_units {
+                real: 200
+                unit {
+                  unit: "cm"
+                  exponent: 1
+                }
+              }
+            }
+          }
+          rule_type: "IsEqualTo"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Leaderboard 2"
+  value {
+    name: "Leaderboard 2"
+    content {
+      html: "<p>How far did Sally jump, in cm?</p>"
+      content_id: "content_19"
+    }
+    interaction {
+      id: "NumberWithUnits"
+      answer_groups {
+        outcome {
+          dest_state_name: "Leaderboard 3"
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "f"
+            value {
+              number_with_units {
+                real: 300
+                unit {
+                  unit: "cm"
+                  exponent: 1
+                }
+              }
+            }
+          }
+          rule_type: "IsEqualTo"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Leaderboard 3"
+  value {
+    name: "Leaderboard 3"
+    content {
+      html: "<p>How far did John jump, in cm? Note: 10 mm = 1 cm.</p>"
+      content_id: "content_24"
+    }
+    interaction {
+      id: "NumberWithUnits"
+      answer_groups {
+        outcome {
+          dest_state_name: "Leaderboard 4"
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "f"
+            value {
+              number_with_units {
+                real: 350
+                unit {
+                  unit: "cm"
+                  exponent: 1
+                }
+              }
+            }
+          }
+          rule_type: "IsEqualTo"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Leaderboard 4"
+  value {
+    name: "Leaderboard 4"
+    content {
+      html: "<p>Reorder the leaderboard from best to worst.</p>"
+      content_id: "content_29"
+    }
+    interaction {
+      id: "DragAndDropSortInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Happy Ending"
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              list_of_sets_of_translatable_html_content_ids {
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_34"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_35"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_33"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_32"
+                  }
+                }
+              }
+            }
+          }
+          rule_type: "IsEqualToOrdering"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Unit Conversion 2"
+  value {
+    name: "Unit Conversion 2"
+    content {
+      html: "<p>\342\200\234Good job, Omar,\342\200\235 Coach Kim said. \342\200\234Now you know that 1km = 1000m and that 1m = 100cm. Considering that, which phrases are correct?\342\200\235</p>"
+      content_id: "content_76"
+    }
+    interaction {
+      id: "ItemSelectionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Unit conversion 3"
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                normalized_strings: "ca_choices_78"
+                normalized_strings: "ca_choices_81"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Unit Conversion 5a"
+  value {
+    name: "Unit Conversion 5a"
+    content {
+      html: "<p>Convert 600 cm to meters. How many meters would it be?</p>"
+      content_id: "content_91"
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Unit conversion 6"
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              signed_int: 1
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Unit Conversion Intro"
+  value {
+    name: "Unit Conversion Intro"
+    content {
+      html: "<p>\342\200\234That was easy,\342\200\235 Omar said. He pointed at the leaderboard. \342\200\234But the actual long jump measurements are in different units, like meters and centimeters.\342\200\235</p><p>\342\200\234Let\342\200\231s learn how to convert all these measurements to the same unit so you can compare easily,\342\200\235 Coach Kim replied. \342\200\234In the metric system, to convert a measurement from one unit to another, you first need to know the relationship between the two units.\342\200\235</p><p>\342\200\234What is a metric system? And what is the relationship between two units?\342\200\235 Omar asked.</p><p>\342\200\234Now, if \342\200\234centi\342\200\235 means one hundredth (1/100), what is the mathematical relationship between meters and centimeters?\342\200\235</p>"
+      content_id: "content_36"
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Unit Conversion 2"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_38"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              signed_int: 3
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Unit Conversion Intro"
+      }
+    }
+  }
+}
+states {
+  key: "Unit conversion 3"
+  value {
+    name: "Unit conversion 3"
+    content {
+      html: "<p>Great, we know that 1000 meters is one kilometer and 100 centimeters is one meter. What is 3 m in centimeters?</p>"
+      content_id: "content_46"
+    }
+    interaction {
+      id: "NumberWithUnits"
+      answer_groups {
+        outcome {
+          dest_state_name: "Unit conversion 4"
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "f"
+            value {
+              number_with_units {
+                real: 300
+                unit {
+                  unit: "cm"
+                  exponent: 1
+                }
+              }
+            }
+          }
+          rule_type: "IsEqualTo"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Unit conversion 4"
+  value {
+    name: "Unit conversion 4"
+    content {
+      html: "<p><strong>Convert 4.1 m to cm.</strong></p>"
+      content_id: "content_51"
+    }
+    interaction {
+      id: "NumberWithUnits"
+      answer_groups {
+        outcome {
+          dest_state_name: "Unit conversion 5"
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "f"
+            value {
+              number_with_units {
+                real: 410
+                unit {
+                  unit: "cm"
+                  exponent: 1
+                }
+              }
+            }
+          }
+          rule_type: "IsEqualTo"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Unit conversion 5"
+  value {
+    name: "Unit conversion 5"
+    content {
+      html: "<p>To convert from km to m we multiply by 1000. What\342\200\231s 5 km to m?</p>"
+      content_id: "content_56"
+    }
+    interaction {
+      id: "NumberWithUnits"
+      answer_groups {
+        outcome {
+          dest_state_name: "Unit Conversion 5a"
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "f"
+            value {
+              number_with_units {
+                real: 5000
+                unit {
+                  unit: "m"
+                  exponent: 1
+                }
+              }
+            }
+          }
+          rule_type: "IsEqualTo"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Unit conversion 6"
+  value {
+    name: "Unit conversion 6"
+    content {
+      html: "<p>To convert a measurement from centimeters to meters, we divide by: __</p>"
+      content_id: "content_61"
+    }
+    interaction {
+      id: "NumberWithUnits"
+      answer_groups {
+        outcome {
+          dest_state_name: "Unit conversion 7"
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "f"
+            value {
+              real: 100
+            }
+          }
+          rule_type: "IsEqualTo"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Unit conversion 7"
+  value {
+    name: "Unit conversion 7"
+    content {
+      html: "<p>Try converting 500 cm to meters.</p>"
+      content_id: "content_66"
+    }
+    interaction {
+      id: "NumberWithUnits"
+      answer_groups {
+        outcome {
+          dest_state_name: "Leaderboard"
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "f"
+            value {
+              number_with_units {
+                real: 5
+                unit {
+                  unit: "m"
+                  exponent: 1
+                }
+              }
+            }
+          }
+          rule_type: "IsEqualTo"
+        }
+      }
+    }
+  }
+}
+init_state_name: "Introduction"
+version: 29
