@@ -21,7 +21,8 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
   defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-  private var index: Int = -1
+  private var storyIndex: Int = -1
+  private var chapterIndex: Int = -1
   private var isSpotlit = false
 
   @Inject
@@ -32,10 +33,18 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
 
   /** Sets the index of the story of which this custom view is a part of. */
   fun setStoryIndex(index: Int) {
-    // Only spotlight the first chapter of the "first" story. We know for sure that for a new user,
+    // Only spotlight the first chapter of the first story. We know for sure that for a new user,
     // the first chapter shall be a type of not started chapter view. The index tells which story
-    // are we on.
-    this.index = index
+    // we are on.
+    this.storyIndex = index
+  }
+
+  /**
+   * Sets the index of this chapter within its story. Only the first chapter (index 0) of the
+   * first story should be spotlit, even when multiple chapters appear as playable.
+   */
+  fun setChapterIndex(index: Int) {
+    this.chapterIndex = index
   }
 
   private fun getSpotlightManager(): SpotlightManager? {
@@ -59,7 +68,7 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
         resourceHandler.getStringInLocale(R.string.first_chapter_spotlight_hint),
         feature = Spotlight.FeatureCase.FIRST_CHAPTER
       )
-      if (index == 0) {
+      if (storyIndex == 0 && chapterIndex == 0) {
         checkNotNull(getSpotlightManager()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
       }
     }

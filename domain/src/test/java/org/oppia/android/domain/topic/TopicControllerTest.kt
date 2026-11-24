@@ -750,6 +750,20 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testGetTopic_withAdminUnlockChaptersEnabled_withoutAnyProgress_allChaptersArePlayable() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
+
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
+    assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
+  }
+
+  @Test
   fun testGetTopic_recordProgress_getTopic_correctProgressFound() {
     markFractionsStory0Chapter0AsCompleted()
 
@@ -783,6 +797,21 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     assertThat(storySummary.chapterList[1].missingPrerequisiteChapter.title)
       .isEqualTo(storySummary.chapterList[0].title)
+  }
+
+  @Test
+  fun testGetStory_withAdminUnlockChaptersEnabled_withoutAnyProgress_allChaptersArePlayable() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+
+    val storyProvider =
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+
+    val storySummary = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
+    assertThat(storySummary.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+    assertThat(storySummary.chapterList[0].chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(storySummary.chapterList[1].chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
   }
 
   @Test
@@ -939,6 +968,71 @@ class TopicControllerTest {
     assertThat(completedStoryList.completedStoryCount).isEqualTo(2)
     assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(completedStoryList.completedStoryList[1].storyId).isEqualTo(RATIOS_STORY_ID_0)
+  }
+
+  @Test
+  fun testCompletedStoryList_withAdminUnlockChapters_onlyLastChapterCompleted_listIsEmpty() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    // Directly complete only the last chapter without completing prior chapters.
+    markFractionsStory0Chapter1AsCompletedWithoutPrerequisites()
+
+    val storyList = topicController.getCompletedStoryList(profileId1)
+
+    val completedStoryList = monitorFactory.waitForNextSuccessfulResult(storyList)
+    // The story should NOT be marked complete since earlier chapters are not done.
+    assertThat(completedStoryList.completedStoryCount).isEqualTo(0)
+  }
+
+  @Test
+  fun testCompletedStoryList_withAdminUnlockChapters_allChaptersCompleted_listIsCorrect() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    markFractionsStory0Chapter0AsCompleted()
+    markFractionsStory0Chapter1AsCompleted()
+
+    val storyList = topicController.getCompletedStoryList(profileId1)
+
+    val completedStoryList = monitorFactory.waitForNextSuccessfulResult(storyList)
+    assertThat(completedStoryList.completedStoryCount).isEqualTo(1)
+    assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+  }
+
+  @Test
+  fun testOngoingTopicList_withAdminUnlockChapters_laterChapterStarted_topicIsOngoing() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    // Start a later chapter in-progress without touching chapter 0.
+    markInProgressSavedFractionsStory0Exp1WithoutCompletingPreviousChapters()
+
+    val topicListProvider = topicController.getOngoingTopicList(profileId1)
+
+    val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
+    // Even though chapter 0 was never started, progress on chapter 1 should count.
+    assertThat(ongoingTopicList.topicCount).isEqualTo(1)
+    assertThat(ongoingTopicList.topicList[0].topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+  }
+
+  @Test
+  fun testOngoingTopicList_withAdminUnlockChapters_onlyLastChapterCompleted_topicIsOngoing() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    // Completing only the last chapter leaves prior chapters uncompleted, so topic is ongoing.
+    markFractionsStory0Chapter1AsCompletedWithoutPrerequisites()
+
+    val topicListProvider = topicController.getOngoingTopicList(profileId1)
+
+    val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
+    assertThat(ongoingTopicList.topicCount).isEqualTo(1)
+    assertThat(ongoingTopicList.topicList[0].topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+  }
+
+  @Test
+  fun testOngoingTopicList_withAdminUnlockChapters_allChaptersCompleted_topicIsNotOngoing() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    markFractionsStory0Chapter0AsCompleted()
+    markFractionsStory0Chapter1AsCompleted()
+
+    val topicListProvider = topicController.getOngoingTopicList(profileId1)
+
+    val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
+    assertThat(ongoingTopicList.topicCount).isEqualTo(0)
   }
 
   /* Localization-based tests. */
@@ -1269,7 +1363,31 @@ class TopicControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().reinitializeComponent(this)
+  }
+
+  private fun reinitializeWithAdminUnlockChaptersEnabled() {
+    TestPlatformParameterModule.reset()
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
+    TestPlatformParameterModule.forceEnableAdminUnlockChapters(true)
+    setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+  }
+
+  /**
+   * Marks the second chapter of fractions story 0 as completed without first completing the
+   * prerequisite first chapter. Used to verify that the admin unlock flag correctly prevents a
+   * story from being falsely marked complete when only the last chapter is done.
+   */
+  private fun markFractionsStory0Chapter1AsCompletedWithoutPrerequisites() {
+    val resultProvider = storyProgressController.recordCompletedChapter(
+      profileId1.toProfileIdPreservingZero(),
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
+      completionTimestamp = fakeOppiaClock.getCurrentTimeMs()
+    )
+    monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
   /**
@@ -1402,17 +1520,34 @@ class TopicControllerTest {
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
-    private val component: TestApplicationComponent by lazy {
-      DaggerTopicControllerTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build()
+    private var component: TestApplicationComponent? = null
+
+    private fun getComponent(): TestApplicationComponent {
+      val currentComponent = component
+      return if (currentComponent != null) {
+        currentComponent
+      } else {
+        val newComponent = DaggerTopicControllerTest_TestApplicationComponent.builder()
+          .setApplication(this)
+          .build()
+        component = newComponent
+        newComponent
+      }
     }
 
     fun inject(topicControllerTest: TopicControllerTest) {
-      component.inject(topicControllerTest)
+      getComponent().inject(topicControllerTest)
     }
 
-    override fun getDataProvidersInjector(): DataProvidersInjector = component
+    fun reinitializeComponent(topicControllerTest: TopicControllerTest) {
+      val newComponent = DaggerTopicControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+      component = newComponent
+      newComponent.inject(topicControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = getComponent()
   }
 
   private companion object {

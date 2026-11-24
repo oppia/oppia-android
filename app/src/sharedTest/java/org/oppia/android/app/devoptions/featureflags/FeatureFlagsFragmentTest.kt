@@ -165,7 +165,7 @@ class FeatureFlagsFragmentTest {
 
       // Note to developers: if you add/remove a feature flag, please update the expected count.
       onView(withId(R.id.feature_flags_recycler_view))
-        .check(RecyclerViewMatcher.hasItemCount(count = 21))
+        .check(RecyclerViewMatcher.hasItemCount(count = 22))
     }
   }
 
@@ -213,9 +213,9 @@ class FeatureFlagsFragmentTest {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(1)
+      scrollToPosition(2)
       verifyFeatureFlagDisplayName(
-        position = 1,
+        position = 2,
         expectedDisplayName = DOWNLOADS_SUPPORT_FLAG_NAME
       )
     }
@@ -226,9 +226,9 @@ class FeatureFlagsFragmentTest {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(1)
+      scrollToPosition(2)
       verifyFeatureFlagSwitchState(
-        position = 1,
+        position = 2,
         expectedState = false
       )
     }
@@ -273,9 +273,9 @@ class FeatureFlagsFragmentTest {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(1)
+      scrollToPosition(2)
       verifyFeatureFlagSyncDetails(
-        position = 1,
+        position = 2,
         expectedSyncStatus = context.getString(R.string.feature_flag_synced_from_server_message)
       )
     }
@@ -309,9 +309,9 @@ class FeatureFlagsFragmentTest {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(1)
+      scrollToPosition(2)
       verifyFeatureFlagSwitchState(
-        position = 1,
+        position = 2,
         expectedState = true
       )
     }
@@ -327,9 +327,9 @@ class FeatureFlagsFragmentTest {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(1)
+      scrollToPosition(2)
       verifyFeatureFlagDisplayName(
-        position = 1,
+        position = 2,
         expectedDisplayName = DOWNLOADS_SUPPORT_FLAG_NAME
       )
     }
@@ -598,7 +598,7 @@ class FeatureFlagsFragmentTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.feature_flags_recycler_view,
-          position = 1,
+          position = 2,
           targetViewId = R.id.feature_flag_switch
         )
       ).check(matches(not(isChecked())))

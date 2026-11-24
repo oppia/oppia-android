@@ -216,7 +216,16 @@ class TopicLessonsFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().reinitializeComponent(this)
+  }
+
+  private fun reinitializeWithAdminUnlockChaptersEnabled() {
+    TestPlatformParameterModule.reset()
+    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
+    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
+    TestPlatformParameterModule.forceEnableAdminUnlockChapters(true)
+    setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @Test
@@ -442,6 +451,26 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_withAdminUnlockChapters_chapterUnlockedIsDisplayed() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.not_started_chapter_container
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testLessonsPlayFragment_loadRatiosTopic_chapterIsLocked_contentDescriptionIsCorrect() {
     launch<TopicActivity>(
       createTopicActivityIntent(
@@ -530,6 +559,29 @@ class TopicLessonsFragmentTest {
         )
       // Locked chapter must not navigate into ExplorationActivity.
       intended(hasComponent(ExplorationActivity::class.java.name), times(0))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_ratiosTopic_withAdminUnlockChapters_clickChapter_opensExploration() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.not_started_chapter_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(ExplorationActivity::class.java.name))
     }
   }
 
@@ -1750,20 +1802,39 @@ class TopicLessonsFragmentTest {
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
-    private val component: TestApplicationComponent by lazy {
-      DaggerTopicLessonsFragmentTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build() as TestApplicationComponent
+    private var component: TestApplicationComponent? = null
+
+    private fun getComponent(): TestApplicationComponent {
+      val currentComponent = component
+      return if (currentComponent != null) {
+        currentComponent
+      } else {
+        val newComponent = DaggerTopicLessonsFragmentTest_TestApplicationComponent.builder()
+          .setApplication(this)
+          .build() as TestApplicationComponent
+        component = newComponent
+        newComponent
+      }
     }
 
     fun inject(topicLessonsFragmentTest: TopicLessonsFragmentTest) {
-      component.inject(topicLessonsFragmentTest)
+      getComponent().inject(topicLessonsFragmentTest)
+    }
+
+    fun reinitializeComponent(topicLessonsFragmentTest: TopicLessonsFragmentTest) {
+      val newComponent = DaggerTopicLessonsFragmentTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build() as TestApplicationComponent
+      component = newComponent
+      newComponent.inject(topicLessonsFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+      val activityComponentBuilderProvider =
+        getComponent().getActivityComponentBuilderProvider()
+      return activityComponentBuilderProvider.get().setActivity(activity).build()
     }
 
-    override fun getApplicationInjector(): ApplicationInjector = component
+    override fun getApplicationInjector(): ApplicationInjector = getComponent()
   }
 }

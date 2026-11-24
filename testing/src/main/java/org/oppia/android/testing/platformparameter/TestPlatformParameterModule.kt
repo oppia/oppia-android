@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import org.oppia.android.app.model.FeatureFlagId.ADMIN_UNLOCK_CHAPTERS
 import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
 import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
 import org.oppia.android.app.model.FeatureFlagId.EDGE_TO_EDGE
@@ -217,6 +218,10 @@ class TestPlatformParameterModule {
 
     fun forceEnableWorkedExamples(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(WORKED_EXAMPLES, value)
+    }
+
+    fun forceEnableAdminUnlockChapters(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(ADMIN_UNLOCK_CHAPTERS, value)
     }
 
     fun forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(value: Int) {

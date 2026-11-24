@@ -36,6 +36,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.EnableAdminUnlockChapters
 import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
@@ -103,7 +104,9 @@ class TopicListController @Inject constructor(
   private val translationController: TranslationController,
   private val classroomController: ClassroomController,
   @LoadLessonProtosFromAssets
-  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>,
+  @EnableAdminUnlockChapters
+  private val adminUnlockChapters: PlatformParameterValue<Boolean>
 ) {
 
   /**
@@ -417,8 +420,7 @@ class TopicListController @Inject constructor(
             }
             // Compute the ongoing story list for stories that are not fully completed yet.
             latestCompletedChapterProgress != null &&
-              latestCompletedChapterProgress.explorationId !=
-              story.chapterList.last().explorationId -> {
+              !checkIfStoryIsCompleted(storyProgress, story) -> {
               val numberOfDaysPassed = latestCompletedChapterProgress.getNumberOfDaysPassed()
               if (completionTimeFilter(numberOfDaysPassed)) {
                 createOngoingStoryListBasedOnMostRecentlyCompleted(
@@ -447,11 +449,18 @@ class TopicListController @Inject constructor(
     storyProgress: StoryProgress,
     storySummary: StorySummary
   ): Boolean {
-    val completedChapterProgressList = getCompletedChapterProgressList(storyProgress)
-    val lastChapterSummary = storySummary.chapterList.lastOrNull()
-    return completedChapterProgressList.find { chapterProgress ->
-      chapterProgress.explorationId == lastChapterSummary?.explorationId
-    } != null
+    return if (adminUnlockChapters.value) {
+      storySummary.chapterList.all { chapter ->
+        val chapterProgress = storyProgress.chapterProgressMap[chapter.explorationId]
+        chapterProgress?.chapterPlayState == ChapterPlayState.COMPLETED
+      }
+    } else {
+      val completedChapterProgressList = getCompletedChapterProgressList(storyProgress)
+      val lastChapterSummary = storySummary.chapterList.lastOrNull()
+      completedChapterProgressList.find { chapterProgress ->
+        chapterProgress.explorationId == lastChapterSummary?.explorationId
+      } != null
+    }
   }
 
   private fun getStartedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> {
@@ -531,28 +540,29 @@ class TopicListController @Inject constructor(
     contentLocale: OppiaLocale.ContentLocale,
     classroom: ClassroomRecord,
   ): PromotedStory? {
-    val lastChapterSummary: ChapterSummary? =
-      story.chapterList.find { chapterSummary ->
-        latestCompletedChapterProgress.explorationId == chapterSummary.explorationId
+    val nextChapterSummary = if (adminUnlockChapters.value) {
+      story.chapterList.firstOrNull { chapter ->
+        chapterProgressMap[chapter.explorationId]?.chapterPlayState !=
+          ChapterPlayState.COMPLETED
       }
-    val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
-    if (story.chapterList.size > nextChapterIndex) {
-      val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
-      if (nextChapterSummary != null) {
-        return createPromotedStory(
-          storyId,
-          topic,
-          completedChapterProgressList.size,
-          story.chapterCount,
-          nextChapterSummary,
-          isTopicConsideredCompleted,
-          chapterProgressMap[nextChapterSummary.explorationId],
-          contentLocale,
-          classroom
-        )
+    } else {
+      val lastChapterIndex = story.chapterList.indexOfFirst { chapter ->
+        chapter.explorationId == latestCompletedChapterProgress.explorationId
       }
-    }
-    return null
+      story.chapterList.getOrNull(lastChapterIndex + 1)
+    } ?: return null
+
+    return createPromotedStory(
+      storyId,
+      topic,
+      completedChapterProgressList.size,
+      story.chapterCount,
+      nextChapterSummary,
+      isTopicConsideredCompleted,
+      chapterProgressMap[nextChapterSummary.explorationId],
+      contentLocale,
+      classroom
+    )
   }
 
   private fun ChapterProgress.getNumberOfDaysPassed(): Long {

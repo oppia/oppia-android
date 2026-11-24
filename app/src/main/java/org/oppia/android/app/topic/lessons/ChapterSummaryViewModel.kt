@@ -13,7 +13,7 @@ class ChapterSummaryViewModel(
   val chapterTitle: String,
   val previousChapterTitle: String?,
   val storyId: String,
-  private val index: Int,
+  val index: Int,
   private val chapterSummarySelector: ChapterSummarySelector,
   private val resourceHandler: AppLanguageResourceHandler,
   val storyIndex: Int,

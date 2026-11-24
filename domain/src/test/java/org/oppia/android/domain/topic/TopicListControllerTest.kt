@@ -714,6 +714,43 @@ class TopicListControllerTest {
     assertThat(upcomingTopicIds).doesNotContain(previousTopicId)
   }
 
+  @Test
+  fun testPromotedStories_withAdminUnlock_markFinalChapterDone_promotesFirstChapter() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    markFractionsStory0Chapter1AsCompletedWithoutPrerequisites()
+
+    val promotedActivityList = retrievePromotedActivityList()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
+    verifyOngoingStoryAsFractionStory0Exp0WithOneChapterCompleted(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+  }
+
+  @Test
+  fun testPromotedStories_withAdminUnlock_markAllChapsDoneInReverse_suggestsTopics() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+    markFractionsStory0Chapter1AsCompletedWithoutPrerequisites()
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+
+    val promotedActivityList = retrievePromotedActivityList()
+    // The story is completed across all chapters, so it should not appear under recently played.
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(0)
+    // The completed topic should allow prerequisite progression to suggested stories.
+    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
+      .isEqualTo(2)
+    verifyPromotedStoryAsFirstTestTopicStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[0]
+    )
+    verifyPromotedStoryAsRatioStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[1]
+    )
+  }
+
   private fun verifyPromotedStoryAsFirstTestTopicStory0Exploration0(promotedStory: PromotedStory) {
     assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_2)
     assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_0)
@@ -762,6 +799,21 @@ class TopicListControllerTest {
     assertThat(promotedStory.classroomTitle.html).isEqualTo("Maths")
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("What is a Fraction?")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
+    assertThat(promotedStory.isTopicLearned).isFalse()
+    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
+  }
+
+  private fun verifyOngoingStoryAsFractionStory0Exp0WithOneChapterCompleted(
+    promotedStory: PromotedStory
+  ) {
+    assertThat(promotedStory.explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
+    assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+    assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(promotedStory.topicTitle.html).isEqualTo("Fractions")
+    assertThat(promotedStory.classroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(promotedStory.classroomTitle.html).isEqualTo("Maths")
+    assertThat(promotedStory.nextChapterTitle.html).isEqualTo("What is a Fraction?")
+    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
@@ -875,8 +927,27 @@ class TopicListControllerTest {
     )
   }
 
+  private fun reinitializeWithAdminUnlockChaptersEnabled() {
+    TestPlatformParameterModule.reset()
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
+    TestPlatformParameterModule.forceEnableAdminUnlockChapters(true)
+    setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+  }
+
+  private fun markFractionsStory0Chapter1AsCompletedWithoutPrerequisites() {
+    val resultProvider = storyProgressController.recordCompletedChapter(
+      profileId0.toProfileIdPreservingZero(),
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
+      completionTimestamp = fakeOppiaClock.getCurrentTimeMs()
+    )
+    monitorFactory.waitForNextSuccessfulResult(resultProvider)
+  }
+
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().reinitializeComponent(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -956,16 +1027,33 @@ class TopicListControllerTest {
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
-    private val component: TestApplicationComponent by lazy {
-      DaggerTopicListControllerTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build()
+    private var component: TestApplicationComponent? = null
+
+    private fun getComponent(): TestApplicationComponent {
+      val currentComponent = component
+      return if (currentComponent != null) {
+        currentComponent
+      } else {
+        val newComponent = DaggerTopicListControllerTest_TestApplicationComponent.builder()
+          .setApplication(this)
+          .build()
+        component = newComponent
+        newComponent
+      }
     }
 
     fun inject(topicListControllerTest: TopicListControllerTest) {
-      component.inject(topicListControllerTest)
+      getComponent().inject(topicListControllerTest)
     }
 
-    override fun getDataProvidersInjector(): DataProvidersInjector = component
+    fun reinitializeComponent(topicListControllerTest: TopicListControllerTest) {
+      val newComponent = DaggerTopicListControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+      component = newComponent
+      newComponent.inject(topicListControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = getComponent()
   }
 }
