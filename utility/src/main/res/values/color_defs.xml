@@ -3,4 +3,5 @@
 <resources>
   <color name="color_def_black">#000000</color>
   <color name="color_def_white">#FFFFFF</color>
+  <color name="color_def_transparent">#00000000</color>
 </resources>

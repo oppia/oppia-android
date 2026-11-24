@@ -18,4 +18,5 @@
     size since it's spacing within a block of text rather than a screen margin.
   -->
   <dimen name="worked_example_leading_margin">16dp</dimen>
+  <dimen name="block_image_background_corner_radius">4dp</dimen>
 </resources>
