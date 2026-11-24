@@ -15,6 +15,15 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
+    name = "oppia_r8_wrapper_lib",
+    srcs = ["OppiaR8Wrapper.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//third_party:com_android_tools_r8",
+    ],
+)
+
+kt_jvm_library(
     name = "transform_android_manifest_lib",
     srcs = ["TransformAndroidManifest.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
