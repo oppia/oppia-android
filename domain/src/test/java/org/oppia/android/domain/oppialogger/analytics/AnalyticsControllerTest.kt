@@ -40,6 +40,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -364,6 +365,27 @@ class AnalyticsControllerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog.hasProfileId()).isTrue()
     assertThat(eventLog).hasProfileIdThat().isEqualTo(profileId)
+  }
+
+  @Test
+  fun testController_logEvents_studyOn_deleteProfile_retainsProfileEvents() {
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
+    val profileId = addNewProfileAndLogIn()
+    analyticsController.logImportantEvent(oppiaLogger.createOpenHomeContext(), profileId)
+    testCoroutineDispatchers.runCurrent()
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(oppiaLogger.createOpenHomeContext(), profileId)
+    testCoroutineDispatchers.runCurrent()
+
+    val deleteProvider =
+      profileManagementController.deleteProfile(profileId.toProfileIdPreservingZero())
+    monitorFactory.waitForNextSuccessfulResult(deleteProvider)
+
+    // Events from deleted profiles should still be retained (and thus exportable) for studies.
+    val eventLogs =
+      monitorFactory.waitForNextSuccessfulResult(analyticsController.getEventLogStore())
+    assertThat(eventLogs.uploadedEventLogsList.map { it.profileId }).contains(profileId)
+    assertThat(eventLogs.eventLogsToUploadList.map { it.profileId }).contains(profileId)
   }
 
   @Test
@@ -856,6 +878,47 @@ class AnalyticsControllerTest {
   }
 
   @Test
+  fun testController_logImportantEvent_studyOn_recordsEventHandOffTime() {
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
+
+    analyticsController.logImportantEvent(oppiaLogger.createOpenHomeContext(), profileId = null)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLogs =
+      monitorFactory.waitForNextSuccessfulResult(analyticsController.getEventLogStore())
+    assertThat(eventLogs.uploadedEventLogsList.single().uploadHandOffTimestampMs).isGreaterThan(0)
+  }
+
+  @Test
+  fun testController_logImportantEvent_studyOn_handOffFails_retainsEventWithoutHandOffTime() {
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
+    fakeAnalyticsEventLogger.setFailure(Exception("Forced failure."))
+
+    analyticsController.logImportantEvent(oppiaLogger.createOpenHomeContext(), profileId = null)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLogs =
+      monitorFactory.waitForNextSuccessfulResult(analyticsController.getEventLogStore())
+    val retainedEventLog = eventLogs.uploadedEventLogsList.single()
+    assertThat(retainedEventLog).hasOpenHomeContext()
+    assertThat(retainedEventLog.uploadHandOffTimestampMs).isEqualTo(0)
+  }
+
+  @Test
+  fun testController_logImportantEvent_studyOff_handOffFails_doesNotRetainEvent() {
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = false)
+    fakeAnalyticsEventLogger.setFailure(Exception("Forced failure."))
+
+    analyticsController.logImportantEvent(oppiaLogger.createOpenHomeContext(), profileId = null)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLogs =
+      monitorFactory.waitForNextSuccessfulResult(analyticsController.getEventLogStore())
+    assertThat(eventLogs.eventLogsToUploadList).isEmpty()
+    assertThat(eventLogs.uploadedEventLogsList).isEmpty()
+  }
+
+  @Test
   fun testController_uploadEventLogs_noLogs_cacheUnchanged() {
     setUpTestApplicationComponent()
     val monitor = monitorFactory.createMonitor(analyticsController.getEventLogStore())
@@ -1104,6 +1167,39 @@ class AnalyticsControllerTest {
       monitorFactory.waitForNextSuccessfulResult(analyticsController.getEventLogStore())
     assertThat(eventLogs.eventLogsToUploadList).isEmpty()
     assertThat(eventLogs.uploadedEventLogsList).hasSize(2)
+  }
+
+  @Test
+  fun testController_uploadEventLogsAndWait_withLogs_studyOn_recordsEventHandOffTimes() {
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
+    logTwoEventsOffline()
+
+    runSynchronously { analyticsController.uploadEventLogsAndWait() }
+
+    val eventLogs =
+      monitorFactory.waitForNextSuccessfulResult(analyticsController.getEventLogStore())
+    assertThat(eventLogs.uploadedEventLogsList).hasSize(2)
+    assertThat(eventLogs.uploadedEventLogsList.map { it.uploadHandOffTimestampMs })
+      .doesNotContain(0L)
+  }
+
+  @Test
+  fun testController_uploadEventLogsAndWait_studyOn_handOffFails_retainsEventWithoutHandOffTime() {
+    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
+    logTwoEventsOffline()
+    fakeAnalyticsEventLogger.setFailure(Exception("Forced failure."))
+
+    assertThrows<IllegalStateException>() {
+      runSynchronously { analyticsController.uploadEventLogsAndWait() }
+    }
+
+    // The first event was attempted and should be retained despite failing, and the second should
+    // still be pending upload.
+    val eventLogs =
+      monitorFactory.waitForNextSuccessfulResult(analyticsController.getEventLogStore())
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
+    assertThat(eventLogs.uploadedEventLogsList.single().uploadHandOffTimestampMs).isEqualTo(0)
+    assertThat(eventLogs.eventLogsToUploadList).hasSize(1)
   }
 
   @Test

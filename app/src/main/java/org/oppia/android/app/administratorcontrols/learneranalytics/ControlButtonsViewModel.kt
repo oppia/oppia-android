@@ -67,11 +67,17 @@ class ControlButtonsViewModel private constructor(
             "- Profile name: ${profile.name}, learner ID: ${profile.learnerId}",
             learnerStats?.awaitingUploadEventCountText?.let { "  - Uploading learner events: $it" },
             learnerStats?.uploadedEventCountText?.let { "  - Uploaded learner events: $it" },
+            learnerStats?.unconfirmedUploadEventCountText?.let {
+              "  - Upload attempted (unconfirmed) learner events: $it"
+            },
             uncategorizedStats?.awaitingUploadEventCountText?.let {
               "  - Uploading uncategorized events: $it"
             },
             uncategorizedStats?.uploadedEventCountText?.let {
               "  - Uploaded uncategorized events: $it"
+            },
+            uncategorizedStats?.unconfirmedUploadEventCountText?.let {
+              "  - Upload attempted (unconfirmed) uncategorized events: $it"
             }
           )
         }

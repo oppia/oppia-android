@@ -144,7 +144,8 @@ class ProfileLearnerIdItemViewModel private constructor(
         return ProfileSpecificEventsUploadStats(
           learnerStats = CategorizedEventStats(
             awaitingUploadEventCountText = unknownCountText,
-            uploadedEventCountText = unknownCountText
+            uploadedEventCountText = unknownCountText,
+            unconfirmedUploadEventCountText = unknownCountText
           ),
           uncategorizedStats = null
         )
@@ -160,11 +161,15 @@ class ProfileLearnerIdItemViewModel private constructor(
    * @property awaitingUploadEventCountText a textual representation of the number of events cached
    *     but not yet uploaded
    * @property uploadedEventCountText a textual representation of the number of events that have
-   *     been uploaded to the remote analytics service
+   *     been confirmed to be handed off to the remote analytics service
+   * @property unconfirmedUploadEventCountText a textual representation of the number of events for
+   *     which an upload was attempted, but not confirmed to complete (e.g. due to an upload failure
+   *     or app crash)
    */
   data class CategorizedEventStats(
     val awaitingUploadEventCountText: String,
-    val uploadedEventCountText: String
+    val uploadedEventCountText: String,
+    val unconfirmedUploadEventCountText: String
   ) {
     companion object {
       /**
@@ -175,7 +180,7 @@ class ProfileLearnerIdItemViewModel private constructor(
        * @param profileId the profile to which the computed stats correspond, or null if these stats
        *     are profile-agnostic
        * @param logsToUploadMap all events, grouped per-profile, that haven't yet been uploaded
-       * @param uploadedLogsMap all events, grouped per-profile, that been uploaded
+       * @param uploadedLogsMap all events, grouped per-profile, for which an upload was attempted
        * @return the new [CategorizedEventStats] with computed event logs
        */
       fun createFrom(
@@ -185,10 +190,13 @@ class ProfileLearnerIdItemViewModel private constructor(
         uploadedLogsMap: Map<LegacyProfileId?, List<EventLog>>
       ): CategorizedEventStats {
         val logsToUpload = logsToUploadMap[profileId] ?: emptyList()
-        val uploadedLogs = uploadedLogsMap[profileId] ?: emptyList()
+        val (confirmedLogs, unconfirmedLogs) =
+          (uploadedLogsMap[profileId] ?: emptyList()).partition { it.uploadHandOffTimestampMs > 0 }
         return CategorizedEventStats(
           awaitingUploadEventCountText = resourceHandler.toHumanReadableString(logsToUpload.size),
-          uploadedEventCountText = resourceHandler.toHumanReadableString(uploadedLogs.size)
+          uploadedEventCountText = resourceHandler.toHumanReadableString(confirmedLogs.size),
+          unconfirmedUploadEventCountText =
+            resourceHandler.toHumanReadableString(unconfirmedLogs.size)
         )
       }
     }
