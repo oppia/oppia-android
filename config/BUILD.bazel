@@ -161,6 +161,11 @@ update_pinned_lesson_versions(
         "//config:assets_type_prod": "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
         "//conditions:default": "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
     }),
+    # Practice questions are only bundled with alpha assets, so only alpha pins track them.
+    download_questions = select({
+        "//config:assets_type_alpha": True,
+        "//conditions:default": False,
+    }),
     pinned_versions = select({
         "//config:assets_type_alpha": "//config:lessons/alpha_pinned_lesson_versions.textproto",
         "//config:assets_type_prod": "//config:lessons/prod_pinned_lesson_versions.textproto",

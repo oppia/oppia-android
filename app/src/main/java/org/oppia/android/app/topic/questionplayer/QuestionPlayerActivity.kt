@@ -56,7 +56,9 @@ class QuestionPlayerActivity :
     checkNotNull(intent.extras) { "Expected extras to be defined for QuestionPlayerActivity" }
     val profileId =
       intent.extractCurrentUserProfileId()
-    questionPlayerActivityPresenter.handleOnCreate(profileId)
+    questionPlayerActivityPresenter.handleOnCreate(
+      profileId, isRecreated = savedInstanceState != null
+    )
 
     onBackPressedDispatcher.addCallback(
       this,

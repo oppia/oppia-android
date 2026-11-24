@@ -69,6 +69,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var currentQuestionState: State
   private lateinit var helpIndex: HelpIndex
   private lateinit var profileId: LegacyProfileId
+  private var restoredUserAnswerState = UserAnswerState.getDefaultInstance()
 
   /** Handles the [Fragment.onAttach] portion of [QuestionPlayerFragment]'s lifecycle. */
   fun handleAttach(context: Context) {
@@ -87,6 +88,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     this.profileId = profileId
+    restoredUserAnswerState = userAnswerState
 
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, "skill", profileId, userAnswerState),
@@ -176,7 +178,13 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   /** Returns the [UserAnswerState] representing the user's current pending answer. */
   fun getUserAnswerState(): UserAnswerState {
-    return questionViewModel.getUserAnswerState(recyclerViewAssembler::getPendingAnswerHandler)
+    // Another recreation can occur before the question and its interaction view model have loaded.
+    // Preserve the restored answer until the view model is ready to provide its current state.
+    return if (::currentQuestionState.isInitialized) {
+      questionViewModel.getUserAnswerState(recyclerViewAssembler::getPendingAnswerHandler)
+    } else {
+      restoredUserAnswerState
+    }
   }
 
   /**
