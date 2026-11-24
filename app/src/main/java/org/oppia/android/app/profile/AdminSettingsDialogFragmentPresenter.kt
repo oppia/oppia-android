@@ -2,6 +2,7 @@ package org.oppia.android.app.profile
 
 import android.app.Dialog
 import android.view.KeyEvent
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +14,10 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import javax.inject.Inject
+
+private const val CLEAR_INCORRECT_PIN_DELAY_MILLIS = 1000L
 
 /** The presenter for [AdminSettingsDialogFragment]. */
 @FragmentScope
@@ -21,7 +25,8 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val adminViewModel: AdminSettingsViewModel,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
 ) {
   fun handleOnCreateDialog(
     routeDialogInterface: ProfileRouteDialogInterface,
@@ -93,6 +98,20 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
               R.string.admin_settings_incorrect
             )
           )
+          binding.adminSettingsInputPinEditText.startAnimation(
+            AnimationUtils.loadAnimation(activity, R.anim.shake)
+          )
+          val incorrectPin = binding.adminSettingsInputPinEditText.text.toString()
+          with(lifecycleSafeTimerFactory) {
+            fragment.runWithDelay(CLEAR_INCORRECT_PIN_DELAY_MILLIS) {
+              // Keep any new input typed during the delay.
+              if (binding.adminSettingsInputPinEditText.text.toString() == incorrectPin) {
+                // Clear inputPin first so that onTextChanged keeps the error message visible.
+                adminViewModel.inputPin.set("")
+                binding.adminSettingsInputPinEditText.setText("")
+              }
+            }
+          }
         }
       }
     }
