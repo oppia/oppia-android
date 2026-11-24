@@ -32,6 +32,7 @@ import org.oppia.android.util.locale.DisplayLocaleImpl
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -57,6 +58,9 @@ class LiTagHandlerTest {
 
   @Inject
   lateinit var formatterFactory: OppiaBidiFormatter.Factory
+
+  @Inject
+  lateinit var consoleLogger: ConsoleLogger
 
   @Mock
   private var mockImageRetriever: FakeImageRetriever? = null
@@ -204,6 +208,100 @@ class LiTagHandlerTest {
     assertThat(parsedHtml.toString()).contains("Item 1\n\nNormal text following the list.")
   }
 
+  @Test
+  fun testFromHtml_withInlineMathInsideBulletList_keepsMathInlineWithSurroundingText() {
+    val html = "<oppia-ul><oppia-li>e.g. 2/3 or $FRACTION_MATH_MARKUP.</oppia-li></oppia-ul>"
+
+    val parsedHtml = parseHtmlWithListAndMathSupport(html)
+
+    assertThat(parsedHtml.getSpansFromWholeString(ImageSpan::class)).hasLength(1)
+    assertThat(parsedHtml.toString()).contains("e.g. 2/3 or \uFFFC.")
+  }
+
+  @Test
+  fun testFromHtml_withInlineMathInsideNumberedList_keepsMathInlineWithSurroundingText() {
+    val html = "<oppia-ol><oppia-li>Before $FRACTION_MATH_MARKUP after.</oppia-li></oppia-ol>"
+
+    val parsedHtml = parseHtmlWithListAndMathSupport(html)
+
+    assertThat(parsedHtml.toString()).contains("Before \uFFFC after.")
+  }
+
+  @Test
+  fun testFromHtml_withInlineMathInsideNestedList_keepsMathInlineWithSurroundingText() {
+    val html =
+      "<oppia-ul><oppia-li>Outer<oppia-ol><oppia-li>Before $FRACTION_MATH_MARKUP after." +
+        "</oppia-li></oppia-ol></oppia-li></oppia-ul>"
+
+    val parsedHtml = parseHtmlWithListAndMathSupport(html)
+
+    assertThat(parsedHtml.toString()).contains("Before \uFFFC after.")
+  }
+
+  @Test
+  fun testFromHtml_withInlineMathBeforeList_keepsMathInlineWithSurroundingText() {
+    val html =
+      "<p>Before $FRACTION_MATH_MARKUP after.</p><oppia-ul><oppia-li>Item</oppia-li></oppia-ul>"
+
+    val parsedHtml = parseHtmlWithListAndMathSupport(html)
+
+    assertThat(parsedHtml.toString()).contains("Before \uFFFC after.")
+  }
+
+  @Test
+  fun testFromHtml_withBlockMathInsideList_rendersMathSameAsOutsideList() {
+    val blockMathMarkup = FRACTION_MATH_MARKUP.replace(
+      "<oppia-noninteractive-math ", "<oppia-noninteractive-math render-type=\"block\" "
+    )
+    val listHtml = "<oppia-ul><oppia-li>Before $blockMathMarkup after.</oppia-li></oppia-ul>"
+    val paragraphHtml = "<p>Before $blockMathMarkup after.</p>"
+
+    val parsedListHtml = parseHtmlWithListAndMathSupport(listHtml)
+    val parsedParagraphHtml = parseHtmlWithListAndMathSupport(paragraphHtml)
+
+    assertThat(parsedParagraphHtml.toString()).contains("Before \uFFFC after.")
+    assertThat(parsedListHtml.toString()).contains("Before \uFFFC after.")
+  }
+
+  @Test
+  fun testFromHtml_withInlineMathAndImageInsideList_onlyMovesImageToItsOwnLine() {
+    val html =
+      "<oppia-ul><oppia-li>Before $FRACTION_MATH_MARKUP after." +
+        "<img src=\"test_source.png\"/>Image</oppia-li></oppia-ul>"
+
+    val parsedHtml = parseHtmlWithListAndMathSupport(html)
+
+    val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
+      .sortedBy { parsedHtml.getSpanStart(it) }
+    assertThat(imageSpans).hasSize(2)
+    val contentImageSpan = imageSpans.last()
+    assertThat(parsedHtml.toString()).contains("Before \uFFFC after.")
+    assertThat(parsedHtml[parsedHtml.getSpanStart(contentImageSpan) - 1]).isEqualTo('\n')
+    assertThat(parsedHtml[parsedHtml.getSpanEnd(contentImageSpan)]).isEqualTo('\n')
+  }
+
+  private fun parseHtmlWithListAndMathSupport(html: String): Spannable {
+    val liTagHandler = LiTagHandler(context, createDisplayLocaleImpl(US_ENGLISH_CONTEXT))
+    val mathTagHandler = MathTagHandler(
+      consoleLogger,
+      context.assets,
+      // Pick an arbitrary line height since rendering doesn't actually happen in tests.
+      lineHeight = 10.0f,
+      cacheLatexRendering = true,
+      application = context.applicationContext as Application
+    )
+    return CustomHtmlContentHandler.fromHtml(
+      html = html,
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = mapOf(
+        CUSTOM_LIST_LI_TAG to liTagHandler,
+        CUSTOM_LIST_UL_TAG to liTagHandler,
+        CUSTOM_LIST_OL_TAG to liTagHandler,
+        CUSTOM_MATH_TAG to mathTagHandler
+      )
+    )
+  }
+
   private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {
     val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(context)
     return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
@@ -256,6 +354,10 @@ class LiTagHandlerTest {
   }
 
   private companion object {
+    private const val FRACTION_MATH_MARKUP =
+      "<oppia-noninteractive-math math_content-with-value=\"{" +
+        "&amp;quot;raw_latex&amp;quot;:&amp;quot;\\\\frac{2}{3}&amp;quot;}\">" +
+        "</oppia-noninteractive-math>"
 
     private val US_ENGLISH_CONTEXT = OppiaLocaleContext.newBuilder().apply {
       usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
