@@ -162,11 +162,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   fun onSubmitButtonClicked() {
     hideKeyboard()
-    handleSubmitAnswer(
-      questionViewModel.getPendingAnswer(
-        recyclerViewAssembler::getPendingAnswerHandler
-      )
-    )
+    val answer =
+      questionViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+    if (answer != null) {
+      handleSubmitAnswer(answer)
+    }
   }
 
   fun onResponsesHeaderClicked() {
@@ -191,7 +191,16 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     }
   }
 
-  fun handleKeyboardAction() = onSubmitButtonClicked()
+  fun handleKeyboardAction() {
+    hideKeyboard()
+    if (questionViewModel.getCanSubmitAnswer().get() == true) {
+      val answer =
+        questionViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+      if (answer != null) {
+        handleSubmitAnswer(answer)
+      }
+    }
+  }
 
   fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
     this.helpIndex = helpIndex
@@ -321,12 +330,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   ): AnsweredQuestionOutcome {
     return when (answeredQuestionOutcomeResult) {
       is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "QuestionPlayerFragment",
+        throw IllegalStateException(
           "Failed to retrieve answer outcome",
           answeredQuestionOutcomeResult.error
         )
-        AnsweredQuestionOutcome.getDefaultInstance()
       }
       is AsyncResult.Pending -> AnsweredQuestionOutcome.getDefaultInstance()
       is AsyncResult.Success -> answeredQuestionOutcomeResult.value

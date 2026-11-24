@@ -506,6 +506,30 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(answerOutcome.feedback.html).isEmpty()
   }
 
+  /**
+   * Tests that when answer classification fails with an internal exception during question training,
+   * [QuestionAssessmentProgressController.submitAnswer] fails and propagates the classification exception.
+   */
+  @Test
+  fun testSubmitAnswer_classifierThrowsException_failsWithClassificationException() {
+    setUpTestApplicationWithSeed(questionSeed = 2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    val mismatchedAnswer = UserAnswer.newBuilder()
+      .setAnswer(InteractionObject.newBuilder().setBoolValue(true).build())
+      .build()
+
+    val resultProvider = questionAssessmentProgressController.submitAnswer(mismatchedAnswer)
+
+    val error = monitorFactory.waitForNextFailureResult(resultProvider)
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Failed when classifying answer")
+    assertThat(error).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasCauseThat().hasMessageThat()
+      .contains("Expected answer to be of type NORMALIZED_STRING")
+  }
+
   @Test
   fun testGetCurrentQuestion_secondQuestion_submitRightAnswer_pendingQuestionBecomesCompleted() {
     setUpTestApplicationWithSeed(questionSeed = 0)

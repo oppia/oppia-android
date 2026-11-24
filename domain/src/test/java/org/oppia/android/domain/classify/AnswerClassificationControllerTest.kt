@@ -230,6 +230,39 @@ class AnswerClassificationControllerTest {
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
   }
 
+  /**
+   * Tests that when rule evaluation encounters a type mismatch, [AnswerClassificationController.classify]
+   * throws an [IllegalStateException] with the original exception preserved as its cause.
+   */
+  @Test
+  fun testClassify_ruleMatchingThrowsException_throwsIllegalStateException() {
+    val interaction = Interaction.newBuilder()
+      .setId("TextInput")
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_INPUT_SET_0)
+          )
+          .setOutcome(OUTCOME_0)
+      )
+      .setDefaultOutcome(DEFAULT_OUTCOME)
+      .build()
+
+    val exception = assertThrows<IllegalStateException> {
+      answerClassificationController.classify(
+        interaction,
+        answer = TEST_NUMBER_0,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains("Failed when classifying answer")
+    assertThat(exception).hasMessageThat().contains("interaction TextInput")
+    assertThat(exception).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasCauseThat().hasMessageThat()
+      .contains("Expected answer to be of type NORMALIZED_STRING")
+  }
+
   @Test
   fun testClassify_interactionWithDefaultOutcome_returnOutcomeOnlyWithNoMisconceptionId() {
     val interaction = Interaction.newBuilder()
