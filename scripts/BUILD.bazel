@@ -335,6 +335,17 @@ java_binary(
 )
 
 java_binary(
+    name = "r8_compat_proguard",
+    main_class = "org.oppia.android.scripts.build.OppiaR8WrapperKt",
+    visibility = [
+        "//visibility:public",
+    ],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/build:oppia_r8_wrapper_lib",
+    ],
+)
+
+java_binary(
     name = "decode_user_study_event_string",
     testonly = True,
     main_class = "org.oppia.android.scripts.telemetry.DecodeUserStudyEventStringKt",

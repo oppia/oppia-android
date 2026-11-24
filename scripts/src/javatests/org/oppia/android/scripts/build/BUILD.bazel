@@ -16,6 +16,17 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
+    name = "OppiaR8WrapperTest",
+    srcs = ["OppiaR8WrapperTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/build:oppia_r8_wrapper_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+    ],
+)
+
+kt_jvm_test(
     name = "TransformAndroidManifestTest",
     srcs = ["TransformAndroidManifestTest.kt"],
     deps = [
