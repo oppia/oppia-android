@@ -247,6 +247,12 @@
   <string name="profile_selection_add_profile_text">Add a learner profile</string>
   <string name="profile_selection_maximum_profiles_reached_message">Maximum profiles reached. To add a new learner, an admin can remove an inactive profile under Admin Controls.</string>
   <string name="profile_selection_maximum_profiles_reached_close">Close</string>
+  <string name="profile_selection_become_administrator_notice_title">Become the admin</string>
+  <string name="profile_selection_become_administrator_notice_message">To add another learner, you have to become the administrator of the app.</string>
+  <string name="profile_selection_become_administrator_notice_description">Being an administrator means that you will be able to:</string>
+  <string name="profile_selection_become_administrator_notice_manage_profiles">Manage profile settings for all learners on this device</string>
+  <string name="profile_selection_become_administrator_notice_add_learners">Add new learners to this device (up to 10)</string>
+  <string name="profile_selection_become_administrator_notice_continue">I UNDERSTAND, CONTINUE</string>
   <string name="profile_selection_admin_label">Administrator</string>
   <string name="profile_selection_scroll_left_content_description">Scroll left</string>
   <string name="profile_selection_scroll_right_content_description">Scroll right</string>
@@ -419,6 +425,10 @@
   <string name="administrator_controls_app_version">App Version</string>
   <string name="administrator_controls_account_actions_label">Account Actions</string>
   <string name="administrator_controls_log_out">Log Out</string>
+  <string name="administrator_controls_welcome_dialog_title">Welcome to the Administrator Controls Page!</string>
+  <string name="administrator_controls_welcome_dialog_message">On this page, you can add new learners, or change the profile settings for all learners.</string>
+  <string name="administrator_controls_welcome_dialog_close_button_description">Close</string>
+  <string name="administrator_controls_welcome_dialog_confirm_button_text">OK, LET\'S GO</string>
   <string name="log_out_dialog_cancel_button">Cancel</string>
   <string name="log_out_dialog_okay_button" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
