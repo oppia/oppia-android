@@ -541,7 +541,7 @@ class NumberWithUnitsParser private constructor(
       this == NumberUnitExpression.Unit.PAISA
 
   private fun Token?.isCurrencyPrefixToken(): Boolean =
-    this is Token.Unit && unit in CURRENCY_UNITS_BY_PREFIX_ALIAS
+    this is Token.Unit && isCurrencyPrefixUnitString(unit)
 
   private fun createUnitExpression(
     unit: NumberUnitExpression.Unit,
@@ -596,6 +596,12 @@ class NumberWithUnitsParser private constructor(
         (CURRENCY_PREFIX_ALIASES[unit] ?: SUFFIX_UNIT_ALIASES[unit])?.first() ?: ""
       return prefixString + unitString
     }
+
+    /**
+     * Returns whether [unitString] is a currency symbol that is written before the numeric value.
+     */
+    fun isCurrencyPrefixUnitString(unitString: String): Boolean =
+      unitString in CURRENCY_UNITS_BY_PREFIX_ALIAS
 
     /** Creates a failed parse result with [this] error. */
     private fun NumberWithUnitsParsingError.toFailure(): NumberWithUnitsParsingResult<Nothing> =
