@@ -128,3 +128,17 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
     ],
 )
+
+oppia_android_test(
+    name = "NumberWithUnitsTokenSubjectTest",
+    srcs = ["NumberWithUnitsTokenSubjectTest.kt"],
+    custom_package = "org.oppia.android.testing.math",
+    test_class = "org.oppia.android.testing.math.NumberWithUnitsTokenSubjectTest",
+    test_manifest = "//testing:test_manifest",
+    deps = [
+        "//testing/src/main/java/org/oppia/android/testing/math:number_with_units_token_subject",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:robolectric_android-all",
+    ],
+)

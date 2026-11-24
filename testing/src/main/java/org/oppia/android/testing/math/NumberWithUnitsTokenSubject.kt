@@ -9,8 +9,6 @@ import com.google.common.truth.Truth
 import org.oppia.android.util.math.NumberWithUnitsTokenizer
 import org.oppia.android.util.math.NumberWithUnitsTokenizer.Companion.Token
 
-// TODO(#6151): Add tests for this class.
-
 /**
  * A Truth [Subject] for testing [Token] objects from [NumberWithUnitsTokenizer].
  */
