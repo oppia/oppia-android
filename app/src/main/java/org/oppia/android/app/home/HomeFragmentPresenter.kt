@@ -3,8 +3,11 @@ package org.oppia.android.app.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.app.databinding.databinding.AllTopicsBinding
@@ -21,8 +24,13 @@ import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.datetime.DateTimeUtil
@@ -30,6 +38,7 @@ import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -49,6 +58,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
+  private val spotlightStateController: SpotlightStateController,
   private val topicListController: TopicListController,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
@@ -68,6 +78,8 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
   private var profileId: LegacyProfileId = LegacyProfileId.getDefaultInstance()
+  private var hasRequestedNavigationDrawerSpotlight = false
+  private var hasRequestedAllTopicsSpotlight = false
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -202,7 +214,35 @@ class HomeFragmentPresenter @Inject constructor(
       .registerViewDataBinder(
         viewType = ViewType.ALL_TOPICS,
         inflateDataBinding = AllTopicsBinding::inflate,
-        setViewModel = AllTopicsBinding::setViewModel,
+        setViewModel = { binding, viewModel ->
+          binding.viewModel = viewModel
+          requestNavigationDrawerSpotlight()
+          if (!hasRequestedAllTopicsSpotlight) {
+            hasRequestedAllTopicsSpotlight = true
+            spotlightStateController.retrieveSpotlightViewState(
+              profileId,
+              Spotlight.FeatureCase.HOME_NAVIGATION_DRAWER_BUTTON
+            ).toLiveData().observe(fragment) { result ->
+              if (
+                result is AsyncResult.Success &&
+                result.value == SpotlightViewState.SPOTLIGHT_SEEN
+              ) {
+                val manager = activity.supportFragmentManager.findFragmentByTag(
+                  SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+                ) as? SpotlightManager
+                manager?.requestSpotlightViewWithDelayedLayout(
+                  SpotlightTarget(
+                    anchor = binding.allTopicsTextView,
+                    hint = resourceHandler.getStringInLocale(
+                      R.string.home_all_topics_spotlight_hint
+                    ),
+                    feature = Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
+                  )
+                )
+              }
+            }
+          }
+        },
         transformViewModel = { it as AllTopicsViewModel }
       )
       .registerViewDataBinder(
@@ -212,6 +252,30 @@ class HomeFragmentPresenter @Inject constructor(
         transformViewModel = { it as TopicSummaryViewModel }
       )
       .build()
+  }
+
+  private fun requestNavigationDrawerSpotlight() {
+    if (hasRequestedNavigationDrawerSpotlight) return
+    val manager = activity.supportFragmentManager.findFragmentByTag(
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+    ) as? SpotlightManager ?: return
+    val toolbar = activity.findViewById<Toolbar>(R.id.home_activity_toolbar)
+    toolbar.forEach { toolbarChild ->
+      if (toolbarChild is ImageButton) {
+        manager.requestSpotlightViewWithDelayedLayout(
+          SpotlightTarget(
+            anchor = toolbarChild,
+            hint = resourceHandler.getStringInLocale(
+              R.string.home_navigation_drawer_spotlight_hint
+            ),
+            shape = SpotlightShape.Circle,
+            feature = Spotlight.FeatureCase.HOME_NAVIGATION_DRAWER_BUTTON
+          )
+        )
+        hasRequestedNavigationDrawerSpotlight = true
+        return
+      }
+    }
   }
 
   private enum class ViewType {

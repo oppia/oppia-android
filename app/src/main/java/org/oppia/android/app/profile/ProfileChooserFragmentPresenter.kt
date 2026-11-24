@@ -31,10 +31,13 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
@@ -93,6 +96,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: ProfileSelectionFragmentBinding
   private var isBecomeAdministratorNoticeShowing = false
+  private var hasRequestedAdminProfileSpotlight = false
+  private var shouldRequestProfileChooserSpotlights = false
 
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
@@ -121,6 +126,22 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         }
 
     logProfileChooserEvent()
+
+    shouldRequestProfileChooserSpotlights =
+      parentScreen == ParentScreen.SPLASH_SCREEN ||
+      parentScreen == ParentScreen.CREATE_ADMIN_PIN_SCREEN
+    if (shouldRequestProfileChooserSpotlights) {
+      requestSpotlight(
+        anchor = binding.profileSelectionSettingIcon,
+        hintId = R.string.profile_chooser_spotlight_admin_controls,
+        feature = Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM
+      )
+      requestSpotlight(
+        anchor = binding.addProfileButton,
+        hintId = R.string.profile_chooser_spotlight_add_learner,
+        feature = Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB
+      )
+    }
 
     binding.apply {
       when (Resources.getSystem().configuration.orientation) {
@@ -274,6 +295,33 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     viewModel: ProfileItemViewModel
   ) {
     binding.viewModel = viewModel
+    if (
+      shouldRequestProfileChooserSpotlights &&
+      viewModel.profile.profileType == ProfileType.SUPERVISOR &&
+      !hasRequestedAdminProfileSpotlight
+    ) {
+      hasRequestedAdminProfileSpotlight = requestSpotlight(
+        anchor = binding.root,
+        hintId = R.string.profile_chooser_spotlight_admin_profile,
+        feature = Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
+      )
+    }
+  }
+
+  private fun requestSpotlight(
+    anchor: View,
+    hintId: Int,
+    feature: Spotlight.FeatureCase
+  ): Boolean {
+    val spotlightManager = getSpotlightManager() ?: return false
+    spotlightManager.requestSpotlightViewWithDelayedLayout(
+      SpotlightTarget(
+        anchor = anchor,
+        hint = resourceHandler.getStringInLocale(hintId),
+        feature = feature
+      )
+    )
+    return true
   }
 
   private fun addProfileButtonClickListener() {
@@ -374,6 +422,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       }
       .create()
       .show()
+  }
+
+  private fun getSpotlightManager(): SpotlightManager? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+    ) as? SpotlightManager
   }
 
   private fun logProfileChooserEvent() {

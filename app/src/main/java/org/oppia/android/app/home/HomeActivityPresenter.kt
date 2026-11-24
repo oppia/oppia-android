@@ -38,19 +38,19 @@ class HomeActivityPresenter @Inject constructor(
         R.color.component_color_shared_activity_status_bar_color
       )
     }
-    if (getHomeFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.home_fragment_placeholder,
-        HomeFragment(),
-        TAG_HOME_FRAGMENT
-      ).commitNow()
-    }
-
     if (getSpotlightFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.home_spotlight_fragment_placeholder,
         SpotlightFragment.newInstance(internalProfileId),
         SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+      ).commitNow()
+    }
+
+    if (getHomeFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.home_fragment_placeholder,
+        HomeFragment(),
+        TAG_HOME_FRAGMENT
       ).commitNow()
     }
   }
