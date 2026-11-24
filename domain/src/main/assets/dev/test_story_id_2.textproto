@@ -25,6 +25,29 @@ chapters {
     content_id: "description"
   }
 }
+chapters {
+  exploration_id: "test_exp_id_6"
+  chapter_thumbnail {
+    background_color_rgb: 14061432
+  }
+  written_translations {
+    key: "title"
+    value {
+    }
+  }
+  written_translations {
+    key: "description"
+    value {
+    }
+  }
+  translatable_title {
+    html: "Number With Units Exploration"
+    content_id: "title"
+  }
+  translatable_description {
+    content_id: "description"
+  }
+}
 written_translations {
   key: "title"
   value {
