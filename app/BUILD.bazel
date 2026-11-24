@@ -10,6 +10,7 @@ order to build with Bazel.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("@rules_android//android:rules.bzl", "android_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//:oppia_android_test.bzl", "oppia_android_test")
@@ -266,6 +267,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/options/ReadingTextSizeSelectionViewModel.kt",
     "src/main/java/org/oppia/android/app/options/TextSizeItemViewModel.kt",
     "src/main/java/org/oppia/android/app/parser/FractionParsingUiError.kt",
+    "src/main/java/org/oppia/android/app/parser/NumberWithUnitsParsingUiError.kt",
     "src/main/java/org/oppia/android/app/parser/StringToNumberParser.kt",
     "src/main/java/org/oppia/android/app/parser/StringToRatioParser.kt",
     "src/main/java/org/oppia/android/app/player/audio/AudioViewModel.kt",
@@ -283,6 +285,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/LessonProgressViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/MathExpressionInteractionsViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/NextButtonViewModel.kt",
+    "src/main/java/org/oppia/android/app/player/state/itemviewmodel/NumberWithUnitsInputViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/NumericInputViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/PreviousButtonViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/PreviousResponsesHeaderViewModel.kt",
@@ -383,6 +386,7 @@ VIEWS = [
     "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/MathExpressionInteractionsView.kt",
+    "src/main/java/org/oppia/android/app/customview/interaction/NumberWithUnitsInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/RatioInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/TextInputInteractionView.kt",
@@ -478,7 +482,7 @@ android_library(
         "//third_party:androidx_viewpager_viewpager",
         "//third_party:com_google_android_flexbox_flexbox",
         "//third_party:com_google_android_material_material",
-        "//third_party:javax_annotation_javax_annotation-api_jar",
+        "//third_party:javax_annotation_javax_annotation-api",
         "//third_party:nl_dionsegijn_konfetti",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_injector_provider",
@@ -691,11 +695,12 @@ kt_android_library(
         "//third_party:com_caverock_androidsvg",
         "//third_party:com_github_takusemba_spotlight",
         "//third_party:com_google_android_flexbox_flexbox",
-        "//third_party:javax_annotation_javax_annotation-api_jar",
-        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
+        "//third_party:javax_annotation_javax_annotation-api",
+        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
         "//utility/src/main/java/org/oppia/android/util/logging:current_app_screen_name_intent_decorator",
+        "//utility/src/main/java/org/oppia/android/util/math:number_with_units_parser",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_annonations",
         "//utility/src/main/java/org/oppia/android/util/profile:current_user_profile_id_intent_decorator",

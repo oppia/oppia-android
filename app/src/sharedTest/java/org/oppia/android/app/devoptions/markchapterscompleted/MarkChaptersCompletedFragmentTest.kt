@@ -166,17 +166,17 @@ class MarkChaptersCompletedFragmentTest {
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 6,
+        itemPosition = 7,
         stringToMatch = "Matthew Goes to the Bakery",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 9,
+        itemPosition = 10,
         stringToMatch = "Ratios: Part 1",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 12,
+        itemPosition = 13,
         stringToMatch = "Ratios: Part 2",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
@@ -199,17 +199,17 @@ class MarkChaptersCompletedFragmentTest {
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 6,
+        itemPosition = 7,
         stringToMatch = "Matthew Goes to the Bakery",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 9,
+        itemPosition = 10,
         stringToMatch = "Ratios: Part 1",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 12,
+        itemPosition = 13,
         stringToMatch = "Ratios: Part 2",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
@@ -241,32 +241,37 @@ class MarkChaptersCompletedFragmentTest {
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 7,
-        stringToMatch = "What is a Fraction?",
+        itemPosition = 6,
+        stringToMatch = "Number With Units Exploration",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 8,
+        stringToMatch = "What is a Fraction?",
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+      )
+      verifyItemTextOnRecyclerViewItemAtPosition(
+        itemPosition = 9,
         stringToMatch = "The Meaning of Equal Parts",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 10,
+        itemPosition = 11,
         stringToMatch = "What is a Ratio?",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 11,
+        itemPosition = 12,
         stringToMatch = "Order is important",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 13,
+        itemPosition = 14,
         stringToMatch = "Equivalent Ratios",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 14,
+        itemPosition = 15,
         stringToMatch = "Writing Ratios in Simplest Form",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
@@ -299,32 +304,37 @@ class MarkChaptersCompletedFragmentTest {
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 7,
-        stringToMatch = "What is a Fraction?",
+        itemPosition = 6,
+        stringToMatch = "Number With Units Exploration",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 8,
+        stringToMatch = "What is a Fraction?",
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+      )
+      verifyItemTextOnRecyclerViewItemAtPosition(
+        itemPosition = 9,
         stringToMatch = "The Meaning of Equal Parts",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 10,
+        itemPosition = 11,
         stringToMatch = "What is a Ratio?",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 11,
+        itemPosition = 12,
         stringToMatch = "Order is important",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 13,
+        itemPosition = 14,
         stringToMatch = "Equivalent Ratios",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
-        itemPosition = 14,
+        itemPosition = 15,
         stringToMatch = "Writing Ratios in Simplest Form",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
@@ -359,12 +369,13 @@ class MarkChaptersCompletedFragmentTest {
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 2)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 3)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 5)
-      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 7)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 6)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 8)
-      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 10)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 9)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 11)
-      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 13)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 12)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 14)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 15)
     }
   }
 
@@ -380,12 +391,13 @@ class MarkChaptersCompletedFragmentTest {
       verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 2)
       verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 3)
       verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 5)
-      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 7)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 6)
       verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 8)
-      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 10)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 9)
       verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 11)
-      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 13)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 12)
       verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 14)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 15)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(not(isChecked())))
     }
@@ -401,12 +413,13 @@ class MarkChaptersCompletedFragmentTest {
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 2)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 3)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 5)
-      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 7)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 6)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 8)
-      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 10)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 9)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 11)
-      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 13)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 12)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 14)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 15)
     }
   }
 
@@ -523,12 +536,13 @@ class MarkChaptersCompletedFragmentTest {
       clickOnRecyclerViewItemAtPosition(itemPosition = 2)
       clickOnRecyclerViewItemAtPosition(itemPosition = 3)
       clickOnRecyclerViewItemAtPosition(itemPosition = 5)
-      clickOnRecyclerViewItemAtPosition(itemPosition = 7)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 6)
       clickOnRecyclerViewItemAtPosition(itemPosition = 8)
-      clickOnRecyclerViewItemAtPosition(itemPosition = 10)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 9)
       clickOnRecyclerViewItemAtPosition(itemPosition = 11)
-      clickOnRecyclerViewItemAtPosition(itemPosition = 13)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 12)
       clickOnRecyclerViewItemAtPosition(itemPosition = 14)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 15)
       onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(isChecked()))
     }
   }
@@ -541,12 +555,13 @@ class MarkChaptersCompletedFragmentTest {
       clickOnRecyclerViewItemAtPosition(itemPosition = 2)
       clickOnRecyclerViewItemAtPosition(itemPosition = 3)
       clickOnRecyclerViewItemAtPosition(itemPosition = 5)
-      clickOnRecyclerViewItemAtPosition(itemPosition = 7)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 6)
       clickOnRecyclerViewItemAtPosition(itemPosition = 8)
-      clickOnRecyclerViewItemAtPosition(itemPosition = 10)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 9)
       clickOnRecyclerViewItemAtPosition(itemPosition = 11)
-      clickOnRecyclerViewItemAtPosition(itemPosition = 13)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 12)
       clickOnRecyclerViewItemAtPosition(itemPosition = 14)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 15)
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(isChecked()))
     }
@@ -560,12 +575,13 @@ class MarkChaptersCompletedFragmentTest {
       clickOnRecyclerViewItemAtPosition(itemPosition = 2)
       clickOnRecyclerViewItemAtPosition(itemPosition = 3)
       clickOnRecyclerViewItemAtPosition(itemPosition = 5)
-      clickOnRecyclerViewItemAtPosition(itemPosition = 7)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 6)
       clickOnRecyclerViewItemAtPosition(itemPosition = 8)
-      clickOnRecyclerViewItemAtPosition(itemPosition = 10)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 9)
       clickOnRecyclerViewItemAtPosition(itemPosition = 11)
-      clickOnRecyclerViewItemAtPosition(itemPosition = 13)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 12)
       clickOnRecyclerViewItemAtPosition(itemPosition = 14)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 15)
       clickOnRecyclerViewItemAtPosition(itemPosition = 2)
       onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(not(isChecked())))
     }
@@ -579,12 +595,13 @@ class MarkChaptersCompletedFragmentTest {
       clickOnRecyclerViewItemAtPosition(itemPosition = 2)
       clickOnRecyclerViewItemAtPosition(itemPosition = 3)
       clickOnRecyclerViewItemAtPosition(itemPosition = 5)
-      clickOnRecyclerViewItemAtPosition(itemPosition = 7)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 6)
       clickOnRecyclerViewItemAtPosition(itemPosition = 8)
-      clickOnRecyclerViewItemAtPosition(itemPosition = 10)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 9)
       clickOnRecyclerViewItemAtPosition(itemPosition = 11)
-      clickOnRecyclerViewItemAtPosition(itemPosition = 13)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 12)
       clickOnRecyclerViewItemAtPosition(itemPosition = 14)
+      clickOnRecyclerViewItemAtPosition(itemPosition = 15)
       clickOnRecyclerViewItemAtPosition(itemPosition = 2)
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(not(isChecked())))
@@ -596,11 +613,11 @@ class MarkChaptersCompletedFragmentTest {
     markFractionsFirstChapterCompleted()
     launchMarkChaptersCompletedFragmentTestActivity(internalProfileId).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 7)
+      scrollToPosition(position = 8)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
-          position = 7,
+          position = 8,
           targetViewId = R.id.mark_chapters_completed_chapter_check_box
         )
       ).check(matches(isChecked())).check(matches(not(isEnabled())))
@@ -613,11 +630,11 @@ class MarkChaptersCompletedFragmentTest {
     launchMarkChaptersCompletedFragmentTestActivity(internalProfileId).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 7)
+      scrollToPosition(position = 8)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
-          position = 7,
+          position = 8,
           targetViewId = R.id.mark_chapters_completed_chapter_check_box
         )
       ).check(matches(isChecked())).check(matches(not(isEnabled())))
@@ -629,11 +646,11 @@ class MarkChaptersCompletedFragmentTest {
     markFractionsFirstChapterCompleted()
     launchMarkChaptersCompletedFragmentTestActivity(internalProfileId).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 8)
+      scrollToPosition(position = 9)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
-          position = 8,
+          position = 9,
           targetViewId = R.id.mark_chapters_completed_chapter_check_box
         )
       ).check(matches(isEnabled()))
@@ -646,11 +663,11 @@ class MarkChaptersCompletedFragmentTest {
     launchMarkChaptersCompletedFragmentTestActivity(internalProfileId).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 8)
+      scrollToPosition(position = 9)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
-          position = 8,
+          position = 9,
           targetViewId = R.id.mark_chapters_completed_chapter_check_box
         )
       ).check(matches(isEnabled()))

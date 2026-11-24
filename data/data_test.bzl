@@ -23,5 +23,6 @@ def data_test(name, filtered_tests, deps, **kwargs):
         test_manifest = "src/test/AndroidManifest.xml",
         assets = native.glob(["src/test/assets/**"]),
         assets_dir = "src/test/assets/",
+        plugins = ["//tools:moshi_annotation_processor_plugin"],
         **kwargs
     )

@@ -179,7 +179,7 @@ private class LatexImageSpan(
         override fun setAlpha(alpha: Int) {}
         override fun setColorFilter(colorFilter: android.graphics.ColorFilter?) {}
         // PixelFormat.TRANSPARENT is valid for an empty transparent drawable.
-        @Suppress("WrongConstant")
+        @Suppress("WrongConstant", "OVERRIDE_DEPRECATION")
         override fun getOpacity(): Int = android.graphics.PixelFormat.TRANSPARENT
 
         init {
