@@ -5,6 +5,19 @@ Libraries corresponding to developer scripts that help with continuous integrati
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
+    name = "check_whether_target_needs_rebuild_lib",
+    testonly = True,
+    srcs = [
+        "CheckWhetherTargetNeedsRebuild.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:git_client",
+    ],
+)
+
+kt_jvm_library(
     name = "compute_affected_tests_lib",
     testonly = True,
     srcs = [

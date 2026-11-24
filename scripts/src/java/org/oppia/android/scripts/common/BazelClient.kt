@@ -84,6 +84,18 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   }
 
   /**
+   * Returns the relative paths of all workspace (i.e. non-external) files on which [bazelTarget]
+   * transitively depends, including the BUILD and .bzl files that define its dependencies.
+   */
+  fun retrieveTransitiveWorkspaceFiles(bazelTarget: String): List<String> {
+    return executeBazelCommand(
+      "query",
+      "--noshow_progress",
+      "filter('^//', kind('source file', deps($bazelTarget)) + buildfiles(deps($bazelTarget)))"
+    ).map { fileLabel -> fileLabel.removePrefix("//").replace(':', '/').removePrefix("/") }
+  }
+
+  /**
    * Returns the list of direct and indirect Maven third-party dependencies on which the specified
    * binary depends.
    */
