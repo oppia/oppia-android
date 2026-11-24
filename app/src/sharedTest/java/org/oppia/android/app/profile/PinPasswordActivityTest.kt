@@ -465,6 +465,24 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      // Before the delay ends, the submitted PIN and the error are both shown.
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog()).check(matches(withText("1234")))
+      onView(withId(R.id.admin_settings_input_pin))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.admin_settings_incorrect)
+            )
+          )
+        )
+
       testCoroutineDispatchers.advanceTimeBy(delayTimeMillis = TimeUnit.SECONDS.toMillis(1))
 
       onView(
@@ -482,6 +500,61 @@ class PinPasswordActivityTest {
             )
           )
         )
+
+      // Typing a new character dismisses the error.
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog())
+        .perform(appendText("1"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.admin_settings_input_pin))
+        .inRoot(isDialog())
+        .check(matches(hasNoErrorText()))
+    }
+  }
+
+  @Test
+  fun testPinPassword_withUser_forgot_inputWrongAdminPinThenTypeDuringDelay_keepsNewInput() {
+    setUpTestApplicationComponent()
+    launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      onView(withId(R.id.forgot_pin)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog())
+        .perform(appendText("1234"), closeSoftKeyboard())
+      onView(withText(context.getString(R.string.admin_settings_submit)))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog())
+        .perform(appendText("5"), closeSoftKeyboard())
+      testCoroutineDispatchers.advanceTimeBy(delayTimeMillis = TimeUnit.SECONDS.toMillis(1))
+
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog()).check(matches(withText("12345")))
     }
   }
 
