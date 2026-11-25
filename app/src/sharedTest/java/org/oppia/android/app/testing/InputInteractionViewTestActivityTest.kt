@@ -2,7 +2,6 @@ package org.oppia.android.app.testing
 
 import android.app.Application
 import android.content.Intent
-import android.content.res.Configuration
 import android.text.InputType
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -13,6 +12,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -43,6 +43,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -215,16 +216,15 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   fun testNumberInput_withText_configChange_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
-    )
-    onView(withId(R.id.test_number_input_interaction_view))
-      .perform(appendText("9"))
-    activityScenario.onActivity { activity ->
-      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      onView(withId(R.id.test_number_input_interaction_view))
+        .perform(appendText("9"))
+
+      onView(isRoot()).perform(orientationLandscape())
+
+      onView(withId(R.id.test_number_input_interaction_view)).check(matches(isDisplayed()))
+        .check(matches(withText("9")))
     }
-    onView(withId(R.id.test_number_input_interaction_view)).check(matches(isDisplayed()))
-      .check(matches(withText("9")))
   }
 
   @Test

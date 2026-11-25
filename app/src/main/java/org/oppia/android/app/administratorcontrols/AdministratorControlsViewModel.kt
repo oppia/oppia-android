@@ -91,7 +91,6 @@ class AdministratorControlsViewModel @Inject constructor(
         loadProfileListListener
       )
     )
-    // TODO(#4345): Add tests to verify this behavior both for the study flag being on & off.
     if (enableLearnerStudyAnalytics.value) {
       itemViewModelList.add(AdministratorControlsProfileAndDeviceIdViewModel(activity))
     }

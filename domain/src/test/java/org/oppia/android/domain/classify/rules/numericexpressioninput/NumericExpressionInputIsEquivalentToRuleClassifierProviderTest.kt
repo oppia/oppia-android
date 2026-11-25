@@ -323,6 +323,34 @@ class NumericExpressionInputIsEquivalentToRuleClassifierProviderTest {
     assertThat(matches).isFalse()
   }
 
+  @Test
+  @Iteration("redundant groups 1", "answer=2", "input=(2)")
+  @Iteration("redundant groups 2", "answer=2", "input=(((2)))")
+  @Iteration("redundant groups 3", "answer=2+3", "input=(2)+(3)")
+  @Iteration("redundant groups 4", "answer=sqrt(2)", "input=(sqrt((2)))")
+  fun testMatches_ruleInputWithRedundantGroups_returnsTrue() {
+    val matches = matchesClassifier(createMathExpression(answer), createMathExpression(input))
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  @Iteration("invalid or different groups 1", "answer=2+3*4", "input=(2+3)*4")
+  @Iteration("invalid or different groups 2", "answer=2", "input=((2)")
+  fun testMatches_ruleInputWithInvalidOrDifferentGroups_returnsFalse() {
+    val matches = matchesClassifier(createMathExpression(answer), createMathExpression(input))
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  @Iteration("redundant learner answer", "answer=(2)", "input=2")
+  fun testMatches_answerWithRedundantGroups_returnsFalse() {
+    val matches = matchesClassifier(createMathExpression(answer), createMathExpression(input))
+
+    assertThat(matches).isFalse()
+  }
+
   private fun matchesClassifier(
     answerExpression: InteractionObject,
     inputExpression: InteractionObject

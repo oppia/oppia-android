@@ -358,6 +358,75 @@ class MathExpressionExtensionsTest {
     assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
   }
 
+  @Test
+  fun testStripRedundantGroups_nestedGroupsAroundBinaryOperation_keepsInnermostGroup() {
+    val original = parseNumericExpression("(((2+3)))", errorCheckingMode = REQUIRED_ONLY)
+    val expected = parseNumericExpression("(2+3)", errorCheckingMode = REQUIRED_ONLY)
+
+    val stripped = original.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_groupAroundUnaryOperation_keepsGroup() {
+    val original = parseNumericExpression("(-2)", errorCheckingMode = REQUIRED_ONLY)
+    val expected = parseNumericExpression("(-2)", errorCheckingMode = REQUIRED_ONLY)
+
+    val stripped = original.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_groupAroundFunctionCall_stripsGroup() {
+    val original = parseNumericExpression("(sqrt(2))", errorCheckingMode = REQUIRED_ONLY)
+    val expected = parseNumericExpression("sqrt(2)", errorCheckingMode = REQUIRED_ONLY)
+
+    val stripped = original.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_redundantGroupsInBothBinaryOperands_stripsGroups() {
+    val original = parseNumericExpression("(2)+(3)", errorCheckingMode = REQUIRED_ONLY)
+    val expected = parseNumericExpression("2+3", errorCheckingMode = REQUIRED_ONLY)
+
+    val stripped = original.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_groupAffectingPrecedence_keepsGroup() {
+    val original = parseNumericExpression("(2+3)*4", errorCheckingMode = REQUIRED_ONLY)
+    val expected = parseNumericExpression("(2+3)*4", errorCheckingMode = REQUIRED_ONLY)
+
+    val stripped = original.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_alreadySimplifiedCompoundExpression_returnsSameExpression() {
+    val original = parseNumericExpression("2+sqrt(3)*-4", errorCheckingMode = REQUIRED_ONLY)
+    val expected = parseNumericExpression("2+sqrt(3)*-4", errorCheckingMode = REQUIRED_ONLY)
+
+    val stripped = original.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_emptyExpression_returnsSameExpression() {
+    val expression = MathExpression.getDefaultInstance()
+
+    val stripped = expression.stripRedundantGroups()
+
+    assertThat(stripped).isEqualTo(expression)
+  }
+
   private companion object {
     private fun parseNumericExpression(
       expression: String,

@@ -27,6 +27,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.databinding.TextViewBindingAdapters.setDrawableEndCompat
+import org.oppia.android.app.databinding.TextViewBindingAdapters.setDrawableTopCompat
 import org.oppia.android.app.databinding.TextViewBindingAdapters.setProfileDataText
 import org.oppia.android.app.databinding.TextViewBindingAdapters.setProfileLastVisitedText
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
@@ -290,6 +291,41 @@ class TextViewBindingAdaptersTest {
           /* drawable = */ drawable
         )
         assertThat(textView.compoundDrawablesRelative[2]).isEqualTo(drawable)
+      }
+    }
+  }
+
+  @Test
+  fun testSetDrawableTopCompat_withDrawable_setsDrawableAtTop() {
+    runWithLaunchedActivity {
+      onActivity {
+        val drawable = ContextCompat.getDrawable(it, R.drawable.ic_add_profile)!!
+        val textView: TextView = it.findViewById(R.id.test_text_view)
+
+        setDrawableTopCompat(textView, drawable)
+
+        assertThat(textView.compoundDrawablesRelative[0]).isNull()
+        assertThat(textView.compoundDrawablesRelative[1]).isSameInstanceAs(drawable)
+        assertThat(textView.compoundDrawablesRelative[2]).isNull()
+        assertThat(textView.compoundDrawablesRelative[3]).isNull()
+        assertThat(drawable.bounds.width()).isEqualTo(drawable.intrinsicWidth)
+        assertThat(drawable.bounds.height()).isEqualTo(drawable.intrinsicHeight)
+      }
+    }
+  }
+
+  @Test
+  fun testSetDrawableTopCompat_withNullDrawable_clearsTopDrawable() {
+    runWithLaunchedActivity {
+      onActivity {
+        val drawable = ContextCompat.getDrawable(it, R.drawable.ic_add_profile)!!
+        val textView: TextView = it.findViewById(R.id.test_text_view)
+        setDrawableTopCompat(textView, drawable)
+        assertThat(textView.compoundDrawablesRelative[1]).isSameInstanceAs(drawable)
+
+        setDrawableTopCompat(textView, null)
+
+        assertThat(textView.compoundDrawablesRelative[1]).isNull()
       }
     }
   }
