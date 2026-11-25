@@ -11,6 +11,8 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -165,6 +167,18 @@ class TestCoroutineDispatcherTest {
 
     // NB: this cannot be reliably tested on Espresso due to how the timeout is computed.
     assertThat(defaultTimeMinutes).isEqualTo(60)
+  }
+
+  @Test
+  fun testDispatcher_runCurrent_withDefaultTimeout_runsPendingTask() {
+    arrangeOnRobolectric()
+    setUpTestApplicationComponent()
+    var taskRan = false
+    CoroutineScope(backgroundTestDispatcher).launch { taskRan = true }
+
+    backgroundTestDispatcher.runCurrent()
+
+    assertThat(taskRan).isTrue()
   }
 
   private fun arrangeOnRobolectric() {
