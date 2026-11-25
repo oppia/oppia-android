@@ -674,6 +674,23 @@ private class DependencyResolver(
   }
 
   /**
+   * Checks if [declaredPath] is a file in a fetched external repository (e.g. a Maven AAR/JAR under
+   * 'external/...').
+   *
+   * Unlike 'bazel-out/...' outputs, these are materialized by Bazel's repository fetch rather than
+   * by building a particular target, so they exist regardless of which targets were built. Every
+   * 'bazel-out/...' output (internal libraries, test targets, and generated copies of external
+   * artifacts) only exists once its specific producing target has been built, and `cquery
+   * deps(//layer:*)` declares such outputs for every test in the layer. Requiring those would mean
+   * building the entire test suite before Lint, so they can't be a precondition for running Lint.
+   *
+   * Note that 'external/androidsdk/dummy.jar' is excluded: it's a placeholder output declared by the
+   * Android SDK repository rule that is intentionally never created.
+   */
+  private fun isFetchedExternalRepoFile(declaredPath: String): Boolean =
+    declaredPath.startsWith("external/") && declaredPath != "external/androidsdk/dummy.jar"
+
+  /**
    * Returns true when [declaredPath] is a genuine JAR or AAR artifact that belongs on the Lint
    * classpath or AAR dependency list and therefore must exist on disk before Lint can run.
    *
@@ -720,7 +737,9 @@ private class DependencyResolver(
    * `bazel cquery --output=files` reports the *declared* outputs of each target, including many
    * build-system intermediate artifacts (compile-avoidance JARs, build-tool JARs, exec-config
    * outputs) that are never part of the Lint classpath. Only the artifacts identified as
-   * Lint-classpath entries by [isLintClasspathArtifact] are checked; all others are ignored.
+   * Lint-classpath entries by [isLintClasspathArtifact] that are also fetched external repository
+   * files (see [isFetchedExternalRepoFile]) are checked; all others are ignored here (and, if they
+   * are missing, are skipped with a logged error when the classpath is resolved).
    *
    * Without this check, missing artifacts would be silently dropped from the lint classpath,
    * making lint results depend on whatever happened to be built beforehand (e.g. clean vs.
@@ -739,7 +758,7 @@ private class DependencyResolver(
       getDependenciesWithCache(layer.layerName)
         .filter { declaredPath ->
           artifactExtensions.any { declaredPath.endsWith(it) } &&
-            isLintClasspathArtifact(declaredPath)
+            isFetchedExternalRepoFile(declaredPath) && isLintClasspathArtifact(declaredPath)
         }
         .forEach { declaredPath ->
           val resolvedPath = pathResolver.computeAbsolutePath(declaredPath)
@@ -768,8 +787,8 @@ private class DependencyResolver(
         "lint without them would silently produce an incomplete classpath and inconsistent " +
         "results.\n" +
         "Missing artifacts:\n$listedArtifacts$omittedNote\n" +
-        "Build the Bazel targets that produce these artifacts (e.g. 'bazel build //:oppia_dev " +
-        "//testing:testing'; affected layers: $affectedLayers) and re-run lint. See " +
+        "Fetch/build the Bazel dependencies that produce these artifacts (e.g. 'bazel build " +
+        "//scripts:android_lint_check'; affected layers: $affectedLayers) and re-run lint. See " +
         "https://github.com/oppia/oppia-android/wiki/Android-Lint-Check for details."
     )
   }

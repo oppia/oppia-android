@@ -751,12 +751,12 @@ class LintProjectDescriptionTest {
     assertThat(exception).hasMessageThat()
       .contains(File(tempFolder.root, "bazel-out/external/missing/missing-1.0.jar").absolutePath)
     assertThat(exception).hasMessageThat().contains("needed by layer(s): app)")
-    assertThat(exception).hasMessageThat().contains("Build the Bazel targets")
+    assertThat(exception).hasMessageThat().contains("Fetch/build the Bazel dependencies")
   }
 
   @Test
   fun testGenerateProjectDescriptionXml_missingDeclaredAar_failsFastWithActionableError() {
-    val missingAar = "bazel-out/k8-fastbuild/bin/external/maven/missing/missing-1.0.aar"
+    val missingAar = "external/missing_aar/file/missing/missing-1.0.aar"
     registerCqueryResults(appDeclaredPaths = listOf(missingAar))
 
     val exception = assertThrows<IllegalStateException> {
@@ -977,44 +977,25 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testGenerateProjectDescriptionXml_missingInternalModuleJar_failsFast() {
-    // Internal compiled module JARs (e.g. domain_kt.jar) are required classpath entries,
-    // especially for incremental Lint runs where unchanged source files are omitted from the
-    // source model.
+  fun testGenerateProjectDescriptionXml_missingBuildOutputs_doNotFailFast() {
+    // Outputs under bazel-out only exist once their specific producing target is built (and
+    // cquery deps(//app:*) declares them for every test target too), so they can't be a
+    // precondition for running Lint. Only fetched 'external/' repository files are verified.
     registerCqueryResults(
       appDeclaredPaths = listOf(
-        "bazel-out/k8-fastbuild/bin/domain/domain_kt.jar"
+        "bazel-out/k8-fastbuild/bin/domain/domain_kt.jar",
+        "bazel-out/k8-fastbuild/bin/app/app_kt-kapt-generated-class.jar",
+        "bazel-out/k8-fastbuild/bin/app/src/test/java/org/oppia/android/app/FooTest_lib_kt.jar",
+        "bazel-out/k8-fastbuild/bin/app/libsrc/sharedTest/java/org/oppia/android/app/BarTest.jar",
+        "bazel-out/k8-fastbuild/bin/external/maven/missing/missing-1.0.aar",
+        "external/androidsdk/dummy.jar"
       )
     )
 
-    val exception = assertThrows<IllegalStateException> {
-      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
-    }
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
 
-    assertThat(exception).hasMessageThat().contains("Android Lint cannot run")
-    assertThat(exception).hasMessageThat().contains("1 AAR/JAR artifact(s)")
-    assertThat(exception).hasMessageThat()
-      .contains("bazel-out/k8-fastbuild/bin/domain/domain_kt.jar")
-  }
-
-  @Test
-  fun testGenerateProjectDescriptionXml_missingKaptGeneratedClassJar_failsFast() {
-    // KAPT-generated class JARs (containing Dagger factories/components) are required classpath
-    // entries.
-    registerCqueryResults(
-      appDeclaredPaths = listOf(
-        "bazel-out/k8-fastbuild/bin/app/app_kt-kapt-generated-class.jar"
-      )
-    )
-
-    val exception = assertThrows<IllegalStateException> {
-      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
-    }
-
-    assertThat(exception).hasMessageThat().contains("Android Lint cannot run")
-    assertThat(exception).hasMessageThat().contains("1 AAR/JAR artifact(s)")
-    assertThat(exception).hasMessageThat()
-      .contains("bazel-out/k8-fastbuild/bin/app/app_kt-kapt-generated-class.jar")
+    assertThat(xmlContent).doesNotContain("<classpath jar=")
   }
 
   @Test
@@ -1027,7 +1008,7 @@ class LintProjectDescriptionTest {
         "bazel-out/k8-fastbuild/bin/app/app_kt-hjar.jar",
         "bazel-out/k8-fastbuild/bin/app/app_kt.abi.jar",
         // This is a genuine Lint classpath entry that is missing.
-        "bazel-out/k8-fastbuild/bin/model/src/main/proto/libmath_proto-lite.jar"
+        "external/lib/missing-1.0.jar"
       )
     )
 
@@ -1038,7 +1019,7 @@ class LintProjectDescriptionTest {
     assertThat(exception).hasMessageThat().contains("Android Lint cannot run")
     assertThat(exception).hasMessageThat().contains("1 AAR/JAR artifact(s)")
     assertThat(exception).hasMessageThat()
-      .contains("bazel-out/k8-fastbuild/bin/model/src/main/proto/libmath_proto-lite.jar")
+      .contains("external/lib/missing-1.0.jar")
     // The compile-avoidance JARs must not appear in the error message.
     assertThat(exception).hasMessageThat().doesNotContain("app_kt-hjar.jar")
     assertThat(exception).hasMessageThat().doesNotContain("app_kt.abi.jar")
