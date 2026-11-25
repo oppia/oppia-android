@@ -1,6 +1,7 @@
 # Contains common operations to set up a hermetic Android + Bazel build environment for Oppia
 # Android CI workflows. Action prerequisites:
-# - Bazel must be installed, in the path, and be version 6.5.0
+# - Bazel must be installed, in the path, and be version 6.5.0 (when run from the root of the
+#   repository that contains this action, which may be a subdirectory of $GITHUB_WORKSPACE)
 
 # TODO(#1861): Revert SDK pinning for improved CI performance once Bazel is sufficiently stable that
 # we can rely on the automatic SDK provided by GitHub's CI environment.
@@ -10,14 +11,22 @@ description: Sets up the Android & Bazel build environments for Oppia Android
 runs:
   using: composite
   steps:
+    # The version check runs from the root of the repository that contains this action (similar to
+    # how build_vars.bzl is located below) since Bazelisk picks the Bazel version to run based on the
+    # .bazelversion file in the current directory (or its ancestors). This ensures the check is
+    # correct even when the repository is checked out into a subdirectory of $GITHUB_WORKSPACE.
+    # Note that the 'bazel --version' output is captured first (rather than being piped directly to
+    # grep) so that a mismatched version prints a helpful error message instead of the step
+    # immediately exiting due to the 'pipefail' & 'errexit' options that GitHub Actions uses.
     - name: Verify Bazel version
       run: |
-        bazel --version | grep -q 6.5.0
-        HAS_CORRECT_BAZEL_VERSION=$(echo $?)
-        if [[ "$HAS_CORRECT_BAZEL_VERSION" == 1 ]] ; then
-          echo "Expected Bazel 6.5.0 to be installed"
+        cd "${{ github.action_path }}/../../.."
+        BAZEL_VERSION_OUTPUT="$(bazel --version)"
+        if ! grep -qF "6.5.0" <<< "$BAZEL_VERSION_OUTPUT"; then
+          echo "Expected Bazel 6.5.0 to be installed, but found: $BAZEL_VERSION_OUTPUT"
           exit 1
         fi
+        echo "Using expected Bazel version: $BAZEL_VERSION_OUTPUT"
       shell: bash
 
     # Extract the versions from build_vars.bzl, removing spaces and quotes.
