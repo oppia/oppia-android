@@ -12,7 +12,6 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
@@ -6456,7 +6455,7 @@ class StateFragmentTest {
       scrollToViewType(LESSON_PROGRESS_INDICATOR)
 
       scenario.onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        activity.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       }
       testCoroutineDispatchers.runCurrent()
 

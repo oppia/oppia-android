@@ -11,7 +11,6 @@ import android.text.TextPaint
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -487,7 +486,7 @@ class ListItemLeadingMarginSpanTest {
       val (textView, htmlResult) = onActivityWithResult {
         testCoroutineDispatchers.runCurrent()
         val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         val htmlResult = htmlParser.parseOppiaHtml(
           "<ul>" +
             "        <li> Usage Data\", such as:" +
@@ -504,7 +503,7 @@ class ListItemLeadingMarginSpanTest {
         textView.text = htmlResult
         return@onActivityWithResult textView to htmlResult
       }
-      assertThat(displayLocale.getLayoutDirection()).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
+      assertThat(displayLocale.getLayoutDirection()).isEqualTo(View.LAYOUT_DIRECTION_RTL)
       assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
       /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
       val bulletSpans =
@@ -600,7 +599,7 @@ class ListItemLeadingMarginSpanTest {
       val (textView, htmlResult) = onActivityWithResult {
         testCoroutineDispatchers.runCurrent()
         val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         val htmlResult = htmlParser.parseOppiaHtml(
           "<ul>" +
             "        <li> Usage Data\", such as:" +
@@ -617,7 +616,7 @@ class ListItemLeadingMarginSpanTest {
         textView.text = htmlResult
         return@onActivityWithResult textView to htmlResult
       }
-      assertThat(displayLocale.getLayoutDirection()).isEqualTo(ViewCompat.LAYOUT_DIRECTION_LTR)
+      assertThat(displayLocale.getLayoutDirection()).isEqualTo(View.LAYOUT_DIRECTION_LTR)
       assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
       /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
       val bulletSpans =

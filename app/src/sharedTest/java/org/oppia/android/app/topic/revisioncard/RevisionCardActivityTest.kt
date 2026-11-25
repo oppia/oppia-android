@@ -6,7 +6,6 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -201,7 +200,7 @@ class RevisionCardActivityTest {
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
-        ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+        revisionCardToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_RTL
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -223,7 +222,7 @@ class RevisionCardActivityTest {
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
-        ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+        revisionCardToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_RTL
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -245,7 +244,7 @@ class RevisionCardActivityTest {
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
-        ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+        revisionCardToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_LTR
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -267,7 +266,7 @@ class RevisionCardActivityTest {
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
-        ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+        revisionCardToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_LTR
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)

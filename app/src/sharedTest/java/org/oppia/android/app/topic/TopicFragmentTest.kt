@@ -8,7 +8,6 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -341,7 +340,7 @@ class TopicFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onActivity { activity ->
         val topicToolbarTitle: TextView = activity.findViewById(R.id.topic_toolbar_title)
-        ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+        topicToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_RTL
 
         onView(withId(R.id.topic_toolbar_title)).perform(click())
         assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -362,7 +361,7 @@ class TopicFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onActivity { activity ->
         val topicToolbarTitle: TextView = activity.findViewById(R.id.topic_toolbar_title)
-        ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+        topicToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_RTL
 
         onView(withId(R.id.topic_toolbar_title)).perform(click())
         assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -383,7 +382,7 @@ class TopicFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onActivity { activity ->
         val topicToolbarTitle: TextView = activity.findViewById(R.id.topic_toolbar_title)
-        ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+        topicToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_LTR
         onView(withId(R.id.topic_toolbar_title)).perform(click())
         assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(topicToolbarTitle.isSelected).isTrue()
@@ -403,7 +402,7 @@ class TopicFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onActivity { activity ->
         val topicToolbarTitle: TextView = activity.findViewById(R.id.topic_toolbar_title)
-        ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+        topicToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_LTR
         onView(withId(R.id.topic_toolbar_title)).perform(click())
         assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(topicToolbarTitle.isSelected).isFalse()

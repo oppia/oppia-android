@@ -266,6 +266,15 @@ http_jar(
     url = "https://github.com/google/bundletool/releases/download/{0}/bundletool-all-{0}.jar".format(HTTP_DEPENDENCY_VERSIONS["android_bundletool"]["version"]),
 )
 
+# TODO(#6233): Remove this once it's no longer needed with the migration to rules_android 0.7.1.
+# Override Bazel 6.5.0's default R8 8.0.40 used for Java 8 desugaring and D8 dexing since it
+# crashes on synthetic MethodParameters metadata in androidx.core 1.16.0+.
+http_jar(
+    name = "android_gmaven_r8",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["android_gmaven_r8"]["sha"],
+    url = "https://maven.google.com/com/android/tools/r8/{0}/r8-{0}.jar".format(HTTP_DEPENDENCY_VERSIONS["android_gmaven_r8"]["version"]),
+)
+
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),

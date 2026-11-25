@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.TextView
-import androidx.core.view.ViewCompat
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import org.oppia.android.util.R
@@ -241,8 +240,7 @@ class UrlImageParser private constructor(
     ) : AutoAdjustingImageTarget<T, D>(targetConfiguration) {
 
       private fun isRTLMode(): Boolean {
-        return ViewCompat.getLayoutDirection(htmlContentTextView) == ViewCompat
-          .LAYOUT_DIRECTION_RTL
+        return htmlContentTextView.layoutDirection == View.LAYOUT_DIRECTION_RTL
       }
 
       override fun computeBounds(

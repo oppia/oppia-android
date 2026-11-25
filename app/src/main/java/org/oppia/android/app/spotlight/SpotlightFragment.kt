@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.animation.AccelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.Observer
 import com.takusemba.spotlight.OnSpotlightListener
@@ -66,7 +65,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   private var internalProfileId: Int = -1
   private var isSpotlightActive = false
   private val isRtl by lazy {
-    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+    resourceHandler.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
   }
 
   // Since this fragment does not have any view to inflate yet, all the tasks should be done here.

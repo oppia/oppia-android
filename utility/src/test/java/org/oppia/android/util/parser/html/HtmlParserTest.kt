@@ -15,7 +15,6 @@ import android.text.style.URLSpan
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -496,7 +495,7 @@ class HtmlParserTest {
     runWithLaunchedActivity {
       val textView = arrangeTextViewWithLayoutDirection(
         htmlParser,
-        ViewCompat.LAYOUT_DIRECTION_LTR
+        View.LAYOUT_DIRECTION_LTR
       )
       assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
     }
@@ -545,7 +544,7 @@ class HtmlParserTest {
     runWithLaunchedActivity {
       val textView = arrangeTextViewWithLayoutDirection(
         htmlParser,
-        ViewCompat.LAYOUT_DIRECTION_RTL
+        View.LAYOUT_DIRECTION_RTL
       )
       assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
     }
@@ -564,7 +563,7 @@ class HtmlParserTest {
       arrangeTextViewWithLayoutDirection(htmlParser, View.LAYOUT_DIRECTION_RTL)
       val textView = arrangeTextViewWithLayoutDirection(
         htmlParser,
-        ViewCompat.LAYOUT_DIRECTION_LTR
+        View.LAYOUT_DIRECTION_LTR
       )
       assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
     }
@@ -815,7 +814,7 @@ class HtmlParserTest {
       displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
     )
     val textView = TextView(context)
-    ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+    textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
 
     val htmlResult = htmlParser.parseOppiaHtml(
       WORKED_EXAMPLE_MARKUP,
@@ -1636,7 +1635,7 @@ class HtmlParserTest {
   ): TextView {
     return onActivityWithResult {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-      ViewCompat.setLayoutDirection(textView, layoutDirection)
+      textView.layoutDirection = layoutDirection
       htmlParser.parseOppiaHtml(
         "<p>You should know the following before going on:<br></p>" +
           "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +

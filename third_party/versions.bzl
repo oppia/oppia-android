@@ -21,7 +21,7 @@ https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies
 # This list should contain only production (non-test) dependencies.
 MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.activity:activity-compose": "1.4.0",
-    "androidx.annotation:annotation": "1.1.0",
+    "androidx.annotation:annotation-jvm": "1.8.1",
     "androidx.appcompat:appcompat": "1.3.1",
     "androidx.compose.compiler:compiler": "1.5.0",
     "androidx.compose.foundation:foundation": "1.1.1",
@@ -31,17 +31,19 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.compose.runtime:runtime-livedata": "1.1.1",
     "androidx.compose.ui:ui": "1.1.1",
     "androidx.constraintlayout:constraintlayout": "1.1.3",
-    "androidx.core:core": "1.0.1",
-    "androidx.core:core-ktx": "1.0.1",
+    "androidx.core:core": "1.16.0",
+    "androidx.core:core-ktx": "1.16.0",
     "androidx.databinding:databinding-adapters": "3.4.2",
     "androidx.databinding:databinding-common": "3.4.2",
     "androidx.databinding:databinding-compiler": "3.4.2",
     "androidx.databinding:databinding-runtime": "3.4.2",
     "androidx.drawerlayout:drawerlayout": "1.1.0",
     "androidx.fragment:fragment": "1.1.0",
+    "androidx.lifecycle:lifecycle-common-java8": "2.6.2",
     "androidx.lifecycle:lifecycle-extensions": "2.2.0",
     "androidx.lifecycle:lifecycle-livedata-core": "2.2.0",
     "androidx.lifecycle:lifecycle-livedata-ktx": "2.2.0",
+    "androidx.lifecycle:lifecycle-runtime-ktx": "2.6.2",
     "androidx.lifecycle:lifecycle-viewmodel-ktx": "2.2.0",
     "androidx.navigation:navigation-fragment": "2.0.0",
     "androidx.navigation:navigation-fragment-ktx": "2.0.0",
@@ -99,7 +101,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
 # This list should only contain test-only dependencies. These are dependencies that are guaranteed
 # cannot be included in production builds of the app.
 MAVEN_TEST_DEPENDENCY_VERSIONS = {
-    "androidx.arch.core:core-testing": "2.1.0",
+    "androidx.arch.core:core-testing": "2.2.0",
     "androidx.compose.ui:ui-test-junit4": "1.1.1",
     "androidx.test.espresso:espresso-accessibility": "3.1.0",
     "androidx.test.espresso:espresso-contrib": "3.1.0",
@@ -141,6 +143,12 @@ HTTP_DEPENDENCY_VERSIONS = {
     "android_bundletool": {
         "sha": "1e8430002c76f36ce2ddbac8aadfaf2a252a5ffbd534dab64bb255cda63db7ba",
         "version": "1.8.0",
+    },
+    # TODO(#6233): Remove this once it's no longer needed with the migration to rules_android 0.7.1.
+    # Overrides Bazel 6.5.0's default R8 8.0.40 desugarer/dexer, which crashes on androidx.core 1.16.0+.
+    "android_gmaven_r8": {
+        "sha": "f353c4bfbba881dcea7859eb8551b98b48aeef353cbbf572fcc4d7f1677cbe98",
+        "version": "8.12.30",
     },
     "bazel_features": {
         "sha": "4fd9922d464686820ffd8fcefa28ccffa147f7cdc6b6ac0d8b07fde565c65d66",

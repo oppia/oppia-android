@@ -4,9 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
 import androidx.test.core.app.ActivityScenario
@@ -155,7 +155,7 @@ class StateAssemblerMarginBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setExplorationViewMargin(
           textView,
           /* isApplicable= */ true,
@@ -204,7 +204,7 @@ class StateAssemblerMarginBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setQuestionViewMargin(
           textView,
           /* isApplicable= */ true,
@@ -253,7 +253,7 @@ class StateAssemblerMarginBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setQuestionSplitViewMargin(
           textView,
           /* isApplicable= */ true,
@@ -379,7 +379,7 @@ class StateAssemblerMarginBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setExplorationSplitViewMargin(
           textView,
           /* isApplicable= */ true,
@@ -405,7 +405,7 @@ class StateAssemblerMarginBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setExplorationSplitViewMargin(
           textView,
           /* isApplicable= */ true,
@@ -431,7 +431,7 @@ class StateAssemblerMarginBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setExplorationSplitViewMargin(
           textView,
           /* isApplicable= */ true,
@@ -457,7 +457,7 @@ class StateAssemblerMarginBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setExplorationSplitViewMargin(
           textView,
           /* isApplicable= */ true,

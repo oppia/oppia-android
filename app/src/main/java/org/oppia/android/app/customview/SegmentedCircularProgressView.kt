@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -36,7 +35,7 @@ class SegmentedCircularProgressView @JvmOverloads constructor(
   private var sweepAngle = 0f
   private var strokeWidth = 0f
   private val isRtl by lazy {
-    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+    resourceHandler.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
   }
 
   private lateinit var baseRect: RectF

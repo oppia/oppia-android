@@ -3,9 +3,8 @@ package org.oppia.android.domain.oppialogger.analytics
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -31,7 +30,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val applicationLifecycleLoggerProvider: Provider<ApplicationLifecycleLogger>,
   private val listenersProvider: Provider<Set<@JvmSuppressWildcards ApplicationLifecycleListener>>
-) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
+) : ApplicationStartupListener, DefaultLifecycleObserver, Application.ActivityLifecycleCallbacks {
   private lateinit var commandQueue: SendChannel<LifecycleChangeMessage>
 
   override fun onCreateStarted() {
@@ -50,14 +49,16 @@ class ApplicationLifecycleObserver @Inject constructor(
     enqueueMessage(LifecycleChangeMessage::Initialize)
   }
 
+  override fun onStart(owner: LifecycleOwner) = onAppInForeground()
+
+  override fun onStop(owner: LifecycleOwner) = onAppInBackground()
+
   /** Lifecycle callback for when the app is brought to the foreground. */
-  @OnLifecycleEvent(Lifecycle.Event.ON_START)
   fun onAppInForeground() {
     enqueueMessage(LifecycleChangeMessage::AppInForeground)
   }
 
   /** Lifecycle callback for when the app is brought to the background. */
-  @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
     enqueueMessage(LifecycleChangeMessage::AppInBackground)
   }

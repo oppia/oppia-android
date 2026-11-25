@@ -9,8 +9,8 @@ import android.text.Layout
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.style.LeadingMarginSpan
+import android.view.View
 import android.widget.TextView
-import androidx.core.view.ViewCompat
 import org.oppia.android.util.R
 import org.oppia.android.util.locale.OppiaLocale
 import kotlin.math.max
@@ -61,7 +61,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
 
     private val bulletDiameter by lazy { bulletRadius * 2 }
     private val isRtl by lazy {
-      displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+      displayLocale.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
     }
     private val clipBounds by lazy { Rect() }
 
@@ -165,7 +165,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
     }
 
     private val isRtl by lazy {
-      displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+      displayLocale.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
     }
 
     override fun drawLeadingMargin(

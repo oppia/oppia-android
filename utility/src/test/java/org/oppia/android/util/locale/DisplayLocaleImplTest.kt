@@ -3,7 +3,7 @@ package org.oppia.android.util.locale
 import android.app.Application
 import android.content.Context
 import android.content.res.Resources
-import androidx.core.view.ViewCompat
+import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -218,7 +218,7 @@ class DisplayLocaleImplTest {
 
     val layoutDirection = impl.getLayoutDirection()
 
-    assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_LTR)
+    assertThat(layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
   }
 
   @Test
@@ -227,7 +227,7 @@ class DisplayLocaleImplTest {
 
     val layoutDirection = impl.getLayoutDirection()
 
-    assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
+    assertThat(layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_RTL)
   }
 
   @Test

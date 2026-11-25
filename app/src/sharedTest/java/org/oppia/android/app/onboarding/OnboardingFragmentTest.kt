@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onData
@@ -823,7 +822,7 @@ class OnboardingFragmentTest {
 
       val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       val layoutDirection = displayLocale.getLayoutDirection()
-      assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_LTR)
+      assertThat(layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
     }
   }
 
@@ -867,7 +866,7 @@ class OnboardingFragmentTest {
 
       val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       val layoutDirection = displayLocale.getLayoutDirection()
-      assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
+      assertThat(layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_RTL)
     }
   }
 
@@ -913,7 +912,7 @@ class OnboardingFragmentTest {
 
       val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       val layoutDirection = displayLocale.getLayoutDirection()
-      assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_LTR)
+      assertThat(layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
     }
   }
 
@@ -959,7 +958,7 @@ class OnboardingFragmentTest {
 
       val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       val layoutDirection = displayLocale.getLayoutDirection()
-      assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_LTR)
+      assertThat(layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
     }
   }
 
