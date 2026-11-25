@@ -49,11 +49,9 @@ kt_android_library(
     testonly = True,
     srcs = [
         "TestCoroutineDispatchersInjector.kt",
+        "TestCoroutineDispatchersInjectorProvider.kt",
     ],
-    visibility = [
-        "//testing:__pkg__",
-        "//testing/src/main/java/org/oppia/android/testing:__subpackages__",
-    ],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":test_coroutine_dispatchers",
     ],
@@ -123,7 +121,6 @@ kt_android_library(
         ":espresso_impl",
         ":robolectric_impl",
         ":test_coroutine_dispatchers",
-        ":test_coroutine_dispatchers_injector",
         "//:dagger",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
