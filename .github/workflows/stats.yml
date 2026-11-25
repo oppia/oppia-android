@@ -108,11 +108,27 @@ jobs:
         run: |
           echo "PR $PR_NUMBER is merging into $PR_BASE_REF_NAME from https://github.com/$PR_HEAD branch $PR_HEAD_REF_NAME."
 
+      # This checks out the actual true develop branch separately to ensure that the stats check is
+      # run from the latest develop rather than the base branch (which might be different for
+      # chained PRs). Note that this needs to happen before Bazel is set up so that setup-bazel can
+      # compute its Bazelisk cache key from develop's .bazelversion file. The develop, base, and
+      # head branches are each checked out into separate subdirectories (rather than into
+      # $GITHUB_WORKSPACE directly) so that none of them are nested within another's Bazel
+      # workspace.
+      - name: Check out develop repository
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        uses: actions/checkout@v6
+        with:
+          path: develop
+
       - name: Set up Bazel
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         uses: bazel-contrib/setup-bazel@0.19.0
         with:
           bazelisk-cache: true
+          # There's no Bazel workspace in $GITHUB_WORKSPACE for this job, so the develop checkout is
+          # used as the module root (which is where setup-bazel looks for .bazelversion).
+          module-root: develop
 
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
@@ -163,15 +179,6 @@ jobs:
           echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
-
-      # This checks out the actual true develop branch separately to ensure that the stats check is
-      # run from the latest develop rather than the base branch (which might be different for
-      # chained PRs).
-      - name: Check out develop repository
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
-        uses: actions/checkout@v6
-        with:
-          path: develop
 
       - name: Set up build environment
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
