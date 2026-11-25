@@ -22,11 +22,16 @@ interface ImageLoader {
    * Loads a vector drawable at the specified [imageUrl] into the specified [target]. Note that this
    * is an asynchronous operation, and may take a while if the image needs to be downloaded from the
    * internet. Optional [transformations] may be applied to the image.
+   *
+   * If [preserveAspectRatio] is true then the SVG keeps its own aspect ratio (and is centered) when
+   * drawn at the size from the image's filename, like on Oppia web. Otherwise, it's stretched to
+   * fill that size.
    */
   fun loadBlockSvg(
     imageUrl: String,
     target: ImageTarget<BlockPictureDrawable>,
-    transformations: List<ImageTransformation> = listOf()
+    transformations: List<ImageTransformation> = listOf(),
+    preserveAspectRatio: Boolean = false
   )
 
   /**

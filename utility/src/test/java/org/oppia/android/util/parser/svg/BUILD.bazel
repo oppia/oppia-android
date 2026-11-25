@@ -1,0 +1,22 @@
+"""
+Tests for general-purpose utilities for loading & rendering SVGs within the app.
+"""
+
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "ScalableVectorGraphicTest",
+    srcs = ["ScalableVectorGraphicTest.kt"],
+    custom_package = "org.oppia.android.util.parser.svg",
+    test_class = "org.oppia.android.util.parser.svg.ScalableVectorGraphicTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_transformation",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:scalable_vector_graphic",
+    ],
+)
