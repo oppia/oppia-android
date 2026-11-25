@@ -117,7 +117,9 @@ class CoverageRunner(
       }.build()
     }.orEmpty()
 
-    val linesHit = coveredLines.count { it.coverage == Coverage.FULL }
+    val linesHit = coveredLines.count {
+      it.coverage == Coverage.FULL || it.coverage == Coverage.PARTIAL
+    }
 
     val file = File(repoRoot, filePath)
     val fileSha1Hash = calculateSha1(file.absolutePath)

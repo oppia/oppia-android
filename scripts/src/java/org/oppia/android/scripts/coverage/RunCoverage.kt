@@ -287,7 +287,9 @@ class RunCoverage(
     }
 
     val totalLinesFound = aggregatedCoveredLines.size
-    val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
+    val totalLinesHit = aggregatedCoveredLines.count {
+      it.coverage == Coverage.FULL || it.coverage == Coverage.PARTIAL
+    }
 
     val coverageDetails = CoverageDetails.newBuilder()
       .addAllBazelTestTargets(allBazelTestTargets)

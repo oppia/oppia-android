@@ -322,7 +322,7 @@ class CoverageRunnerTest {
               .build()
           )
           .setLinesFound(4)
-          .setLinesHit(1)
+          .setLinesHit(2)
           .build()
       ).build()
 
