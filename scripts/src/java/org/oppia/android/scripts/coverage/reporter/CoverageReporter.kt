@@ -170,7 +170,7 @@ class CoverageReporter(
                     .source-code-col {
                       width: 96%;
                     }
-                    .covered-line, .not-covered-line, .uncovered-line {
+                    .covered-line, .not-covered-line, .partially-covered-line, .uncovered-line {
                       white-space: pre-wrap;
                     }
                     .covered-line {
@@ -178,6 +178,9 @@ class CoverageReporter(
                     }
                     .not-covered-line {
                       background-color: #ffcdd2; /* Light red */
+                    }
+                    .partially-covered-line {
+                      background-color: #fff59d; /* Light yellow */
                     }
                     .uncovered-line {
                       background-color: #f7f7f7; /* light gray */
@@ -226,6 +229,10 @@ class CoverageReporter(
                       margin-left: 4px;
                       background-color: #ffcdd2; /* Light red */
                     }
+                    .legend .partially-covered {
+                      margin-left: 4px;
+                      background-color: #fff59d; /* Light yellow */
+                    }
                     @media screen and (max-width: 768px) {
                       body {
                         padding: 10px;
@@ -246,6 +253,8 @@ class CoverageReporter(
                         <span>Covered</span>
                         <div class="legend-item not-covered"></div>
                         <span>Uncovered</span>
+                        <div class="legend-item partially-covered"></div>
+                        <span>Partially covered</span>
                       </div>
                     </div>
                     <div class="summary-right">
@@ -272,6 +281,7 @@ class CoverageReporter(
               val lineClass = when (coverageMap[lineNumber]?.coverage) {
                 Coverage.FULL -> "covered-line"
                 Coverage.NONE -> "not-covered-line"
+                Coverage.PARTIAL -> "partially-covered-line"
                 else -> "uncovered-line"
               }
               append(

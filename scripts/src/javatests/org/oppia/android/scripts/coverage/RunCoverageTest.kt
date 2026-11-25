@@ -2207,7 +2207,7 @@ class RunCoverageTest {
         .source-code-col {
           width: 96%;
         }
-        .covered-line, .not-covered-line, .uncovered-line {
+        .covered-line, .not-covered-line, .partially-covered-line, .uncovered-line {
           white-space: pre-wrap;
         }
         .covered-line {
@@ -2215,6 +2215,9 @@ class RunCoverageTest {
         }
         .not-covered-line {
           background-color: #ffcdd2; /* Light red */
+        }
+        .partially-covered-line {
+          background-color: #fff59d; /* Light yellow */
         }
         .uncovered-line {
           background-color: #f7f7f7; /* light gray */
@@ -2263,6 +2266,10 @@ class RunCoverageTest {
           margin-left: 4px;
           background-color: #ffcdd2; /* Light red */
         }
+        .legend .partially-covered {
+          margin-left: 4px;
+          background-color: #fff59d; /* Light yellow */
+        }
         @media screen and (max-width: 768px) {
           body {
             padding: 10px;
@@ -2283,6 +2290,8 @@ class RunCoverageTest {
             <span>Covered</span>
             <div class="legend-item not-covered"></div>
             <span>Uncovered</span>
+            <div class="legend-item partially-covered"></div>
+            <span>Partially covered</span>
           </div>
         </div>
         <div class="summary-right">
@@ -2366,6 +2375,58 @@ class RunCoverageTest {
     assertThat(File(outputFilePath).exists()).isTrue()
   }
 
+  @Test
+  fun testRunCoverage_withPartiallyCoveredLine_marksLineAsPartialInProtoReport() {
+    val filePathList = listOf("coverage/main/java/com/example/AddNums.kt")
+    val protoOutputPath = "${tempFolder.root}/coverage_reports/" +
+      "${filePathList.get(0).substringBeforeLast(".")}/coverage_report.pb"
+
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(3, 4), 7)
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    RunCoverage(
+      "${tempFolder.root}",
+      filePathList,
+      ReportFormat.PROTO,
+      longCommandExecutor,
+      scriptBgDispatcher
+    ).execute()
+
+    val coverageReport = loadCoverageReportProto(protoOutputPath)
+    val coveredLines = coverageReport.details.coveredLineList
+
+    val partialCoveredLine = CoveredLine.newBuilder()
+      .setLineNumber(6)
+      .setCoverage(Coverage.PARTIAL)
+      .build()
+
+    assertThat(coveredLines).contains(partialCoveredLine)
+  }
+
   private fun getExpectedMarkdownText(filePath: String): String {
     val markdownText = buildString {
       append("## Coverage Report\n\n")
@@ -2423,7 +2484,7 @@ class RunCoverageTest {
         .source-code-col {
           width: 96%;
         }
-        .covered-line, .not-covered-line, .uncovered-line {
+        .covered-line, .not-covered-line, .partially-covered-line, .uncovered-line {
           white-space: pre-wrap;
         }
         .covered-line {
@@ -2431,6 +2492,9 @@ class RunCoverageTest {
         }
         .not-covered-line {
           background-color: #ffcdd2; /* Light red */
+        }
+        .partially-covered-line {
+          background-color: #fff59d; /* Light yellow */
         }
         .uncovered-line {
           background-color: #f7f7f7; /* light gray */
@@ -2479,6 +2543,10 @@ class RunCoverageTest {
           margin-left: 4px;
           background-color: #ffcdd2; /* Light red */
         }
+        .legend .partially-covered {
+          margin-left: 4px;
+          background-color: #fff59d; /* Light yellow */
+        }
         @media screen and (max-width: 768px) {
           body {
             padding: 10px;
@@ -2499,6 +2567,8 @@ class RunCoverageTest {
             <span>Covered</span>
             <div class="legend-item not-covered"></div>
             <span>Uncovered</span>
+            <div class="legend-item partially-covered"></div>
+            <span>Partially covered</span>
           </div>
         </div>
         <div class="summary-right">
