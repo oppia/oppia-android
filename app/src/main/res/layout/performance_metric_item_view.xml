@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.devoptions.viewlogs.PerformanceMetricItemViewModel" />
+  </data>
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/component_color_shared_item_background_solid_color"
+    android:paddingStart="16dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="12dp">
+    <TextView
+      android:id="@+id/metric_timestamp"
+      style="@style/Subtitle2ViewStart"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text='@{@string/performance_metric_timestamp(viewModel.timestampLabel())}'
+      android:textColor="@color/component_color_shared_text_input_layout_helper_text_color"
+      app:layout_constraintEnd_toStartOf="@id/metric_priority"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+      android:id="@+id/metric_priority"
+      style="@style/Subtitle2ViewCenterVertical"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@color/component_color_shared_activity_toolbar_color"
+      android:paddingStart="12dp"
+      android:paddingTop="4dp"
+      android:paddingEnd="12dp"
+      android:paddingBottom="4dp"
+      android:text="@{viewModel.priorityLabel()}"
+      android:textColor="@color/component_color_shared_secondary_4_text_color"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+      android:id="@+id/metric_name"
+      style="@style/Subtitle1ViewStart"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingTop="10dp"
+      android:text="@{viewModel.metricLabel()}"
+      android:textColor="@color/component_color_shared_primary_dark_text_color"
+      app:layout_constraintTop_toBottomOf="@id/metric_timestamp" />
+    <TextView
+      android:id="@+id/metric_screen"
+      style="@style/Subtitle2ViewStart"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingTop="4dp"
+      android:text="@{viewModel.screenLabel()}"
+      app:layout_constraintTop_toBottomOf="@id/metric_name" />
+    <TextView
+      android:id="@+id/metric_context"
+      style="@style/Subtitle2ViewStart"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingTop="4dp"
+      android:text="@{viewModel.contextLabel()}"
+      app:layout_constraintTop_toBottomOf="@id/metric_screen" />
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:layout_marginTop="12dp"
+      android:background="@color/component_color_shared_divider_color"
+      app:layout_constraintTop_toBottomOf="@id/metric_context" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

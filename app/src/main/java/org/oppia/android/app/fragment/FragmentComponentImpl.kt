@@ -21,6 +21,8 @@ import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedF
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserFragment
 import org.oppia.android.app.devoptions.platformparameters.PlatformParametersFragment
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
+import org.oppia.android.app.devoptions.viewlogs.ViewLogcatFragment
+import org.oppia.android.app.devoptions.viewlogs.ViewPerformanceMetricsFragment
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.help.HelpFragment
@@ -210,6 +212,8 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(unsavedExplorationDialogFragment: UnsavedExplorationDialogFragment)
   fun inject(updatesTabFragment: UpdatesTabFragment)
   fun inject(viewEventLogsFragment: ViewEventLogsFragment)
+  fun inject(viewLogcatFragment: ViewLogcatFragment)
+  fun inject(viewPerformanceMetricsFragment: ViewPerformanceMetricsFragment)
   fun inject(walkthroughFinalFragment: WalkthroughFinalFragment)
   fun inject(walkthroughTopicListFragment: WalkthroughTopicListFragment)
   fun inject(walkthroughWelcomeFragment: WalkthroughWelcomeFragment)

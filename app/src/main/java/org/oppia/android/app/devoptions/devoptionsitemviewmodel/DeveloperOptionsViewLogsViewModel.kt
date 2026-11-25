@@ -10,4 +10,14 @@ class DeveloperOptionsViewLogsViewModel(
   fun onEventLogsClicked() {
     routeToViewEventLogsListener.routeToViewEventLogs()
   }
+
+  /** Routes to the app's Logcat output. */
+  fun onLogcatLogsClicked() {
+    routeToViewEventLogsListener.routeToViewLogcatLogs()
+  }
+
+  /** Routes to performance metrics. */
+  fun onPerformanceMetricsClicked() {
+    routeToViewEventLogsListener.routeToViewPerformanceMetrics()
+  }
 }
