@@ -55,7 +55,7 @@
         android:id="@+id/chapter_name"
         style="@style/TextViewStart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/chapter_white_bg_with_bright_green_border"
         android:fontFamily="sans-serif"
         android:gravity="center|start"

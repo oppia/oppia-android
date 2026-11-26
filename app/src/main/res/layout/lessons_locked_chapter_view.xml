@@ -65,7 +65,7 @@
         android:id="@+id/chapter_name"
         style="@style/TextViewStart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/component_color_lessons_tab_activity_lessons_locked_chapter_name_background_color"
         android:fontFamily="sans-serif"
         android:gravity="center|start"
