@@ -11,7 +11,6 @@ import android.view.View
 import android.view.View.TEXT_ALIGNMENT_VIEW_START
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -246,7 +245,7 @@ class StoryFragmentTest {
     ) {
       onActivity { activity ->
         val storyToolbarTitle: TextView = activity.findViewById(R.id.story_toolbar_title)
-        ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+        storyToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_RTL
 
         onView(withId(R.id.story_toolbar_title)).perform(click())
         assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -267,7 +266,7 @@ class StoryFragmentTest {
     ) {
       onActivity { activity ->
         val storyToolbarTitle: TextView = activity.findViewById(R.id.story_toolbar_title)
-        ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+        storyToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_RTL
 
         onView(withId(R.id.story_toolbar_title)).perform(click())
         assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -288,7 +287,7 @@ class StoryFragmentTest {
     ) {
       onActivity { activity ->
         val storyToolbarTitle: TextView = activity.findViewById(R.id.story_toolbar_title)
-        ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+        storyToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_LTR
         onView(withId(R.id.story_toolbar_title)).perform(click())
         assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(storyToolbarTitle.isSelected).isEqualTo(true)
@@ -308,7 +307,7 @@ class StoryFragmentTest {
     ) {
       onActivity { activity ->
         val storyToolbarTitle: TextView = activity.findViewById(R.id.story_toolbar_title)
-        ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+        storyToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_LTR
 
         onView(withId(R.id.story_toolbar_title)).perform(click())
         assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -459,7 +458,7 @@ class StoryFragmentTest {
           targetViewId = R.id.chapter_summary
         )
       ).check { view, _ ->
-        ViewCompat.setLayoutDirection(view, ViewCompat.LAYOUT_DIRECTION_LTR)
+        view.layoutDirection = View.LAYOUT_DIRECTION_LTR
         val chapterSummayTextview: TextView = view.findViewById<TextView>(
           R.id.chapter_summary
         )
@@ -488,7 +487,7 @@ class StoryFragmentTest {
           targetViewId = R.id.chapter_summary
         )
       ).check { view, _ ->
-        ViewCompat.setLayoutDirection(view, ViewCompat.LAYOUT_DIRECTION_RTL)
+        view.layoutDirection = View.LAYOUT_DIRECTION_RTL
         val chapterSummayTextview: TextView = view.findViewById<TextView>(
           R.id.chapter_summary
         )

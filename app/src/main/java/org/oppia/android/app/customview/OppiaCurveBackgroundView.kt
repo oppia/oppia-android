@@ -9,7 +9,6 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -35,7 +34,7 @@ class OppiaCurveBackgroundView @JvmOverloads constructor(
   @Inject lateinit var resourceHandler: AppLanguageResourceHandler
 
   private val isRtl by lazy {
-    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+    resourceHandler.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
   }
 
   private val orientation = Resources.getSystem().configuration.orientation

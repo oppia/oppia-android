@@ -3,8 +3,8 @@ package org.oppia.android.app.home.recentlyplayed
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
 import androidx.recyclerview.widget.RecyclerView
@@ -374,7 +374,7 @@ class RecentlyPlayedFragmentTest {
     )
     runWithLaunchedActivityAndAddedFragment(profileId.internalId) {
       onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        activity.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       }
       testCoroutineDispatchers.runCurrent()
       onActivity { activity ->
@@ -416,7 +416,7 @@ class RecentlyPlayedFragmentTest {
     )
     runWithLaunchedActivityAndAddedFragment(profileId.internalId) {
       onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        activity.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       }
       testCoroutineDispatchers.runCurrent()
       onActivity { activity ->
@@ -465,7 +465,7 @@ class RecentlyPlayedFragmentTest {
     )
     runWithLaunchedActivityAndAddedFragment(profileId.internalId) {
       onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        activity.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       }
       testCoroutineDispatchers.runCurrent()
       onActivity { activity ->
@@ -520,7 +520,7 @@ class RecentlyPlayedFragmentTest {
     )
     runWithLaunchedActivityAndAddedFragment(profileId.internalId) {
       onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        activity.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       }
       testCoroutineDispatchers.runCurrent()
       onActivity { activity ->
@@ -596,7 +596,7 @@ class RecentlyPlayedFragmentTest {
 
     runWithLaunchedActivityAndAddedFragment(profileId.internalId) {
       onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        activity.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       }
       testCoroutineDispatchers.runCurrent()
       onActivity { activity ->

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -224,7 +223,7 @@ class ResumeLessonFragmentTest {
   fun testResumeLessonFragment_lessonDescriptionIsInRtl_isDisplayedCorrectly() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
       scenario.onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        activity.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         testCoroutineDispatchers.runCurrent()
         val topicDescriptionTextview: TextView = activity.findViewById(
           R.id.resume_lesson_chapter_description_text_view
@@ -238,7 +237,7 @@ class ResumeLessonFragmentTest {
   fun testResumeLessonFragment_lessonDescriptionIsInLtr_isDisplayedCorrectly() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
       scenario.onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
+        activity.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_LTR
         testCoroutineDispatchers.runCurrent()
         val topicDescriptionTextview: TextView = activity.findViewById(
           R.id.resume_lesson_chapter_description_text_view

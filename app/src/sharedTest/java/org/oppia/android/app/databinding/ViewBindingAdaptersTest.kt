@@ -4,9 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -159,7 +159,7 @@ class ViewBindingAdaptersTest {
     runWithLaunchedActivity {
       val imageViewDropDown = onActivityWithResult {
         val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-        ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
+        imageViewDropDown.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setRotationAnimation(
           imageViewDropDown,
           /* isClockwise= */ true,
@@ -177,7 +177,7 @@ class ViewBindingAdaptersTest {
     runWithLaunchedActivity {
       val imageViewDropDown = onActivityWithResult {
         val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-        ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
+        imageViewDropDown.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setRotationAnimation(
           imageViewDropDown,
           /* isClockwise= */ false,

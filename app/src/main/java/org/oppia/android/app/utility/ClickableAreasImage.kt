@@ -4,7 +4,6 @@ import android.graphics.RectF
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
-import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
@@ -117,7 +116,7 @@ class ClickableAreasImage(
       // are from left-to-right with an upper left origin and touch coordinates from Android start
       // from the right in RTL mode. Thus, to avoid this situation, force layout direction to LTR in
       // all situations.
-      ViewCompat.setLayoutDirection(parentView, ViewCompat.LAYOUT_DIRECTION_LTR)
+      parentView.layoutDirection = View.LAYOUT_DIRECTION_LTR
       newView.layoutParams = layoutParams
       newView.x = imageRect.left
       newView.y = imageRect.top

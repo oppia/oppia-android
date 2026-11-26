@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -293,7 +292,7 @@ class ExplorationActivityTest {
     ) {
       onActivity { activity ->
         val toolbarTitle: TextView = activity.findViewById(R.id.exploration_toolbar_title)
-        ViewCompat.setLayoutDirection(toolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+        toolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_RTL
 
         onView(withId(R.id.exploration_toolbar_title)).perform(click())
         assertThat(toolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -316,7 +315,7 @@ class ExplorationActivityTest {
     ) {
       onActivity { activity ->
         val toolbarTitle: TextView = activity.findViewById(R.id.exploration_toolbar_title)
-        ViewCompat.setLayoutDirection(toolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+        toolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_RTL
 
         onView(withId(R.id.exploration_toolbar_title)).perform(click())
         assertThat(toolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -339,7 +338,7 @@ class ExplorationActivityTest {
     ) {
       onActivity { activity ->
         val toolbarTitle: TextView = activity.findViewById(R.id.exploration_toolbar_title)
-        ViewCompat.setLayoutDirection(toolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+        toolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_LTR
 
         onView(withId(R.id.exploration_toolbar_title)).perform(click())
         assertThat(toolbarTitle.isSelected).isEqualTo(true)
@@ -362,7 +361,7 @@ class ExplorationActivityTest {
     ) {
       onActivity { activity ->
         val toolbarTitle: TextView = activity.findViewById(R.id.exploration_toolbar_title)
-        ViewCompat.setLayoutDirection(toolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+        toolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_LTR
 
         onView(withId(R.id.exploration_toolbar_title)).perform(click())
         assertThat(toolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)

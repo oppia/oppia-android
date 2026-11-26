@@ -234,7 +234,7 @@ class EdgeToEdgeHelperTest {
       EdgeToEdgeHelper.applyToNavigationDrawer(
         activity, drawerRoot, drawerContent, navigationView, STATUS_BAR_COLOR
       )
-      ViewCompat.setLayoutDirection(drawerRoot, ViewCompat.LAYOUT_DIRECTION_LTR)
+      drawerRoot.layoutDirection = View.LAYOUT_DIRECTION_LTR
       dispatchInsets(drawerRoot)
       dispatchInsets(drawerContent)
 
@@ -246,7 +246,7 @@ class EdgeToEdgeHelperTest {
       assertThat(drawerRoot.paddingBottom).isEqualTo(44)
       assertThat(navigationView.fitsSystemWindows).isFalse()
 
-      ViewCompat.setLayoutDirection(drawerRoot, ViewCompat.LAYOUT_DIRECTION_RTL)
+      drawerRoot.layoutDirection = View.LAYOUT_DIRECTION_RTL
       dispatchInsets(drawerRoot)
 
       assertThat(drawerRoot.paddingLeft).isEqualTo(1)

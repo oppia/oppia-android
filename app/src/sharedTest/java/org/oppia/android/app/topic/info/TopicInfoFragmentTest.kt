@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -222,7 +221,7 @@ class TopicInfoFragmentTest {
       topicId = TEST_TOPIC_ID
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL }
+      scenario.onActivity { it.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL }
       onView(withId(R.id.topic_description_text_view)).check { view, _ ->
         val topicDescriptionTextview: TextView = view.findViewById(
           R.id.topic_description_text_view
@@ -240,7 +239,7 @@ class TopicInfoFragmentTest {
       topicId = TEST_TOPIC_ID
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR }
+      scenario.onActivity { it.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_LTR }
       onView(withId(R.id.topic_description_text_view)).check { view, _ ->
         val topicDescriptionTextview: TextView = view.findViewById(
           R.id.topic_description_text_view

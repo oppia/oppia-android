@@ -4,9 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -153,7 +153,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setExplorationViewPadding(
           textView,
           /* isApplicable= */ true,
@@ -202,7 +202,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setQuestionViewPadding(
           textView,
           /* isApplicable= */ true,
@@ -251,7 +251,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setQuestionSplitViewPadding(
           textView,
           /* isApplicable= */ true,
@@ -377,7 +377,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setExplorationSplitViewPadding(
           textView,
           /* isApplicable= */ true,
@@ -403,7 +403,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setExplorationSplitViewPadding(
           textView,
           /* isApplicable= */ true,
@@ -429,7 +429,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setExplorationSplitViewPadding(
           textView,
           /* isApplicable= */ true,
@@ -455,7 +455,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
     runWithLaunchedActivity {
       val textView = onActivityResult {
         val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         setExplorationSplitViewPadding(
           textView,
           /* isApplicable= */ true,

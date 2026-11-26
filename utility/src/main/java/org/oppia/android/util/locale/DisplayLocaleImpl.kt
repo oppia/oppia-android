@@ -2,9 +2,9 @@ package org.oppia.android.util.locale
 
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.text.TextUtils
 import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
-import androidx.core.text.TextUtilsCompat
 import org.oppia.android.app.model.OppiaLocaleContext
 import java.text.DateFormat
 import java.text.NumberFormat
@@ -66,7 +66,7 @@ class DisplayLocaleImpl(
     dateTimeFormat.format(Date(timestampMillis))
 
   override fun getLayoutDirection(): Int {
-    return TextUtilsCompat.getLayoutDirectionFromLocale(formattingLocale)
+    return TextUtils.getLayoutDirectionFromLocale(formattingLocale)
   }
 
   override fun String.formatInLocaleWithWrapping(vararg args: CharSequence): String {

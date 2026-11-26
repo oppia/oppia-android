@@ -1,7 +1,6 @@
 package org.oppia.android.app.databinding;
 
 import android.view.View;
-import androidx.core.view.ViewCompat;
 import androidx.databinding.BindingAdapter;
 
 /**
@@ -127,6 +126,6 @@ public final class StateAssemblerPaddingBindingAdapters {
   }
 
   private static boolean isRtlLayout(View view) {
-    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL;
+    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
   }
 }

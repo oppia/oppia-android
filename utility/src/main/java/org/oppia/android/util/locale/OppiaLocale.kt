@@ -263,8 +263,8 @@ sealed class OppiaLocale {
     abstract fun computeDateTimeString(timestampMillis: Long): String
 
     /**
-     * Returns the [androidx.core.view.ViewCompat] layout direction that should be used in layouts
-     * that display app strings localized by this locale.
+     * Returns the [android.view.View] layout direction that should be used in layouts that display
+     * app strings localized by this locale.
      */
     abstract fun getLayoutDirection(): Int
 

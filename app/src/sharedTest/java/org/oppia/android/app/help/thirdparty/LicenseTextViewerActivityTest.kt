@@ -6,7 +6,6 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -153,7 +152,7 @@ class LicenseTextViewerActivityTest {
       onActivity { activity ->
         val activityToolbarTitle: TextView =
           activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
-        ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+        activityToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_RTL
 
         onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
           .perform(ViewActions.click())
@@ -174,7 +173,7 @@ class LicenseTextViewerActivityTest {
       onActivity { activity ->
         val activityToolbarTitle: TextView =
           activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
-        ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+        activityToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_RTL
 
         onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
           .perform(ViewActions.click())
@@ -195,7 +194,7 @@ class LicenseTextViewerActivityTest {
       onActivity { activity ->
         val activityToolbarTitle: TextView =
           activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
-        ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+        activityToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_LTR
 
         onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
           .perform(ViewActions.click())
@@ -216,7 +215,7 @@ class LicenseTextViewerActivityTest {
       onActivity { activity ->
         val activityToolbarTitle: TextView =
           activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
-        ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+        activityToolbarTitle.layoutDirection = View.LAYOUT_DIRECTION_LTR
 
         onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
           .perform(ViewActions.click())
