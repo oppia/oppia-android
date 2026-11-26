@@ -148,7 +148,7 @@ HTTP_DEPENDENCY_VERSIONS = {
     # Overrides Bazel 6.5.0's default R8 8.0.40 desugarer/dexer, which crashes on androidx.core 1.16.0+.
     "android_gmaven_r8": {
         "sha": "f353c4bfbba881dcea7859eb8551b98b48aeef353cbbf572fcc4d7f1677cbe98",
-        "version": "8.12.30",
+        "version": MAVEN_PRODUCTION_DEPENDENCY_VERSIONS["com.android.tools:r8"],
     },
     "bazel_features": {
         "sha": "4fd9922d464686820ffd8fcefa28ccffa147f7cdc6b6ac0d8b07fde565c65d66",

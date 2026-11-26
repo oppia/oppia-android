@@ -49,17 +49,11 @@ class ApplicationLifecycleObserver @Inject constructor(
     enqueueMessage(LifecycleChangeMessage::Initialize)
   }
 
-  override fun onStart(owner: LifecycleOwner) = onAppInForeground()
-
-  override fun onStop(owner: LifecycleOwner) = onAppInBackground()
-
-  /** Lifecycle callback for when the app is brought to the foreground. */
-  fun onAppInForeground() {
+  override fun onStart(owner: LifecycleOwner) {
     enqueueMessage(LifecycleChangeMessage::AppInForeground)
   }
 
-  /** Lifecycle callback for when the app is brought to the background. */
-  fun onAppInBackground() {
+  override fun onStop(owner: LifecycleOwner) {
     enqueueMessage(LifecycleChangeMessage::AppInBackground)
   }
 
