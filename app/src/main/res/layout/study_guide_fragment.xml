@@ -38,68 +38,72 @@
         app:data="@{viewModel.sectionItemsLiveData}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-      <androidx.constraintlayout.widget.ConstraintLayout
+      <LinearLayout
         android:id="@+id/study_guide_navigation_card_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp">
-
-        <androidx.constraintlayout.widget.Guideline
-          android:id="@+id/study_guide_navigation_center_guideline"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="vertical"
-          app:layout_constraintGuide_percent="0.5" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:weightSum="2">
 
         <com.google.android.material.button.MaterialButton
           android:id="@+id/study_guide_see_all_navigation_button"
           style="@style/Widget.MaterialComponents.Button.OutlinedButton"
           android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="28dp"
-          android:layout_marginEnd="8dp"
-          android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
+          android:layout_height="match_parent"
+          android:layout_marginEnd="4dp"
+          android:layout_weight="1"
+          android:gravity="start|center_vertical"
           android:letterSpacing="0"
+          android:maxLines="1"
           android:minHeight="48dp"
           android:onClick="@{() -> viewModel.onSeeAllStudyGuidesClicked()}"
+          android:paddingStart="8dp"
+          android:paddingEnd="8dp"
           android:text="@string/study_guide_see_all_study_guides"
+          android:textAlignment="viewStart"
           android:textAllCaps="false"
           android:textColor="@color/component_color_shared_primary_text_color"
+          app:autoSizeMaxTextSize="12sp"
+          app:autoSizeMinTextSize="9sp"
+          app:autoSizeStepGranularity="1sp"
+          app:autoSizeTextType="uniform"
           app:icon="@drawable/ic_profile_exit"
-          app:iconGravity="textStart"
-          app:iconPadding="8dp"
-          app:iconSize="24dp"
+          app:iconGravity="start"
+          app:iconPadding="6dp"
+          app:iconSize="20dp"
           app:iconTint="@color/component_color_shared_primary_text_color"
-          app:layout_constraintEnd_toStartOf="@id/study_guide_navigation_center_guideline"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
           app:strokeColor="@color/component_color_shared_button_active_stroke_color" />
 
         <com.google.android.material.button.MaterialButton
           android:id="@+id/study_guide_next_navigation_button"
           style="@style/Widget.MaterialComponents.Button"
           android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="8dp"
-          android:layout_marginEnd="28dp"
-          android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
+          android:layout_height="match_parent"
+          android:layout_marginStart="4dp"
+          android:layout_weight="1"
           android:contentDescription="@{viewModel.computeContentDescriptionText(viewModel.nextSubtopicLiveData)}"
+          android:gravity="start|center_vertical"
           android:letterSpacing="0"
           android:minHeight="48dp"
           android:onClick="@{() -> viewModel.onNextCardClicked()}"
-          android:paddingStart="12dp"
-          android:paddingEnd="12dp"
+          android:paddingStart="8dp"
+          android:paddingEnd="8dp"
           android:text="@{viewModel.computeNextButtonText(viewModel.nextSubtopicLiveData)}"
+          android:textAlignment="viewStart"
           android:textAllCaps="false"
+          android:textSize="12sp"
           android:visibility="@{viewModel.subtopicIndex &lt; viewModel.subtopicListSize ? View.VISIBLE : View.GONE}"
           app:backgroundTint="@color/component_color_shared_primary_button_background_color"
           app:icon="@drawable/ic_arrow_forward_black_24dp"
-          app:iconGravity="textStart"
-          app:iconPadding="8dp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toEndOf="@id/study_guide_navigation_center_guideline"
-          app:layout_constraintTop_toTopOf="parent" />
-      </androidx.constraintlayout.widget.ConstraintLayout>
+          app:iconGravity="start"
+          app:iconPadding="6dp"
+          app:iconSize="20dp" />
+      </LinearLayout>
     </LinearLayout>
   </androidx.core.widget.NestedScrollView>
 </layout>

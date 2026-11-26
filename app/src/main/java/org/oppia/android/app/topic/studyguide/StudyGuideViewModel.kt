@@ -1,5 +1,10 @@
 package org.oppia.android.app.topic.studyguide
 
+import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.LiveData
@@ -132,11 +137,18 @@ class StudyGuideViewModel private constructor(
   }
 
   /** Returns the next button's label, including the next [subtopic]'s title. */
-  fun computeNextButtonText(subtopic: EphemeralSubtopic?): String {
-    return appLanguageResourceHandler.getStringInLocaleWithWrapping(
-      R.string.study_guide_next_study_guide,
-      computeTitleText(subtopic)
-    )
+  fun computeNextButtonText(subtopic: EphemeralSubtopic?): CharSequence {
+    val label = appLanguageResourceHandler.getStringInLocale(R.string.study_guide_next_study_guide)
+    val title = computeTitleText(subtopic)
+    return SpannableStringBuilder().apply {
+      append(label)
+      setSpan(StyleSpan(Typeface.BOLD), 0, label.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+      append("\n")
+      val titleStart = length
+      append(title)
+      setSpan(StyleSpan(Typeface.NORMAL), titleStart, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+      setSpan(RelativeSizeSpan(0.9f), titleStart, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    }
   }
 
   /** Returns the content description for the next navigation button for the given [subtopic]. */
