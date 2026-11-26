@@ -2252,7 +2252,6 @@ class PlatformParametersFragmentTest {
      */
     fun inject(platformParametersFragmentTest: PlatformParametersFragmentTest)
     fun getCacheStoreFactory(): PersistentCacheStore.Factory
-    fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
     @BackgroundDispatcher
     override fun getBackgroundDispatcher(): CoroutineDispatcher
   }
