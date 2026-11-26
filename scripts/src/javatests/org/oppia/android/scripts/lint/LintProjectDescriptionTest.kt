@@ -737,6 +737,414 @@ class LintProjectDescriptionTest {
     assertThat(xmlContent).doesNotContain("android=\"false\"")
   }
 
+  @Test
+  fun testGenerateProjectDescriptionXml_missingDeclaredJar_failsFastWithActionableError() {
+    registerCqueryResults(appDeclaredPaths = listOf("external/missing/missing-1.0.jar"))
+
+    val exception = assertThrows<IllegalStateException> {
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    }
+
+    assertThat(exception).hasMessageThat().contains("Android Lint cannot run")
+    assertThat(exception).hasMessageThat().contains("1 AAR/JAR artifact(s)")
+    assertThat(exception).hasMessageThat().contains("external/missing/missing-1.0.jar")
+    assertThat(exception).hasMessageThat()
+      .contains(File(tempFolder.root, "bazel-out/external/missing/missing-1.0.jar").absolutePath)
+    assertThat(exception).hasMessageThat().contains("needed by layer(s): app)")
+    assertThat(exception).hasMessageThat().contains("Fetch/build the Bazel dependencies")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingDeclaredAar_failsFastWithActionableError() {
+    val missingAar = "external/missing_aar/file/missing/missing-1.0.aar"
+    registerCqueryResults(appDeclaredPaths = listOf(missingAar))
+
+    val exception = assertThrows<IllegalStateException> {
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    }
+
+    assertThat(exception).hasMessageThat().contains("Android Lint cannot run")
+    assertThat(exception).hasMessageThat().contains(missingAar)
+    assertThat(exception).hasMessageThat().contains("needed by layer(s): app)")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingDeclaredDependency_doesNotWriteProjectDescription() {
+    registerCqueryResults(appDeclaredPaths = listOf("external/missing/missing-1.0.jar"))
+
+    assertThrows<IllegalStateException> {
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    }
+
+    assertThat(File(workingDirectory, "lint-project-description.xml").exists()).isFalse()
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_someDeclaredDependenciesMissing_reportsOnlyMissingOnes() {
+    createExternalJar("external/present/present-1.0.jar")
+    registerCqueryResults(
+      appDeclaredPaths = listOf(
+        "external/present/present-1.0.jar",
+        "external/absent/absent-1.0.jar"
+      )
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    }
+
+    // A partial classpath must never be silently accepted.
+    assertThat(exception).hasMessageThat().contains("1 AAR/JAR artifact(s)")
+    assertThat(exception).hasMessageThat().contains("external/absent/absent-1.0.jar")
+    assertThat(exception).hasMessageThat().doesNotContain("present-1.0.jar")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingDependencyDeclaredByAllLayers_listsOnceWithLayers() {
+    registerCqueryResults(
+      appDeclaredPaths = listOf("external/shared/shared-1.0.jar"),
+      otherLayerDeclaredPaths = listOf("external/shared/shared-1.0.jar")
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    }
+
+    assertThat(exception).hasMessageThat().contains("1 AAR/JAR artifact(s)")
+    assertThat(exception).hasMessageThat()
+      .contains("needed by layer(s): app, domain, testing, utility, data)")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_manyMissingDependencies_truncatesReportedList() {
+    registerCqueryResults(
+      appDeclaredPaths = (1..30).map { "external/many/lib-$it.jar" }
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    }
+
+    assertThat(exception).hasMessageThat().contains("30 AAR/JAR artifact(s)")
+    assertThat(exception).hasMessageThat().contains("... and 5 more.")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingNonArchiveOutputs_doNotFailFast() {
+    // Only AAR/JAR outputs are classpath entries; other declared outputs (e.g. sources) are not
+    // verified here.
+    registerCqueryResults(
+      appDeclaredPaths = listOf(
+        "app/src/main/java/org/oppia/android/app/Missing.kt",
+        "bazel-out/k8-fastbuild/bin/app/missing_kt-kapt-gensrc.srcjar"
+      )
+    )
+
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
+
+    assertThat(xmlContent).doesNotContain("<classpath jar=")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingCompileAvoidanceJars_doNotFailFast() {
+    // Compile-avoidance / annotation-processing JARs are build-system intermediates that are
+    // never placed on the Lint classpath; they may not exist even in a warm build.
+    registerCqueryResults(
+      appDeclaredPaths = listOf(
+        "bazel-out/k8-fastbuild/bin/app/app_kt-hjar.jar",
+        "bazel-out/k8-fastbuild/bin/app/app_kt-java-hjar.jar",
+        "bazel-out/k8-fastbuild/bin/app/app_kt.abi.jar",
+        "bazel-out/k8-fastbuild/bin/app/app_kt-native-header.jar",
+        "bazel-out/k8-fastbuild/bin/app/app_kt-kapt-generated-stub.jar",
+        "bazel-out/k8-fastbuild/bin/app/app_kt-gensrc.jar",
+        "bazel-out/k8-fastbuild/bin/app/app_kt-kapt-gensrc.jar",
+        "bazel-out/k8-fastbuild/bin/app/app_kt-java-gensrc.jar"
+      )
+    )
+
+    // None of these paths exist on disk; a broad check would throw IllegalStateException. The
+    // narrowed check must succeed because compile-avoidance JARs are never Lint classpath entries.
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
+
+    assertThat(xmlContent).doesNotContain("<classpath jar=")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingExecConfigJars_doNotFailFast() {
+    // Outputs built in a Bazel exec configuration (k8-opt-exec-*, -exec-/) are build tools,
+    // not application code, and are never on the Lint classpath.
+    registerCqueryResults(
+      appDeclaredPaths = listOf(
+        "bazel-out/k8-opt-exec-2B5CBBC6/bin/external/rules_java/toolchains/platformclasspath.jar",
+        "bazel-out/k8-opt-exec-2B5CBBC6/bin/external/io_bazel_rules_kotlin/kotlin/compiler.jar"
+      )
+    )
+
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
+
+    assertThat(xmlContent).doesNotContain("<classpath jar=")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingBuildToolJars_doNotFailFast() {
+    // JARs from Bazel build-rule packages (rules_jvm_external, rules_java,
+    // io_bazel_rules_kotlin, remote_java_tools) are build-system internals that Lint never needs.
+    registerCqueryResults(
+      appDeclaredPaths = listOf(
+        "external/rules_jvm_external/coursier/cli.jar",
+        "external/rules_java/toolchains/java_toolchain.jar",
+        "external/io_bazel_rules_kotlin/kotlin/kotlin-stdlib.jar",
+        "external/remote_java_tools/java_tools.jar"
+      )
+    )
+
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
+
+    assertThat(xmlContent).doesNotContain("<classpath jar=")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingInternalModuleAar_doesNotFailFast() {
+    // Internal module .aar outputs declared by kt_android_library are not external AAR
+    // dependencies and are not consumed by Lint (which models layers via <dep module="..."/>).
+    registerCqueryResults(
+      appDeclaredPaths = listOf(
+        "bazel-out/k8-fastbuild/bin/app/app.aar",
+        "bazel-out/k8-fastbuild/bin/domain/domain.aar"
+      )
+    )
+
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
+
+    assertThat(xmlContent).doesNotContain("<aar file=")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingIntermediateAarJar_doesNotFailFast() {
+    // Intermediate AAR extraction outputs (classes_and_libs_merged.jar) are redundant with the
+    // retained AAR (which already exposes equivalent classes to Lint via its extracted directory).
+    registerCqueryResults(
+      appDeclaredPaths = listOf(
+        "bazel-out/k8-fastbuild/bin/external/maven/androidx/appcompat/appcompat/1.4.0/" +
+          "_aar/appcompat/classes_and_libs_merged.jar",
+        "bazel-out/k8-fastbuild/bin/external/maven/androidx/core/core/1.7.0/" +
+          "_aar/core/classes.jar"
+      )
+    )
+
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
+
+    assertThat(xmlContent).doesNotContain("<classpath jar=")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingExternalAarResourcesJar_doesNotFailFast() {
+    // External AAR synthetic resource JARs are not needed since Lint extracts the AAR's res/ dir.
+    registerCqueryResults(
+      appDeclaredPaths = listOf(
+        "bazel-out/k8-fastbuild/bin/external/maven/androidx/appcompat/appcompat/1.4.0/" +
+          "appcompat-1.4.0_resources.jar"
+      )
+    )
+
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
+
+    assertThat(xmlContent).doesNotContain("<classpath jar=")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingTestRunnerBinaryJar_doesNotFailFast() {
+    // Test runner executable JARs (_test.jar, _deploy.jar) are terminal targets, not classpath
+    // JARs.
+    registerCqueryResults(
+      appDeclaredPaths = listOf(
+        "bazel-out/k8-fastbuild/bin/app/src_test_java_org_oppia_android_app_ActivityTest_test.jar",
+        "bazel-out/k8-fastbuild/bin/app/src_test_java_org_oppia_android_app_ActivityTest_deploy.jar"
+      )
+    )
+
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
+
+    assertThat(xmlContent).doesNotContain("<classpath jar=")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_externalDeployJar_isRetainedOnClasspath() {
+    // External prebuilt deploy JARs (e.g. external/android_tools/all_android_tools_deploy.jar)
+    // must not be treated as internal test runner binaries; they are retained on the classpath.
+    val externalDeployJar = "external/android_tools/all_android_tools_deploy.jar"
+    createExternalJar(externalDeployJar)
+    registerCqueryResults(appDeclaredPaths = listOf(externalDeployJar))
+
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
+
+    val expectedJar = File(tempFolder.root, "bazel-out/$externalDeployJar").absolutePath
+    assertThat(xmlContent).contains("<classpath jar=\"$expectedJar\"/>")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingBuildOutputs_doNotFailFast() {
+    // Outputs under bazel-out only exist once their specific producing target is built (and
+    // cquery deps(//app:*) declares them for every test target too), so they can't be a
+    // precondition for running Lint. Only fetched 'external/' repository files are verified.
+    registerCqueryResults(
+      appDeclaredPaths = listOf(
+        "bazel-out/k8-fastbuild/bin/domain/domain_kt.jar",
+        "bazel-out/k8-fastbuild/bin/app/app_kt-kapt-generated-class.jar",
+        "bazel-out/k8-fastbuild/bin/app/src/test/java/org/oppia/android/app/FooTest_lib_kt.jar",
+        "bazel-out/k8-fastbuild/bin/app/libsrc/sharedTest/java/org/oppia/android/app/BarTest.jar",
+        "bazel-out/k8-fastbuild/bin/external/maven/missing/missing-1.0.aar",
+        "external/androidsdk/dummy.jar"
+      )
+    )
+
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
+
+    assertThat(xmlContent).doesNotContain("<classpath jar=")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_missingLintClasspathJar_stillFailsFast() {
+    // A regular application JAR (e.g. a generated proto JAR) is a Lint classpath entry and must
+    // trigger a fail-fast when it is missing, even if compile-avoidance JARs are also declared.
+    registerCqueryResults(
+      appDeclaredPaths = listOf(
+        // These compile-avoidance JARs are excluded and must not trigger the check.
+        "bazel-out/k8-fastbuild/bin/app/app_kt-hjar.jar",
+        "bazel-out/k8-fastbuild/bin/app/app_kt.abi.jar",
+        // This is a genuine Lint classpath entry that is missing.
+        "external/lib/missing-1.0.jar"
+      )
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    }
+
+    assertThat(exception).hasMessageThat().contains("Android Lint cannot run")
+    assertThat(exception).hasMessageThat().contains("1 AAR/JAR artifact(s)")
+    assertThat(exception).hasMessageThat()
+      .contains("external/lib/missing-1.0.jar")
+    // The compile-avoidance JARs must not appear in the error message.
+    assertThat(exception).hasMessageThat().doesNotContain("app_kt-hjar.jar")
+    assertThat(exception).hasMessageThat().doesNotContain("app_kt.abi.jar")
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_allDeclaredDependenciesPresent_includesEachOnClasspath() {
+    val generatedProtoJar =
+      "bazel-out/k8-fastbuild/bin/model/src/main/proto/libgenerated_proto-lite.jar"
+    val declaredJars = listOf(
+      "external/lib_a/lib-a-1.0.jar",
+      "external/lib_b/lib-b-2.0.jar",
+      generatedProtoJar
+    )
+    createExternalJar("external/lib_a/lib-a-1.0.jar")
+    createExternalJar("external/lib_b/lib-b-2.0.jar")
+    // Generated outputs resolve against the repository root via the bazel-out symlink.
+    createJarAtRepoRelativePath(generatedProtoJar)
+    registerCqueryResults(appDeclaredPaths = declaredJars)
+
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
+
+    // Compare the actual resolved entries, not just their count.
+    val classpathJars = Regex("""classpath jar="([^"]+)"""").findAll(xmlContent)
+      .map { it.groupValues[1] }.toList()
+    assertThat(classpathJars).containsExactly(
+      File(tempFolder.root, "bazel-out/external/lib_a/lib-a-1.0.jar").absolutePath,
+      File(tempFolder.root, "bazel-out/external/lib_b/lib-b-2.0.jar").absolutePath,
+      File(
+        tempFolder.root,
+        "bazel-out/k8-fastbuild/bin/model/src/main/proto/libgenerated_proto-lite.jar"
+      ).absolutePath
+    )
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_dependencyBuiltAfterFailedRun_laterRunSucceeds() {
+    val declaredJar = "external/lib/lib-1.0.jar"
+    registerCqueryResults(appDeclaredPaths = listOf(declaredJar))
+
+    // Simulates a clean workspace: the declared artifact has not been built yet.
+    assertThrows<IllegalStateException> {
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    }
+
+    // Simulates a subsequent warm workspace: the artifact now exists. A fresh run (as happens for
+    // each script invocation) must resolve it without relying on any state from the failed run.
+    createExternalJar(declaredJar)
+    val warmDescription = LintProjectDescription(
+      repoRoot = tempFolder.root,
+      workingDirectory = tempFolder.newFolder("warm-working-directory"),
+      commandExecutor = fakeCommandExecutor
+    )
+    val xmlContent = warmDescription.generateProjectDescriptionXml().readText()
+
+    val expectedJar = File(tempFolder.root, "bazel-out/$declaredJar").absolutePath
+    assertThat(xmlContent).contains("<classpath jar=\"$expectedJar\"/>")
+  }
+
+  /**
+   * Registers a fake Bazel that reports the specified declared dependency paths for `cquery`:
+   * [appDeclaredPaths] for the app layer and [otherLayerDeclaredPaths] for every other layer.
+   */
+  private fun registerCqueryResults(
+    appDeclaredPaths: List<String>,
+    otherLayerDeclaredPaths: List<String> = listOf()
+  ) {
+    fakeCommandExecutor.registerHandler("bazel") { _, args, outputStream, _ ->
+      when {
+        args.contains("cquery") && args.contains("deps(//app:*)") -> {
+          appDeclaredPaths.forEach { outputStream.println(it) }
+          0
+        }
+        args.contains("cquery") && args.any { it.startsWith("deps(//") } -> {
+          otherLayerDeclaredPaths.forEach { outputStream.println(it) }
+          0
+        }
+        args.contains("info") -> {
+          outputStream.println("output_base: ${tempFolder.root.absolutePath}/bazel-out")
+          outputStream.println("java-home: /usr/lib/jvm/java-11")
+          outputStream.println("java-runtime: OpenJDK Runtime Environment (build 11.0.16+8-post)")
+          0
+        }
+        else -> 0
+      }
+    }
+  }
+
+  /**
+   * Creates an empty-but-valid JAR at [declaredPath] resolved against the faked Bazel output base
+   * (which is how 'external/...' paths are resolved).
+   */
+  private fun createExternalJar(declaredPath: String): File =
+    createJar(File(File(tempFolder.root, "bazel-out"), declaredPath))
+
+  /** Creates an empty-but-valid JAR at [relativePath] resolved against the repository root. */
+  private fun createJarAtRepoRelativePath(relativePath: String): File =
+    createJar(File(tempFolder.root, relativePath))
+
+  private fun createJar(jarFile: File): File {
+    jarFile.parentFile?.mkdirs()
+    ZipOutputStream(FileOutputStream(jarFile)).use { zipOut ->
+      zipOut.putNextEntry(ZipEntry("META-INF/MANIFEST.MF"))
+      zipOut.write("Manifest-Version: 1.0\n".toByteArray())
+      zipOut.closeEntry()
+    }
+    return jarFile
+  }
+
   private fun setupProjectStructure() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(listOf("junit:junit:4.12"))
@@ -925,6 +1333,10 @@ class LintProjectDescriptionTest {
   private fun setupFakeCommandExecutor() {
     val aarPath = createTestAarFile("test-library", "1.0.0").absolutePath
     val jarPath = createTestJarFile("test-library", "1.0.0").absolutePath
+    // Declared dependencies must physically exist, otherwise lint fails fast (see
+    // LintProjectDescription), so ensure the external JARs reported below are present.
+    createExternalJar("external/junit/junit-4.12.jar")
+    createExternalJar("external/hamcrest/hamcrest-core-1.3.jar")
 
     fakeCommandExecutor.registerHandler("bazel") { _, args, outputStream, _ ->
       when {

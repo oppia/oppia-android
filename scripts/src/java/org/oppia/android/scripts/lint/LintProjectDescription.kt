@@ -391,12 +391,25 @@ private class LayerConfigurationBuilder(
   )
   private val bazelInfo = bazelClient.retrieveBazelInfo()
 
-  /** Builds configurations for all layers in the project. */
-  fun buildAllLayerConfigurations(): List<LayerConfig> = buildList {
-    add(buildLayerConfiguration(LayerName.APPLICATION_LAYER, isLibrary = false))
+  /**
+   * Builds configurations for all layers in the project.
+   *
+   * Before any layer is configured, this verifies that every AAR/JAR artifact Bazel declares for
+   * the project's layers physically exists (see [DependencyResolver.verifyDeclaredDependencies]),
+   * so that lint is never run against a silently incomplete classpath.
+   *
+   * @throws IllegalStateException if any declared AAR/JAR dependency is missing from disk
+   */
+  fun buildAllLayerConfigurations(): List<LayerConfig> {
+    dependencyResolver.verifyDeclaredDependencies(
+      listOf(LayerName.APPLICATION_LAYER) + LayerName.LIBRARY_LAYERS
+    )
+    return buildList {
+      add(buildLayerConfiguration(LayerName.APPLICATION_LAYER, isLibrary = false))
 
-    LayerName.LIBRARY_LAYERS.forEach { layer ->
-      add(buildLayerConfiguration(layer, isLibrary = true))
+      LayerName.LIBRARY_LAYERS.forEach { layer ->
+        add(buildLayerConfiguration(layer, isLibrary = true))
+      }
     }
   }
 
@@ -554,13 +567,255 @@ private class DependencyResolver(
   private val cacheManager: CacheManager,
   logger: LintLogger
 ) {
+  companion object {
+    /** The maximum number of missing artifacts itemized in the missing-dependency error. */
+    private const val MAX_REPORTED_MISSING_ARTIFACTS = 25
+
+    /**
+     * Bazel build-rule tool packages whose outputs are never part of the Lint classpath.
+     * These are build-system internals (annotation processors, Kotlin compiler, JVM external
+     * resolution tools) that cquery declares but that Lint never needs to resolve symbols.
+     */
+    private val BUILD_TOOL_PACKAGE_FRAGMENTS = listOf(
+      "rules_jvm_external/",
+      "rules_java/",
+      "io_bazel_rules_kotlin/",
+      "remote_java_tools/"
+    )
+
+    /**
+     * JAR name suffixes that identify compile-avoidance and annotation-processing intermediate
+     * artifacts. These are produced by the Bazel Kotlin/Java rules as build-system optimisations
+     * and are never placed on the Lint classpath.
+     *
+     * Concretely:
+     *  - `-hjar.jar`, `-java-hjar.jar`: header (ABI) JARs for incremental compilation
+     *  - `.abi.jar`: ABI stubs used by the Kotlin compiler for interface checking
+     *  - `-native-header.jar`: C/C++ interop header outputs
+     *  - `-kapt-generated-stub.jar`: annotation-processor stubs before full KAPT round
+     *  - `-gensrc.jar`, `-kapt-gensrc.jar`, `-java-gensrc.jar`, `.srcjar`, `-src.jar`: generated
+     *    source JARs (contain `.java`/`.kt` files, not `.class` files)
+     *  - `_kt-kt.jar`, `_kt-java.jar`: compilation slices merged into the final `_kt.jar`
+     */
+    private val COMPILE_AVOIDANCE_JAR_SUFFIXES = listOf(
+      "-hjar.jar",
+      "-java-hjar.jar",
+      ".abi.jar",
+      "-native-header.jar",
+      "-kapt-generated-stub.jar",
+      "-gensrc.jar",
+      "-kapt-gensrc.jar",
+      "-java-gensrc.jar",
+      ".srcjar",
+      "-src.jar",
+      "_kt-kt.jar",
+      "_kt-java.jar"
+    )
+
+    /**
+     * JAR name suffixes that identify terminal internal test runner binary outputs (e.g.
+     * `ActivityTest_test.jar`, `ActivityTest_deploy.jar`). These are only excluded for internal
+     * workspace outputs so that external prebuilt deploy JARs (such as
+     * `external/android_tools/all_android_tools_deploy.jar`, which supplies Lint-compatible
+     * Kotlin stdlib metadata for Android Lint 30.3.1 when the project compiles with Kotlin 1.9+)
+     * remain available on the Lint classpath.
+     */
+    private val INTERNAL_TEST_RUNNER_JAR_SUFFIXES = listOf(
+      "_test.jar",
+      "_deploy.jar"
+    )
+  }
+
+  /**
+   * Checks if [declaredPath] represents an internal module AAR artifact.
+   *
+   * In Bazel, `kt_android_library` rules declare a default `.aar` output under their package
+   * directory (e.g. `bazel-out/.../bin/app/app.aar`). These internal AAR outputs are never
+   * generated during standard application compilation and are not consumed by Lint because Lint
+   * models internal layers via `<dep module="..."/>` with their source files and compiled class
+   * JARs. Only external AAR dependencies (such as Maven AARs) are consumed as `<aar .../>`.
+   */
+  private fun isInternalModuleAar(declaredPath: String): Boolean {
+    if (!declaredPath.endsWith(".aar")) return false
+    val isExternal = declaredPath.startsWith("external/") || declaredPath.contains("/external/")
+    if (isExternal) return false
+    for (layer in LayerName.values()) {
+      val name = layer.layerName
+      val binPrefix = "/bin/" + name + "/"
+      val startPrefix = name + "/"
+      val midPrefix = "/" + name + "/"
+      if (declaredPath.contains(binPrefix) ||
+        declaredPath.startsWith(startPrefix) ||
+        declaredPath.contains(midPrefix)
+      ) {
+        return true
+      }
+    }
+    return false
+  }
+
+  /**
+   * Checks if [declaredPath] represents an extracted intermediate JAR from an AAR.
+   *
+   * When Bazel imports an external Maven AAR via `aar_import`, it generates an intermediate
+   * `_aar/.../classes_and_libs_merged.jar` or `_aar/.../classes.jar`. Because Lint receives
+   * the original `.aar` file as `<aar file="..." extracted="..."/>` and extracts both
+   * `classes.jar` and nested JARs in libs/ directly, including the intermediate merged JAR
+   * on the classpath is redundant with the retained AAR.
+   */
+  private fun isIntermediateAarJar(declaredPath: String): Boolean {
+    val isExtractedAar = declaredPath.contains("_aar/")
+    val isMergedOrClassesJar = declaredPath.endsWith("classes_and_libs_merged.jar") ||
+      declaredPath.endsWith("classes.jar")
+    return isExtractedAar && isMergedOrClassesJar
+  }
+
+  /**
+   * Checks if [declaredPath] represents an external AAR resource symbols JAR.
+   *
+   * Bazel's AAR import rules produce synthetic `*_resources.jar` files for external AARs.
+   * Lint reads resources directly from the extracted AAR `res/` directory and does not need
+   * these synthetic symbols on the classpath.
+   */
+  private fun isExternalAarResourcesJar(declaredPath: String): Boolean {
+    val isExternalMaven = declaredPath.startsWith("external/maven/") ||
+      declaredPath.contains("/external/maven/")
+    return isExternalMaven && declaredPath.endsWith("_resources.jar")
+  }
+
+  /**
+   * Checks if [declaredPath] is a file in a fetched external repository (e.g. a Maven AAR/JAR under
+   * 'external/...').
+   *
+   * Unlike 'bazel-out/...' outputs, these are materialized by Bazel's repository fetch rather than
+   * by building a particular target, so they exist regardless of which targets were built. Every
+   * 'bazel-out/...' output (internal libraries, test targets, and generated copies of external
+   * artifacts) only exists once its specific producing target has been built, and `cquery
+   * deps(//layer:*)` declares such outputs for every test in the layer. Requiring those would mean
+   * building the entire test suite before Lint, so they can't be a precondition for running Lint.
+   *
+   * Note that 'external/androidsdk/dummy.jar' is excluded: it's a placeholder output declared by the
+   * Android SDK repository rule that is intentionally never created.
+   */
+  private fun isFetchedExternalRepoFile(declaredPath: String): Boolean =
+    declaredPath.startsWith("external/") && declaredPath != "external/androidsdk/dummy.jar"
+
+  /**
+   * Returns true when [declaredPath] is a genuine JAR or AAR artifact that belongs on the Lint
+   * classpath or AAR dependency list and therefore must exist on disk before Lint can run.
+   *
+   * Artifacts that are excluded:
+   * - Internal module AARs (see [isInternalModuleAar]).
+   * - Intermediate AAR extracted JARs (see [isIntermediateAarJar]).
+   * - External AAR resource JARs (see [isExternalAarResourcesJar]).
+   * - Compile-avoidance / annotation-processing intermediate JARs (see
+   *   [COMPILE_AVOIDANCE_JAR_SUFFIXES]) and internal test runner binary outputs (see
+   *   [INTERNAL_TEST_RUNNER_JAR_SUFFIXES]).
+   * - Bazel build-rule tool packages (see [BUILD_TOOL_PACKAGE_FRAGMENTS]) — these are
+   *   build-system internals, not application code.
+   * - Outputs built in a Bazel *exec* configuration (paths containing `k8-opt-exec-` or
+   *   `-exec-`), which are build-time tools rather than runtime classpath entries.
+   */
+  private fun isLintClasspathArtifact(declaredPath: String): Boolean {
+    // Internal module AARs are not external AAR dependencies.
+    if (isInternalModuleAar(declaredPath)) return false
+
+    // Intermediate AAR extracted JARs are redundant with the retained AAR.
+    if (isIntermediateAarJar(declaredPath)) return false
+
+    // External AAR resource JARs are not needed since Lint extracts the AAR's res/ directory.
+    if (isExternalAarResourcesJar(declaredPath)) return false
+
+    // Compile-avoidance, annotation-processing stubs, and source JARs.
+    if (COMPILE_AVOIDANCE_JAR_SUFFIXES.any { declaredPath.endsWith(it) }) return false
+
+    // Internal test runner binary outputs (external prebuilt *_deploy.jar tools are retained).
+    val isExternal = declaredPath.startsWith("external/") || declaredPath.contains("/external/")
+    if (!isExternal && INTERNAL_TEST_RUNNER_JAR_SUFFIXES.any { declaredPath.endsWith(it) }) {
+      return false
+    }
+
+    // Bazel build-rule tool packages (rules_jvm_external, rules_java, etc.).
+    if (BUILD_TOOL_PACKAGE_FRAGMENTS.any { declaredPath.contains(it) }) return false
+
+    // Exec-configuration build tools (never on the runtime/lint classpath).
+    if (declaredPath.contains("k8-opt-exec-") || declaredPath.contains("-exec-/")) return false
+
+    return true
+  }
+
   private val pathResolver = PathResolver(repoRoot, bazelClient, cacheManager, logger)
   private val aarExtractor = AarExtractor(cacheManager)
+
+  /**
+   * Verifies that every Lint-classpath AAR and JAR artifact declared by Bazel for each of the
+   * provided [layers] exists on disk.
+   *
+   * `bazel cquery --output=files` reports the *declared* outputs of each target, including many
+   * build-system intermediate artifacts (compile-avoidance JARs, build-tool JARs, exec-config
+   * outputs) that are never part of the Lint classpath. Only the artifacts identified as
+   * Lint-classpath entries by [isLintClasspathArtifact] that are also fetched external repository
+   * files (see [isFetchedExternalRepoFile]) are checked; all others are ignored here (and, if they
+   * are missing, are skipped with a logged error when the classpath is resolved).
+   *
+   * Without this check, missing artifacts would be silently dropped from the lint classpath,
+   * making lint results depend on whatever happened to be built beforehand (e.g. clean vs.
+   * previously built workspaces).
+   *
+   * This intentionally never triggers a Bazel build; it only reports what is missing.
+   *
+   * @throws IllegalStateException if any Lint-classpath AAR/JAR is missing from disk. The message
+   *     lists the missing artifacts and the layers that depend on them.
+   */
+  fun verifyDeclaredDependencies(layers: List<LayerName>) {
+    // Maps each missing declared path to its resolved location & the layers that declare it.
+    val missingArtifacts = linkedMapOf<String, Pair<String, MutableList<String>>>()
+    val artifactExtensions = listOf(".${SdkConstants.EXT_AAR}", ".${SdkConstants.EXT_JAR}")
+    layers.forEach { layer ->
+      getDependenciesWithCache(layer.layerName)
+        .filter { declaredPath ->
+          artifactExtensions.any { declaredPath.endsWith(it) } &&
+            isFetchedExternalRepoFile(declaredPath) && isLintClasspathArtifact(declaredPath)
+        }
+        .forEach { declaredPath ->
+          val resolvedPath = pathResolver.computeAbsolutePath(declaredPath)
+          if (!File(resolvedPath).exists()) {
+            missingArtifacts.getOrPut(declaredPath) { resolvedPath to mutableListOf<String>() }
+              .second.add(layer.layerName)
+          }
+        }
+    }
+    if (missingArtifacts.isEmpty()) return
+
+    val listedArtifacts = missingArtifacts.entries.take(MAX_REPORTED_MISSING_ARTIFACTS)
+      .joinToString(separator = "\n") { (declaredPath, resolvedAndLayers) ->
+        val (resolvedPath, declaringLayers) = resolvedAndLayers
+        "  - $declaredPath (expected at $resolvedPath; needed by layer(s): " +
+          "${declaringLayers.joinToString(", ")})"
+      }
+    val omittedCount = missingArtifacts.size - MAX_REPORTED_MISSING_ARTIFACTS
+    val omittedNote = if (omittedCount > 0) "\n  ... and $omittedCount more." else ""
+    val affectedLayers = missingArtifacts.values.flatMap { it.second }.distinct().joinToString(", ")
+    throw IllegalStateException(
+      "Android Lint cannot run: ${missingArtifacts.size} AAR/JAR artifact(s) declared by Bazel " +
+        "for the lint classpath do not exist on disk.\n" +
+        "Bazel only declares these outputs; they are created once the targets that produce them " +
+        "have been built, so they are missing in a clean or partially built workspace. Running " +
+        "lint without them would silently produce an incomplete classpath and inconsistent " +
+        "results.\n" +
+        "Missing artifacts:\n$listedArtifacts$omittedNote\n" +
+        "Fetch/build the Bazel dependencies that produce these artifacts (e.g. 'bazel build " +
+        "//scripts:android_lint_check'; affected layers: $affectedLayers) and re-run lint. See " +
+        "https://github.com/oppia/oppia-android/wiki/Android-Lint-Check for details."
+    )
+  }
 
   /** Resolves the AAR files for the given layer. */
   fun resolveAarFiles(layer: LayerName): List<AarFileInfo> {
     val allDependencies = getDependenciesWithCache(layer.layerName)
-    val aarFiles = allDependencies.filter { it.endsWith(".${SdkConstants.EXT_AAR}") }
+    val aarFiles = allDependencies.filter {
+      it.endsWith(".${SdkConstants.EXT_AAR}") && isLintClasspathArtifact(it)
+    }
 
     if (aarFiles.isEmpty()) {
       return emptyList()
@@ -577,7 +832,7 @@ private class DependencyResolver(
   fun resolveJarFiles(layer: LayerName): List<String> {
     val allDependencies = getDependenciesWithCache(layer.layerName)
     return allDependencies
-      .filter { it.endsWith(".${SdkConstants.EXT_JAR}") }
+      .filter { it.endsWith(".${SdkConstants.EXT_JAR}") && isLintClasspathArtifact(it) }
       .mapNotNull { jarFile ->
         pathResolver.resolveBazelPath(jarFile)
       }
@@ -650,14 +905,21 @@ private class PathResolver(
     private const val BAZEL_OUTPUT_BASE_KEY = "output_base"
   }
 
+  /**
+   * Computes the absolute file system location where Bazel declares [path] to be, without checking
+   * whether the file exists.
+   */
+  fun computeAbsolutePath(path: String): String =
+    when {
+      File(path).isAbsolute -> path
+      path.startsWith("external/") -> resolveExternalPath(path)
+      else -> File(repoRoot, path).absolutePath
+    }
+
   /** Resolves a Bazel path to an absolute file system path. */
   fun resolveBazelPath(path: String): String? =
     cacheManager.getPathResolution(path) {
-      val resolvedPath = when {
-        File(path).isAbsolute -> path
-        path.startsWith("external/") -> resolveExternalPath(path)
-        else -> File(repoRoot, path).absolutePath
-      }
+      val resolvedPath = computeAbsolutePath(path)
 
       if (File(resolvedPath).exists()) {
         resolvedPath
