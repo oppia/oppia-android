@@ -84,6 +84,8 @@ import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestCoroutineDispatchersInjector
+import org.oppia.android.testing.threading.TestCoroutineDispatchersInjectorProvider
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -474,14 +476,18 @@ class RatioInputInteractionViewTestActivityTest {
       WorkManagerConfigurationModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, TestCoroutineDispatchersInjector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(ratioInputInteractionViewTestActivityTest: RatioInputInteractionViewTestActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    TestCoroutineDispatchersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerRatioInputInteractionViewTestActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -497,5 +503,7 @@ class RatioInputInteractionViewTestActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getTestCoroutineDispatchersInjector(): TestCoroutineDispatchersInjector = component
   }
 }

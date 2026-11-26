@@ -1,37 +1,27 @@
 package org.oppia.android.testing.espresso
 
+import android.app.Application
 import android.widget.EditText
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.TextInputActionTestActivity
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.espresso.EditTextInputAction.replaceText
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestCoroutineDispatchersInjector
+import org.oppia.android.testing.threading.TestCoroutineDispatchersInjectorProvider
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = EditTextInputActionTest.TestApplication::class, manifest = Config.NONE)
 class EditTextInputActionTest {
-
-  @Before
-  fun setUp() {
-    val mockDispatcher = object : TestCoroutineDispatchers {
-      override fun registerIdlingResource() {}
-      override fun unregisterIdlingResource() {}
-      override fun runCurrent() {}
-      override fun advanceTimeBy(delayTimeMillis: Long) {}
-      override fun advanceUntilIdle() {}
-    }
-    TestCoroutineDispatchersInjector.initialize(mockDispatcher)
-  }
 
   @Test
   fun testAppendText_appends_value_in_robolectric() {
@@ -104,6 +94,22 @@ class EditTextInputActionTest {
   }
 
   @Test
+  @Config(application = Application::class)
+  fun testAppendText_withoutInjectorProvider_throwsException() {
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val editText = EditText(activity)
+        val exception = assertThrows<IllegalStateException> {
+          appendText("45").perform(null, editText)
+        }
+        assertThat(exception).hasMessageThat().contains(
+          "The test application context must implement TestCoroutineDispatchersInjectorProvider"
+        )
+      }
+    }
+  }
+
+  @Test
   fun testReplaceText_replaces_value_in_robolectric() {
     runWithLaunchedActivity {
       onActivity { activity ->
@@ -151,5 +157,23 @@ class EditTextInputActionTest {
     ActivityScenario.launch<TextInputActionTestActivity>(
       TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext())
     ).use(testBlock)
+  }
+
+  class TestApplication : Application(), TestCoroutineDispatchersInjectorProvider {
+    private val testCoroutineDispatchersInjector = object : TestCoroutineDispatchersInjector {
+      override fun getTestCoroutineDispatchers(): TestCoroutineDispatchers {
+        return object : TestCoroutineDispatchers {
+          override fun registerIdlingResource() {}
+          override fun unregisterIdlingResource() {}
+          override fun runCurrent() {}
+          override fun advanceTimeBy(delayTimeMillis: Long) {}
+          override fun advanceUntilIdle() {}
+        }
+      }
+    }
+
+    override fun getTestCoroutineDispatchersInjector(): TestCoroutineDispatchersInjector {
+      return testCoroutineDispatchersInjector
+    }
   }
 }

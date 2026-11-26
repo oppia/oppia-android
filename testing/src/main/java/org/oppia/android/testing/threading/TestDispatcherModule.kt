@@ -55,13 +55,11 @@ class TestDispatcherModule {
     robolectricImplProvider: Provider<TestCoroutineDispatchersRobolectricImpl>,
     espressoImplProvider: Provider<TestCoroutineDispatchersEspressoImpl>
   ): TestCoroutineDispatchers {
-    val dispatchers = if (isOnRobolectric) {
+    return if (isOnRobolectric) {
       robolectricImplProvider.get()
     } else {
       espressoImplProvider.get()
     }
-    TestCoroutineDispatchersInjector.initialize(dispatchers)
-    return dispatchers
   }
 
   @Provides

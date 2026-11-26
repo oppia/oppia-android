@@ -1,14 +1,16 @@
 package org.oppia.android.testing.espresso
 
+import android.app.Application
 import android.os.Build
 import android.view.View
 import android.widget.EditText
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.typeText
 import org.hamcrest.Matcher
-import org.oppia.android.testing.threading.TestCoroutineDispatchersInjector
+import org.oppia.android.testing.threading.TestCoroutineDispatchersInjectorProvider
 
 /**
  * Action for inputting text into an EditText in a test infrastructure-specific way.
@@ -16,6 +18,9 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchersInjector
  * This is needed because Robolectric doesn't seem to properly input digits for text views using
  * 'android:digits' or other filters. See https://github.com/robolectric/robolectric/issues/5110
  * for specifics.
+ *
+ * Note that tests using this action must have their test [Application] context implement
+ * [TestCoroutineDispatchersInjectorProvider].
  */
 object EditTextInputAction {
   /**
@@ -53,7 +58,15 @@ object EditTextInputAction {
           } else {
             editText?.setText(text)
           }
-          TestCoroutineDispatchersInjector.getDispatcher().runCurrent()
+          val context = ApplicationProvider.getApplicationContext<Application>()
+          val provider = context as? TestCoroutineDispatchersInjectorProvider
+          val dispatchers =
+            provider?.getTestCoroutineDispatchersInjector()?.getTestCoroutineDispatchers()
+          checkNotNull(dispatchers) {
+            "The test application context must implement" +
+              " TestCoroutineDispatchersInjectorProvider to use EditTextInputAction."
+          }
+          dispatchers.runCurrent()
         } else {
           baseAction.perform(uiController, view)
         }
