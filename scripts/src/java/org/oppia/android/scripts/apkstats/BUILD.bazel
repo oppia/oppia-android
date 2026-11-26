@@ -54,11 +54,10 @@ kt_jvm_library(
     srcs = [
         "BundleToolClient.kt",
     ],
-    visibility = ["//scripts:oppia_script_test_visibility"],
-    runtime_deps = [
+    data = [
         "//third_party:android_bundletool",
-        "//third_party:com_google_guava_guava_jre",
     ],
+    visibility = ["//scripts:oppia_script_test_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
     ],

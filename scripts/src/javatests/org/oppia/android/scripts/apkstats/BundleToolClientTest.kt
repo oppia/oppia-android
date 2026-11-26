@@ -9,6 +9,7 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.common.testing.FakeCommandExecutor
 import org.oppia.android.testing.assertThrows
+import java.io.File
 import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
@@ -286,8 +287,11 @@ class BundleToolClientTest {
     inputBundlePath: String,
     outputApksPath: String
   ) {
+    val bundleToolJarPath = File("external/android_bundletool/jar/downloaded.jar").absolutePath
     fakeCommandExecutor.registerHandler("java") { _, args, _, _ ->
-      if (args.contains("build-apks") &&
+      if (args.contains("-jar") &&
+        args.contains(bundleToolJarPath) &&
+        args.contains("build-apks") &&
         args.contains("--bundle=$inputBundlePath") &&
         args.contains("--output=$outputApksPath")
       ) {
@@ -302,8 +306,11 @@ class BundleToolClientTest {
     inputBundlePath: String,
     outputApksPath: String
   ) {
+    val bundleToolJarPath = File("external/android_bundletool/jar/downloaded.jar").absolutePath
     fakeCommandExecutor.registerHandler("java") { _, args, _, _ ->
-      if (args.contains("build-apks") &&
+      if (args.contains("-jar") &&
+        args.contains(bundleToolJarPath) &&
+        args.contains("build-apks") &&
         args.contains("--bundle=$inputBundlePath") &&
         args.contains("--output=$outputApksPath") &&
         args.contains("--mode=universal")
