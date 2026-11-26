@@ -29,6 +29,7 @@ import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
+import org.oppia.android.util.math.NumberWithUnitsParser.Companion.isCurrencyPrefixUnitString
 import org.oppia.android.util.math.toAnswerString
 
 /**
@@ -80,10 +81,8 @@ private fun NumberWithUnits.toAnswerString(): String {
   return "$prefixString$valueString $suffixedString".trim()
 }
 
-// TODO(#152): Standardize these with a currency library.
-private fun isPrefixUnit(numberUnit: NumberUnit): Boolean {
-  return numberUnit.unit in listOf("$", "Rs", "₹", "€", "£", "¥")
-}
+private fun isPrefixUnit(numberUnit: NumberUnit): Boolean =
+  isCurrencyPrefixUnitString(numberUnit.unit)
 
 // https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/UnitsObjectFactory.ts#L49
 private fun NumberUnit.toAnswerStringPart(): String {

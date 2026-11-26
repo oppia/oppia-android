@@ -8,6 +8,7 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 kt_jvm_library(
     name = "edit_response",
     srcs = ["EditResponse.kt"],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
 )
@@ -15,6 +16,7 @@ kt_jvm_library(
 kt_jvm_library(
     name = "bundle_response",
     srcs = ["BundleResponse.kt"],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
 )
@@ -22,6 +24,7 @@ kt_jvm_library(
 kt_jvm_library(
     name = "track_response",
     srcs = ["TrackResponse.kt"],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
 )
@@ -36,6 +39,7 @@ kt_jvm_library(
 kt_jvm_library(
     name = "track_update_request",
     srcs = ["TrackUpdateRequest.kt"],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
 )
@@ -43,6 +47,7 @@ kt_jvm_library(
 kt_jvm_library(
     name = "commit_list_entry",
     srcs = ["CommitListEntry.kt"],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
 )
@@ -50,6 +55,7 @@ kt_jvm_library(
 kt_jvm_library(
     name = "check_runs_response",
     srcs = ["CheckRunsResponse.kt"],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
 )
