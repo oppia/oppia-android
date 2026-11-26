@@ -105,15 +105,15 @@ jobs:
             exit 0
           fi
 
-          # Extract all changed changelog files in config/changelogs/
+          # Extract all changed changelog files in config/changelogs/ (excluding README.md)
           CHANGELOG_FILES=$(echo "$COMPARE" | \
-            jq -c '[.files[] | select(.name | startswith("config/changelogs/") and endswith(".md"))]')
+            jq -c '[.files[] | select(.name | startswith("config/changelogs/") and endswith(".md") and (.name != "config/changelogs/README.md"))]')
           CHANGELOG_COUNT=$(echo "$CHANGELOG_FILES" | jq 'length')
 
           if [[ "$CHANGELOG_COUNT" -eq 0 ]]; then
             echo "No changelog files changed in this push — skipping upload."
             echo "version=" >> "$GITHUB_OUTPUT"
-            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -184,7 +184,7 @@ jobs:
             if [[ "$IS_ELIGIBLE" == "true" ]]; then
               ELIGIBLE_FILES+=("$FILE_NAME")
               # Track unique eligible versions
-              ALREADY_SEEN=$(echo "${ELIGIBLE_VERSIONS[*]}" | grep -w "$VERSION" || true)
+              ALREADY_SEEN=$(echo "${ELIGIBLE_VERSIONS[*]}" | grep -Fw "$VERSION" || true)
               if [[ -z "$ALREADY_SEEN" ]]; then
                 ELIGIBLE_VERSIONS+=("$VERSION")
               fi

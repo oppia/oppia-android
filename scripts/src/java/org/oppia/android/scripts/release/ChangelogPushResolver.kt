@@ -143,11 +143,13 @@ class ChangelogPushResolver {
     private const val CHANGELOGS_DIR = "config/changelogs/"
     private val VERSION_REGEX = Regex("""^(\d+\.\d+)""")
 
+    /** Extracts the major.minor version prefix from a changelog file [path], or `null` if none. */
     fun extractVersion(path: String): String? {
       val filename = File(path).nameWithoutExtension
       return VERSION_REGEX.find(filename)?.groupValues?.get(1)
     }
 
+    /** Extracts the flavor suffix from a changelog file [path], or `null` for base changelogs. */
     fun extractFlavor(path: String): String? {
       val filename = File(path).nameWithoutExtension
       val version = extractVersion(path) ?: return null
@@ -155,6 +157,7 @@ class ChangelogPushResolver {
       return if (suffix.startsWith("_")) suffix.removePrefix("_") else null
     }
 
+    /** Returns `true` if [path] refers to a generic base changelog (no flavor suffix). */
     fun isBaseChangelog(path: String): Boolean {
       return extractFlavor(path) == null
     }

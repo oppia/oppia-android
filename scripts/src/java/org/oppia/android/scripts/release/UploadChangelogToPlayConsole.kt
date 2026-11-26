@@ -172,11 +172,7 @@ fun maybeUploadUpdatedChangelogs(
     }
     // Skip if the live notes already match the local file — avoids wasted API calls and
     // prevents spurious review re-triggers on tracks where nothing has changed.
-    val deployedNotes = releases
-      .firstOrNull { it.status in LIVE_STATUSES }
-      ?.releaseNotes
-      ?.get("en-US")
-      ?: ""
+    val deployedNotes = selectedRelease.releaseNotes["en-US"] ?: ""
     if (!detectChangelogDiff(notes["en-US"] ?: "", deployedNotes)) continue
     uploadChangelogToTrack(
       client, packageName, track, versionCode, rolloutPermille, notes, frozenVersionCodes.toList()
