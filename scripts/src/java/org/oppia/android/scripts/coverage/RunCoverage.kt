@@ -264,7 +264,9 @@ class RunCoverage(
     coverageReports: List<CoverageReport>
   ): CoverageReport {
     fun aggregateCoverage(coverages: List<Coverage>): Coverage {
-      return coverages.find { it == Coverage.FULL } ?: Coverage.NONE
+      return coverages.find { it == Coverage.FULL }
+        ?: coverages.find { it == Coverage.PARTIAL }
+        ?: Coverage.NONE
     }
 
     val groupedCoverageReports = coverageReports.groupBy {
@@ -285,7 +287,9 @@ class RunCoverage(
     }
 
     val totalLinesFound = aggregatedCoveredLines.size
-    val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
+    val totalLinesHit = aggregatedCoveredLines.count {
+      it.coverage == Coverage.FULL || it.coverage == Coverage.PARTIAL
+    }
 
     val coverageDetails = CoverageDetails.newBuilder()
       .addAllBazelTestTargets(allBazelTestTargets)

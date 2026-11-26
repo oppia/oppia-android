@@ -89,14 +89,37 @@ class CoverageRunner(
 
     val filePath = coverageDataProps["SF"]?.firstOrNull()?.get(0)
     val linesFound = coverageDataProps["LF"]?.singleOrNull()?.single()?.toInt() ?: 0
-    val linesHit = coverageDataProps["LH"]?.singleOrNull()?.single()?.toInt() ?: 0
+
+    val branchDataByLine = coverageDataProps["BRDA"]
+      ?.groupBy { it[0].toInt() }
+      .orEmpty()
 
     val coveredLines = coverageDataProps["DA"]?.map { (lineNumStr, hitCountStr) ->
+      val lineNum = lineNumStr.toInt()
+      val hitCount = hitCountStr.toInt()
+      val lineCoverage = if (hitCount > 0) {
+        val branches = branchDataByLine[lineNum]
+        if (branches.isNullOrEmpty()) {
+          Coverage.FULL
+        } else {
+          val allBranchesTaken = branches.all { branchRecord ->
+            val taken = branchRecord.getOrNull(3)
+            taken != null && taken != "-" && (taken.toIntOrNull() ?: 0) > 0
+          }
+          if (allBranchesTaken) Coverage.FULL else Coverage.PARTIAL
+        }
+      } else {
+        Coverage.NONE
+      }
       CoveredLine.newBuilder().apply {
-        this.lineNumber = lineNumStr.toInt()
-        this.coverage = if (hitCountStr.toInt() > 0) Coverage.FULL else Coverage.NONE
+        this.lineNumber = lineNum
+        this.coverage = lineCoverage
       }.build()
     }.orEmpty()
+
+    val linesHit = coveredLines.count {
+      it.coverage == Coverage.FULL || it.coverage == Coverage.PARTIAL
+    }
 
     val file = File(repoRoot, filePath)
     val fileSha1Hash = calculateSha1(file.absolutePath)

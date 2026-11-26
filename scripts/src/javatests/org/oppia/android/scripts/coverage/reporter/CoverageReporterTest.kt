@@ -6,11 +6,13 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageDetails
 import org.oppia.android.scripts.proto.CoverageExemption
 import org.oppia.android.scripts.proto.CoverageFailure
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageReportContainer
+import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.proto.TestFileExemptions
 import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
 import org.oppia.android.testing.assertThrows
@@ -571,7 +573,7 @@ class CoverageReporterTest {
         .source-code-col {
           width: 96%;
         }
-        .covered-line, .not-covered-line, .uncovered-line {
+        .covered-line, .not-covered-line, .partially-covered-line, .uncovered-line {
           white-space: pre-wrap;
         }
         .covered-line {
@@ -579,6 +581,9 @@ class CoverageReporterTest {
         }
         .not-covered-line {
           background-color: #ffcdd2; /* Light red */
+        }
+        .partially-covered-line {
+          background-color: #fff59d; /* Light yellow */
         }
         .uncovered-line {
           background-color: #f7f7f7; /* light gray */
@@ -627,6 +632,10 @@ class CoverageReporterTest {
           margin-left: 4px;
           background-color: #ffcdd2; /* Light red */
         }
+        .legend .partially-covered {
+          margin-left: 4px;
+          background-color: #fff59d; /* Light yellow */
+        }
         @media screen and (max-width: 768px) {
           body {
             padding: 10px;
@@ -647,6 +656,8 @@ class CoverageReporterTest {
             <span>Covered</span>
             <div class="legend-item not-covered"></div>
             <span>Uncovered</span>
+            <div class="legend-item partially-covered"></div>
+            <span>Partially covered</span>
           </div>
         </div>
         <div class="summary-right">
@@ -704,6 +715,46 @@ class CoverageReporterTest {
       .replace("&gt;", ">")
 
     assertThat(unescapedOutputReportText).isEqualTo(expectedHtml)
+  }
+
+  @Test
+  fun testGenerateHtmlReport_withPartialCoverage_rendersPartiallyCoveredLine() {
+    val filename = "SampleFile.kt"
+    val sourceFile = tempFolder.newFile(filename)
+    sourceFile.writeText("fun sample() = true")
+
+    val validCoverageReport = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .setFilePath(filename)
+          .setLinesFound(1)
+          .setLinesHit(0)
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(1)
+              .setCoverage(Coverage.PARTIAL)
+              .build()
+          )
+          .build()
+      ).build()
+
+    val coverageReportContainer = CoverageReportContainer.newBuilder()
+      .addCoverageReport(validCoverageReport)
+      .build()
+
+    CoverageReporter(
+      tempFolder.root.absolutePath,
+      coverageReportContainer,
+      ReportFormat.HTML
+    ).generateRichTextReport()
+
+    val outputReportText = File(
+      "${tempFolder.root}" +
+        "$coverageDir/${filename.removeSuffix(".kt")}/coverage.html"
+    ).readText()
+
+    assertThat(outputReportText).contains("""<td class="partially-covered-line">""")
+    assertThat(outputReportText).contains("""<div class="legend-item partially-covered"></div>""")
   }
 
   @Test
