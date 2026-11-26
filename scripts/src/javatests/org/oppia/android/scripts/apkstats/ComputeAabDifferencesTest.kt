@@ -9,6 +9,7 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.apkstats.ComputeAabDifferences.DiffList
 import org.oppia.android.scripts.apkstats.ComputeAabDifferences.DiffList.DiffType
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
+import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.common.testing.FakeCommandExecutor
 import org.oppia.android.testing.assertThrows
@@ -16,7 +17,9 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.PrintStream
+import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 
 /**
@@ -528,6 +531,60 @@ class ComputeAabDifferencesTest {
   }
 
   @Test
+  fun testComputeBuildStats_realCommandExecutor_validAabs_computesDiffs() {
+    val oldAab = createRealValidAabFile(
+      "real_old.aab",
+      permissions = listOf("android.permission.INTERNET"),
+      assets = mapOf("lesson1.json" to "old")
+    )
+    val newAab = createRealValidAabFile(
+      "real_new.aab",
+      permissions = listOf("android.permission.INTERNET", "android.permission.CAMERA"),
+      assets = mapOf("lesson1.json" to "old", "lesson2.json" to "new")
+    )
+
+    val stats = createComputeAabDifferences().computeBuildStats(
+      createProfile(oldAabFilePath = oldAab.absolutePath, newAabFilePath = newAab.absolutePath)
+    )
+
+    assertThat(stats.aabStats).containsKey("dev")
+    val aabStats = stats.aabStats.getValue("dev")
+    val universalPermissions = aabStats.universalApkStats.manifestStats.permissions
+    assertThat(universalPermissions).hasSize(2)
+    assertThat(
+      universalPermissions.any {
+        it.value == "android.permission.INTERNET" && it.type == DiffType.SAME_ENTRY
+      }
+    ).isTrue()
+    assertThat(
+      universalPermissions.any {
+        it.value == "android.permission.CAMERA" && it.type == DiffType.NEW_ENTRY
+      }
+    ).isTrue()
+    val universalAssets = aabStats.universalApkStats.assetStats.assets
+    assertThat(universalAssets).hasSize(2)
+    assertThat(
+      universalAssets.any { it.value == "lesson1.json" && it.type == DiffType.SAME_ENTRY }
+    ).isTrue()
+    assertThat(
+      universalAssets.any { it.value == "lesson2.json" && it.type == DiffType.NEW_ENTRY }
+    ).isTrue()
+    val mainSplitPermissions = aabStats.mainSplitApkStats.manifestStats.permissions
+    assertThat(mainSplitPermissions).hasSize(2)
+    assertThat(
+      mainSplitPermissions.any {
+        it.value == "android.permission.INTERNET" && it.type == DiffType.SAME_ENTRY
+      }
+    ).isTrue()
+    assertThat(
+      mainSplitPermissions.any {
+        it.value == "android.permission.CAMERA" && it.type == DiffType.NEW_ENTRY
+      }
+    ).isTrue()
+    assertThat(aabStats.configurationsList.hasDifference()).isFalse()
+  }
+
+  @Test
   fun testAabStats_writeSummaryTo_emptyStats_printsMinimalOutput() {
     val outputStream = ByteArrayOutputStream()
     val printStream = PrintStream(outputStream)
@@ -981,7 +1038,14 @@ class ComputeAabDifferencesTest {
     return ComputeAabDifferences(
       workingDirectoryPath = tempFolder.root.absoluteFile.normalize().path,
       sdkProperties = AndroidBuildSdkProperties(),
-      scriptBgDispatcher
+      scriptBgDispatcher,
+      commandExecutor = initializeCommandExecutorWithLongProcessWaitTime()
+    )
+  }
+
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
+    return CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
     )
   }
 
@@ -1107,6 +1171,95 @@ class ComputeAabDifferencesTest {
         zipOut.write("content".toByteArray())
         zipOut.closeEntry()
       }
+    }
+    return aabFile
+  }
+
+  /** Creates a real deployable AAB using aapt2 and bundletool for end-to-end verification. */
+  private fun createRealValidAabFile(
+    fileName: String,
+    permissions: List<String> = listOf(),
+    assets: Map<String, String> = mapOf()
+  ): File {
+    val stagingDir = tempFolder.newFolder("${fileName}_staging")
+    val permissionElements = permissions.joinToString("\n") { permission ->
+      """  <uses-permission android:name="$permission" />"""
+    }
+    val manifestFile = File(stagingDir, "AndroidManifest.xml").apply {
+      writeText(
+        """
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+            package="org.oppia.android.test"
+            android:versionCode="1"
+            android:versionName="1.0">
+          <uses-sdk android:minSdkVersion="21" />
+        $permissionElements
+          <application android:hasCode="false" />
+        </manifest>
+        """.trimIndent()
+      )
+    }
+    val sdkProperties = AndroidBuildSdkProperties()
+    val aapt2Path = File(
+      "external/androidsdk", "build-tools/${sdkProperties.buildToolsVersion}/aapt2"
+    ).absolutePath
+    val androidJarPath = File(
+      "external/androidsdk", "platforms/android-${sdkProperties.buildSdkVersion}/android.jar"
+    ).absolutePath
+    val protoApkFile = File(stagingDir, "proto.apk")
+    val commandExecutor = initializeCommandExecutorWithLongProcessWaitTime()
+    val linkResult = commandExecutor.executeCommand(
+      stagingDir,
+      aapt2Path,
+      "link",
+      "--proto-format",
+      "-I",
+      androidJarPath,
+      "-o",
+      protoApkFile.absolutePath,
+      "--manifest",
+      manifestFile.absolutePath
+    )
+    check(linkResult.exitCode == 0) {
+      "aapt2 link failed with exit code ${linkResult.exitCode}: " +
+        linkResult.errorOutput.joinToString("\n")
+    }
+
+    val baseModuleZip = File(stagingDir, "base.zip")
+    ZipFile(protoApkFile).use { protoZip ->
+      ZipOutputStream(FileOutputStream(baseModuleZip)).use { zipOut ->
+        protoZip.entries().asSequence().forEach { entry ->
+          val entryName = if (entry.name == "AndroidManifest.xml") {
+            "manifest/AndroidManifest.xml"
+          } else {
+            entry.name
+          }
+          zipOut.putNextEntry(ZipEntry(entryName))
+          protoZip.getInputStream(entry).use { it.copyTo(zipOut) }
+          zipOut.closeEntry()
+        }
+        assets.forEach { (assetName, content) ->
+          zipOut.putNextEntry(ZipEntry("assets/$assetName"))
+          zipOut.write(content.toByteArray())
+          zipOut.closeEntry()
+        }
+      }
+    }
+
+    val aabFile = File(tempFolder.root, fileName)
+    val bundleToolJarPath = File("external/android_bundletool/jar/downloaded.jar").absolutePath
+    val bundleResult = commandExecutor.executeCommand(
+      stagingDir,
+      "java",
+      "-jar",
+      bundleToolJarPath,
+      "build-bundle",
+      "--modules=${baseModuleZip.absolutePath}",
+      "--output=${aabFile.absolutePath}"
+    )
+    check(bundleResult.exitCode == 0) {
+      "bundletool build-bundle failed with exit code ${bundleResult.exitCode}: " +
+        bundleResult.errorOutput.joinToString("\n")
     }
     return aabFile
   }

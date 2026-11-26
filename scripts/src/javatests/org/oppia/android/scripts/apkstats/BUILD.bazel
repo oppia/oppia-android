@@ -3,6 +3,7 @@ Tests corresponding to libraries that help with computing APK & AAB stats.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+load("//:build_vars.bzl", "BUILD_SDK_VERSION")
 
 kt_jvm_test(
     name = "Aapt2ClientTest",
@@ -43,9 +44,9 @@ kt_jvm_test(
 kt_jvm_test(
     name = "ComputeAabDifferencesTest",
     srcs = ["ComputeAabDifferencesTest.kt"],
-    data = ["@androidsdk//:aapt2_binary"],
-    runtime_deps = [
-        "//third_party:android_bundletool",
+    data = [
+        "@androidsdk//:aapt2_binary",
+        "@androidsdk//:platforms/android-%s/android.jar" % BUILD_SDK_VERSION,
     ],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/apkstats:aapt2_client",

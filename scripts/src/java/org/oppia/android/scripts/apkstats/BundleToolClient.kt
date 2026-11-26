@@ -22,6 +22,9 @@ class BundleToolClient(
   private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 ) {
   private val workingDirectory by lazy { File(workingDirectoryPath) }
+  private val bundleToolJarPath by lazy {
+    File("external/android_bundletool/jar/downloaded.jar").absolutePath
+  }
 
   // CLI reference: https://developer.android.com/studio/command-line/bundletool.
 
@@ -74,16 +77,15 @@ class BundleToolClient(
   }
 
   private fun executeBundleToolCommand(vararg arguments: String): List<String> {
-    // Reference for retaining the classpath: https://stackoverflow.com/a/4330928. Note that this
-    // approach is needed vs. using reflection since bundle tool seems to not allow multiple
-    // subsequent calls (so each call must be in a new process).
+    // Execute bundletool via its standalone fat JAR in a separate process since bundletool does
+    // not seem to support multiple in-process invocations and sharing the parent JVM classpath
+    // causes dependency version conflicts (e.g. with protobuf-java and Android Guava).
     val result =
       commandExecutor.executeCommand(
         workingDirectory,
         "java",
-        "-classpath",
-        computeAbsoluteClasspath(),
-        "com.android.tools.build.bundletool.BundleToolMain",
+        "-jar",
+        bundleToolJarPath,
         *arguments
       )
     check(result.exitCode == 0) {
@@ -95,36 +97,12 @@ class BundleToolClient(
   }
 
   private companion object {
-    private val currentDirectory by lazy { File(".") }
-
     private fun ZipFile.extractTo(entryName: String, destPath: String): File {
       val destFile = File(destPath)
       destFile.outputStream().use { outputStream ->
         getInputStream(getEntry(entryName)).copyTo(outputStream)
       }
       return destFile
-    }
-
-    private fun computeAbsoluteClasspath(): String {
-      val classpath = System.getProperty("java.class.path") ?: "."
-      val classpathComponents = classpath.split(":")
-      return classpathComponents.map {
-        it.convertToAbsolutePath()
-      }.filterNot {
-        it.isAndroidDependencyToOmit()
-      }.joinToString(":")
-    }
-
-    private fun String.convertToAbsolutePath(): String {
-      return File(currentDirectory, this).absolutePath
-    }
-
-    private fun String.isAndroidDependencyToOmit(): Boolean {
-      // This is a hacky way to work around the classpath actually pulling in two versions of
-      // Guava: Android & JRE. Bundle tool requires the JRE version, and there's no obvious way to
-      // separate out the Maven dependencies without risking duplicate versions & automatic conflict
-      // resolution.
-      return "guava_android" in File(this).absolutePath
     }
   }
 }
