@@ -17,13 +17,14 @@
     android:id="@+id/lessons_completed_chapter_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/component_color_lessons_tab_activity_lessons_completed_chapter_name_background_color"
     android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
     android:orientation="vertical">
 
     <TextView
       android:id="@+id/chapter_index"
       android:layout_width="wrap_content"
-      android:layout_height="match_parent"
+      android:layout_height="0dp"
       android:background="@color/component_color_lessons_tab_activity_lessons_completed_chapter_index_background_color"
       android:fontFamily="sans-serif"
       android:gravity="center"
@@ -38,6 +39,8 @@
       android:textColor="@color/component_color_shared_secondary_4_text_color"
       android:textSize="20sp"
       android:contentDescription="@{viewModel.computeChapterPlayStateIconContentDescription()}"
+      app:layout_constraintBottom_toTopOf="@id/divider"
+      app:layout_constraintHeight_min="wrap"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,7 +48,7 @@
       android:id="@+id/chapter_name"
       style="@style/TextViewStart"
       android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_height="wrap_content"
       android:background="@color/component_color_lessons_tab_activity_lessons_completed_chapter_name_background_color"
       android:fontFamily="sans-serif"
       android:gravity="center|start"

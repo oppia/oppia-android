@@ -25,7 +25,7 @@
     <TextView
       android:id="@+id/chapter_index"
       android:layout_width="wrap_content"
-      android:layout_height="match_parent"
+      android:layout_height="0dp"
       android:layout_marginStart="0dp"
       android:background="@drawable/chapter_dark_green_bg_with_bright_green_border"
       android:fontFamily="sans-serif"
@@ -38,6 +38,8 @@
       android:text="@{viewModel.computePlayChapterIndexText()}"
       android:textColor="@color/component_color_shared_secondary_4_text_color"
       android:textSize="20sp"
+      app:layout_constraintBottom_toTopOf="@id/divider"
+      app:layout_constraintHeight_min="wrap"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,7 +47,7 @@
       android:id="@+id/chapter_name"
       style="@style/TextViewStart"
       android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_height="wrap_content"
       android:fontFamily="sans-serif"
       android:gravity="center|start"
       android:importantForAccessibility="no"
