@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.test.core.app.ActivityScenario
@@ -589,30 +590,13 @@ class StudyGuideFragmentTest {
   }
 
   @Test
-  fun testStudyGuide_previousSubtopicTitle_whatIsAFraction_hasCorrectContentDescription() {
-    runWithLaunchedActivityAndAddedFragment(
-      FRACTIONS_TOPIC_ID,
-      subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
-      FRACTIONS_SUBTOPIC_LIST_SIZE
-    ) {
-      onView(withId(R.id.study_guide_prev_subtopic_title)).check(
-        matches(
-          withContentDescription(
-            "The previous subtopic is What is a Fraction?"
-          )
-        )
-      )
-    }
-  }
-
-  @Test
   fun testStudyGuide_nextSubtopicTitle_mixedNumbers_hasCorrectContentDescription() {
     runWithLaunchedActivityAndAddedFragment(
       FRACTIONS_TOPIC_ID,
       subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
       FRACTIONS_SUBTOPIC_LIST_SIZE
     ) {
-      onView(withId(R.id.study_guide_next_subtopic_title)).check(
+      onView(withId(R.id.study_guide_next_navigation_button)).check(
         matches(
           withContentDescription(
             "The next subtopic is Mixed Numbers"
@@ -623,43 +607,71 @@ class StudyGuideFragmentTest {
   }
 
   @Test
-  fun testStudyGuide_fractionSubtopicId1_onlyNextNavCardIsVisible() {
-    runWithLaunchedActivityAndAddedFragment(
-      FRACTIONS_TOPIC_ID,
-      subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_0,
-      FRACTIONS_SUBTOPIC_LIST_SIZE
-    ) {
-      onView(withId(R.id.study_guide_next_navigation_card))
-        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-      onView(withId(R.id.study_guide_previous_navigation_card))
-        .check(matches(withEffectiveVisibility(Visibility.GONE)))
-    }
-  }
-
-  @Test
-  fun testStudyGuide_fractionSubtopicId2_previousAndNextNavCardsAreVisible() {
+  fun testStudyGuide_fractionSubtopicId2_navigationButtonsShowCorrectLabels() {
     runWithLaunchedActivityAndAddedFragment(
       FRACTIONS_TOPIC_ID,
       subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
       FRACTIONS_SUBTOPIC_LIST_SIZE
     ) {
-      onView(withId(R.id.study_guide_previous_navigation_card))
+      onView(withId(R.id.study_guide_see_all_navigation_button))
+        .check(matches(withText("See all study guides")))
+      onView(withId(R.id.study_guide_next_navigation_button))
+        .check(matches(withText("Next Study Guide\nMixed Numbers")))
+    }
+  }
+
+  @Test
+  fun testStudyGuide_fractionSubtopicId1_seeAllAndNextButtonsAreVisible() {
+    runWithLaunchedActivityAndAddedFragment(
+      FRACTIONS_TOPIC_ID,
+      subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_0,
+      FRACTIONS_SUBTOPIC_LIST_SIZE
+    ) {
+      onView(withId(R.id.study_guide_see_all_navigation_button))
         .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-      onView(withId(R.id.study_guide_next_navigation_card))
+      onView(withId(R.id.study_guide_next_navigation_button))
         .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
   }
 
   @Test
-  fun testStudyGuide_fractionSubtopicId4_onlyPreviousNavCardIsVisible() {
+  fun testStudyGuide_fractionSubtopicId2_seeAllAndNextButtonsAreVisible() {
+    runWithLaunchedActivityAndAddedFragment(
+      FRACTIONS_TOPIC_ID,
+      subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+      FRACTIONS_SUBTOPIC_LIST_SIZE
+    ) {
+      onView(withId(R.id.study_guide_see_all_navigation_button))
+        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+      onView(withId(R.id.study_guide_next_navigation_button))
+        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    }
+  }
+
+  @Test
+  fun testStudyGuide_fractionSubtopicId4_onlySeeAllButtonIsVisible() {
     runWithLaunchedActivityAndAddedFragment(
       FRACTIONS_TOPIC_ID,
       subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_3,
       FRACTIONS_SUBTOPIC_LIST_SIZE
     ) {
-      onView(withId(R.id.study_guide_previous_navigation_card))
+      onView(withId(R.id.study_guide_see_all_navigation_button))
         .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-      onView(withId(R.id.study_guide_next_navigation_card))
+      onView(withId(R.id.study_guide_next_navigation_button))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
+  }
+
+  @Test
+  fun testStudyGuide_oneSubtopicInList_onlySeeAllButtonIsVisible() {
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
+      onView(withId(R.id.study_guide_see_all_navigation_button))
+        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+      onView(withId(R.id.study_guide_next_navigation_button))
         .check(matches(withEffectiveVisibility(Visibility.GONE)))
     }
   }
@@ -667,14 +679,14 @@ class StudyGuideFragmentTest {
   // TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
-  fun testStudyGuide_fracSubtopicId2_clickNextNavCard_routesToNextSubtopic() {
+  fun testStudyGuide_fracSubtopicId2_clickNextNavButton_routesToNextSubtopic() {
     runWithLaunchedActivityAndAddedFragment(
       FRACTIONS_TOPIC_ID,
       subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
       FRACTIONS_SUBTOPIC_LIST_SIZE
     ) {
       onView(withId(R.id.study_guide_navigation_card_container)).perform(nestedScrollTo())
-      onView(withId(R.id.study_guide_next_navigation_card)).perform(click())
+      onView(withId(R.id.study_guide_next_navigation_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       verify(mockRouteToStudyGuideListener).routeToStudyGuide(
@@ -693,38 +705,29 @@ class StudyGuideFragmentTest {
   // TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
-  fun testStudyGuide_fracSubtopicId2_clickPrevNavCard_routesToPreviousSubtopic() {
+  fun testStudyGuide_fracSubtopicId2_clickSeeAllButton_triggersBackNavigation() {
     runWithLaunchedActivityAndAddedFragment(
       FRACTIONS_TOPIC_ID,
       subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
       FRACTIONS_SUBTOPIC_LIST_SIZE
     ) {
+      var backPressCount = 0
+      onActivity { activity ->
+        activity.onBackPressedDispatcher.addCallback(
+          activity,
+          object : OnBackPressedCallback(/* enabled = */ true) {
+            override fun handleOnBackPressed() {
+              backPressCount++
+            }
+          }
+        )
+      }
+
       onView(withId(R.id.study_guide_navigation_card_container)).perform(nestedScrollTo())
-      onView(withId(R.id.study_guide_previous_navigation_card)).perform(click())
+      onView(withId(R.id.study_guide_see_all_navigation_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      verify(mockRouteToStudyGuideListener).routeToStudyGuide(
-        capture(profileIdCaptor),
-        capture(topicIdCaptor),
-        capture(subtopicIndexCaptor),
-        capture(subtopicListSizeCaptor)
-      )
-      assertThat(profileIdCaptor.value).isEqualTo(profileId)
-      assertThat(topicIdCaptor.value).isEqualTo(FRACTIONS_TOPIC_ID)
-      assertThat(subtopicIndexCaptor.value).isEqualTo(FRACTIONS_SUBTOPIC_TOPIC_ID_0)
-      assertThat(subtopicListSizeCaptor.value).isEqualTo(FRACTIONS_SUBTOPIC_LIST_SIZE)
-    }
-  }
-
-  @Test
-  fun testStudyGuide_oneSubtopicInList_continueStudyingTextIsNotShown() {
-    runWithLaunchedActivityAndAddedFragment(
-      TEST_TOPIC_ID_0,
-      subtopicIndex = 1,
-      subtopicListSize = 1
-    ) {
-      onView(withId(R.id.study_guide_continue_studying_text_view))
-        .check(matches(not(isDisplayed())))
+      assertThat(backPressCount).isEqualTo(1)
     }
   }
 
