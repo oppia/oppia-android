@@ -596,7 +596,6 @@ private class DependencyResolver(
      *  - `-gensrc.jar`, `-kapt-gensrc.jar`, `-java-gensrc.jar`, `.srcjar`, `-src.jar`: generated
      *    source JARs (contain `.java`/`.kt` files, not `.class` files)
      *  - `_kt-kt.jar`, `_kt-java.jar`: compilation slices merged into the final `_kt.jar`
-     *  - `_test.jar`, `_deploy.jar`: terminal test runner binary outputs
      */
     private val COMPILE_AVOIDANCE_JAR_SUFFIXES = listOf(
       "-hjar.jar",
@@ -610,7 +609,18 @@ private class DependencyResolver(
       ".srcjar",
       "-src.jar",
       "_kt-kt.jar",
-      "_kt-java.jar",
+      "_kt-java.jar"
+    )
+
+    /**
+     * JAR name suffixes that identify terminal internal test runner binary outputs (e.g.
+     * `ActivityTest_test.jar`, `ActivityTest_deploy.jar`). These are only excluded for internal
+     * workspace outputs so that external prebuilt deploy JARs (such as
+     * `external/android_tools/all_android_tools_deploy.jar`, which supplies Lint-compatible
+     * Kotlin stdlib metadata for Android Lint 30.3.1 when the project compiles with Kotlin 1.9+)
+     * remain available on the Lint classpath.
+     */
+    private val INTERNAL_TEST_RUNNER_JAR_SUFFIXES = listOf(
       "_test.jar",
       "_deploy.jar"
     )
@@ -698,8 +708,9 @@ private class DependencyResolver(
    * - Internal module AARs (see [isInternalModuleAar]).
    * - Intermediate AAR extracted JARs (see [isIntermediateAarJar]).
    * - External AAR resource JARs (see [isExternalAarResourcesJar]).
-   * - Compile-avoidance / annotation-processing intermediate JARs and test binary outputs (see
-   *   [COMPILE_AVOIDANCE_JAR_SUFFIXES]).
+   * - Compile-avoidance / annotation-processing intermediate JARs (see
+   *   [COMPILE_AVOIDANCE_JAR_SUFFIXES]) and internal test runner binary outputs (see
+   *   [INTERNAL_TEST_RUNNER_JAR_SUFFIXES]).
    * - Bazel build-rule tool packages (see [BUILD_TOOL_PACKAGE_FRAGMENTS]) — these are
    *   build-system internals, not application code.
    * - Outputs built in a Bazel *exec* configuration (paths containing `k8-opt-exec-` or
@@ -715,8 +726,14 @@ private class DependencyResolver(
     // External AAR resource JARs are not needed since Lint extracts the AAR's res/ directory.
     if (isExternalAarResourcesJar(declaredPath)) return false
 
-    // Compile-avoidance, annotation-processing stubs, source JARs, and test runner binaries.
+    // Compile-avoidance, annotation-processing stubs, and source JARs.
     if (COMPILE_AVOIDANCE_JAR_SUFFIXES.any { declaredPath.endsWith(it) }) return false
+
+    // Internal test runner binary outputs (external prebuilt *_deploy.jar tools are retained).
+    val isExternal = declaredPath.startsWith("external/") || declaredPath.contains("/external/")
+    if (!isExternal && INTERNAL_TEST_RUNNER_JAR_SUFFIXES.any { declaredPath.endsWith(it) }) {
+      return false
+    }
 
     // Bazel build-rule tool packages (rules_jvm_external, rules_java, etc.).
     if (BUILD_TOOL_PACKAGE_FRAGMENTS.any { declaredPath.contains(it) }) return false

@@ -977,6 +977,21 @@ class LintProjectDescriptionTest {
   }
 
   @Test
+  fun testGenerateProjectDescriptionXml_externalDeployJar_isRetainedOnClasspath() {
+    // External prebuilt deploy JARs (e.g. external/android_tools/all_android_tools_deploy.jar)
+    // must not be treated as internal test runner binaries; they are retained on the classpath.
+    val externalDeployJar = "external/android_tools/all_android_tools_deploy.jar"
+    createExternalJar(externalDeployJar)
+    registerCqueryResults(appDeclaredPaths = listOf(externalDeployJar))
+
+    val xmlContent =
+      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml().readText()
+
+    val expectedJar = File(tempFolder.root, "bazel-out/$externalDeployJar").absolutePath
+    assertThat(xmlContent).contains("<classpath jar=\"$expectedJar\"/>")
+  }
+
+  @Test
   fun testGenerateProjectDescriptionXml_missingBuildOutputs_doNotFailFast() {
     // Outputs under bazel-out only exist once their specific producing target is built (and
     // cquery deps(//app:*) declares them for every test target too), so they can't be a
