@@ -256,6 +256,80 @@ class CoverageRunnerTest {
     assertThat(results[0]).isEqualTo(expectedResult)
   }
 
+  @Test
+  fun testRetrieveCoverageDataForTestTarget_withUncoveredBranch_returnsPartialCoverage() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val partialTestContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+          @Test
+          fun testSumNumbers() {
+              assertEquals(AddNums.sumNumbers(3, 4), 7)
+          }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = sourceContent,
+      testContent = partialTestContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val results = coverageRunner.retrieveCoverageDataForTestTarget(
+      "//coverage/test/java/com/example:AddNumsTest"
+    )
+
+    val expectedResult = CoverageReport.newBuilder()
+      .setDetails(
+        CoverageDetails.newBuilder()
+          .addBazelTestTargets(
+            BazelTestTarget.newBuilder()
+              .setTestTargetName("//coverage/test/java/com/example:AddNumsTest")
+          )
+          .setFilePath("coverage/main/java/com/example/AddNums.kt")
+          .setFileSha1Hash("cdb04b7e8a1c6a7adaf5807244b1a524b4f4bb44")
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(3)
+              .setCoverage(Coverage.NONE)
+              .build()
+          )
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(7)
+              .setCoverage(Coverage.PARTIAL)
+              .build()
+          )
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(8)
+              .setCoverage(Coverage.NONE)
+              .build()
+          )
+          .addCoveredLine(
+            CoveredLine.newBuilder()
+              .setLineNumber(10)
+              .setCoverage(Coverage.FULL)
+              .build()
+          )
+          .setLinesFound(4)
+          .setLinesHit(2)
+          .build()
+      ).build()
+
+    assertThat(results).hasSize(1)
+    assertThat(results[0]).isEqualTo(expectedResult)
+  }
+
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES

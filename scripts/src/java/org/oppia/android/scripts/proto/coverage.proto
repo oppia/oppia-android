@@ -76,4 +76,6 @@ enum Coverage {
   FULL = 1;
   // The line is not covered at all, that is, it was never executed during a test.
   NONE = 2;
+  // The line is partially covered in a test, that is, it was executed but some branches were not taken.
+  PARTIAL = 3;
 }
