@@ -182,7 +182,8 @@ class GooglePlayConsoleClient(
       versionCodes = versionCodes?.map { it.toLong() } ?: emptyList(),
       status = status,
       rolloutPermille = userFraction?.let { (it * 1000).roundToInt() },
-      releaseNotes = releaseNotes?.associate { it.language to it.text } ?: emptyMap()
+      releaseNotes = releaseNotes?.associate { it.language to it.text } ?: emptyMap(),
+      name = name
     )
   }
 }

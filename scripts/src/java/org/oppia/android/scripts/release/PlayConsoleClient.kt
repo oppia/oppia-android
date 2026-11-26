@@ -105,11 +105,14 @@ interface PlayConsoleClient {
    *     ("completed", "halted", "draft").
    * @property releaseNotes map of BCP-47 language codes to release notes text, as returned by
    *     the Play Developer API. Empty if no release notes were set for this release.
+   * @property name the user-visible release name on Play Console (e.g. `"0.18-rc01-alpha"`), or
+   *     null if no name was specified
    */
   data class TrackRelease(
     val versionCodes: List<Long>,
     val status: String,
     val rolloutPermille: Int? = null,
-    val releaseNotes: Map<String, String> = emptyMap()
+    val releaseNotes: Map<String, String> = emptyMap(),
+    val name: String? = null
   )
 }

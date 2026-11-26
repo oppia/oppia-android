@@ -84,4 +84,13 @@ class TrackResponseTest {
 
     assertThat(response!!.releases!!.first().versionCodes).isNull()
   }
+
+  @Test
+  fun testReleaseEntry_fromJson_withName_parsesName() {
+    val response = adapter.fromJson(
+      """{"releases":[{"name":"0.18-rc01-alpha","versionCodes":["300"],"status":"completed"}]}"""
+    )
+
+    assertThat(response!!.releases!!.first().name).isEqualTo("0.18-rc01-alpha")
+  }
 }

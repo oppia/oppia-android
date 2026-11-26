@@ -5,6 +5,16 @@ Tests for release automation scripts.
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 
 kt_jvm_test(
+    name = "ChangelogPushResolverTest",
+    srcs = ["ChangelogPushResolverTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:changelog_push_resolver",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
     name = "FakeVertexAiClientTest",
     srcs = ["FakeVertexAiClientTest.kt"],
     deps = [

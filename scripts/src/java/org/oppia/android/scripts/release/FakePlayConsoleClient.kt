@@ -295,7 +295,8 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
       val releasesJson = releases.joinToString(",", "[", "]") { r ->
         val vcs = r.versionCodes.joinToString(",", "[", "]") { "\"$it\"" }
         val fractionPart = r.rolloutPermille?.let { ""","userFraction":${it / 1000.0}""" } ?: ""
-        """{"versionCodes":$vcs,"status":"${r.status}"$fractionPart}"""
+        val namePart = r.name?.let { ""","name":"$it"""" } ?: ""
+        """{"versionCodes":$vcs,"status":"${r.status}"$fractionPart$namePart}"""
       }
       return MockResponse().setResponseCode(200).setBody("""{"releases":$releasesJson}""")
     }

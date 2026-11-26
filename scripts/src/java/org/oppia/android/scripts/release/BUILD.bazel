@@ -11,6 +11,12 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
+    name = "changelog_push_resolver",
+    srcs = ["ChangelogPushResolver.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
     name = "play_console_client",
     srcs = ["PlayConsoleClient.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],

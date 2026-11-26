@@ -142,39 +142,120 @@ have access to the secret and can run the steps below or re-run the workflow dir
 ## 4. Deploy Updated Changelog fails
 
 **Normal trigger:** Push to `develop` that modifies `config/changelogs/**.md`, or manual
-dispatch.
+dispatch via `workflow_dispatch`.
 
-**What it does:** Uploads updated release notes to Play Console for a live release.
+**What it does:** Detects updated changelog files in a push, validates that the target version
+is live on Play Console, and uploads the new release notes to all matching tracks via the Play
+Developer API.
 
-**Manual fallback — trigger via dispatch:**
+### Workflow overview
 
-If the automatic trigger failed, re-run manually:
+The workflow (`deploy_updated_changelog.yml`) runs in two modes:
 
-1. Go to **Actions** → **Deploy Updated Changelog** → **Run workflow**.
-2. Fill in:
-   - `version`: e.g. `0.18`
-   - `flavor`: `alpha`, `beta`, or leave blank for the default changelog
+| Mode | Trigger | Behavior when version not live |
+|---|---|---|
+| **Automatic** | Push to `develop` modifying `config/changelogs/**.md` | Skips safely; logs a message; no edit created |
+| **Manual** | `workflow_dispatch` with `version` input | Fails with an actionable error message |
 
-**Manual fallback — run script locally:**
+### Changelog file resolution
+
+For each live track the script resolves release notes in this order:
+
+1. `config/changelogs/<version>_<track>.md` (track-specific override, e.g. `0.18_alpha.md`)
+2. `config/changelogs/<version>.md` (shared fallback for all tracks)
+
+Tracks with no matching file are skipped silently. This means a single generic changelog
+serves all tracks unless a track-specific file overrides it.
+
+### Live-release validation
+
+Before creating any Play Console edit session, `UploadChangelogToPlayConsole` queries each
+track for its live (non-frozen) release and checks whether the release name matches the
+requested version. If no track has a matching live release:
+
+- **Automatic run:** logs `"Target version X is not currently live — skipping"` and exits cleanly.
+- **Manual run:** throws an error: `"Target version 'X' is not currently live on any Play Console
+  track. Confirm that the release has been deployed before running a manual changelog upload."`
+
+No edit session is created when validation fails.
+
+### Automatic-push eligibility guards
+
+A push-triggered run first applies two guards in `resolve_push`:
+
+1. **Version-bump guard:** If `version.bzl` was also modified in the push (a release-freeze
+   commit), the upload is skipped automatically. Trigger `workflow_dispatch` after the binary
+   is live.
+2. **New-changelog guard:** A newly added base changelog (`config/changelogs/<version>.md`,
+   no flavor suffix) represents an unreleased version introduced by `generate_changelog.yml`.
+   It is ineligible for automatic upload. Only modified changelogs, or new flavor-specific
+   overrides whose base version was already deployed, are eligible.
+
+### Generic and flavor-specific files for the same version
+
+When a push modifies both `0.19.md` and `0.19_alpha.md`, both files belong to the **same
+version** (`0.19`). The workflow groups them under a single upload job: selecting version `0.19`
+causes `UploadChangelogToPlayConsole` to resolve the correct file per track (using the
+track-specific override where it exists). **No second dispatch is needed.**
+
+### Multiple distinct versions in one push
+
+If a push modifies changelogs for genuinely different versions (e.g. both `0.18.md` and
+`0.19.md`), the workflow rejects the push with a clear error:
+`Multiple distinct changelog versions detected in this push: [0.18, 0.19]`.
+
+Automatic upload does not support multi-version pushes to prevent release inconsistencies and
+concurrency race conditions. The release coordinator must dispatch separate uploads for each
+version individually via `workflow_dispatch` (Actions → Deploy Updated Changelog → Run workflow).
+
+### Deleted and renamed changelog files
+
+| File status | Automatic behavior |
+|---|---|
+| `modified` | Eligible for automatic upload |
+| `added` (flavor-specific, existing version) | Eligible |
+| `added` (base, new version) | Skipped — unreleased version |
+| `removed` | Skipped — file no longer exists; a `::notice::` is logged. Restore and re-push if the deletion was unintentional |
+| `renamed` | Skipped — source version may differ; a `::notice::` is logged. Use `workflow_dispatch` with the correct version after confirming the target release is live |
+
+A deleted or renamed file is **never uploaded** automatically. If the deletion was intentional
+(e.g. the file was superseded by a flavor override), no action is needed. If the rename moved
+the changelog to a different version name, use `workflow_dispatch` with the correct version.
+
+### Manual fallback — trigger via dispatch
+
+```
+Actions → Deploy Updated Changelog → Run workflow
+  version: 0.18          # major.minor, must match a live Play Console release
+  flavor:  alpha         # optional; leave blank to use the generic changelog for all tracks
+```
+
+### Manual fallback — run script locally
 
 ```bash
 bazel run //scripts:upload_changelog_to_play_console -- \
-  $(pwd) \
-  <version>   \
-  <flavor>    \
-  <play_console_credentials_json>
+  "$(pwd)" \
+  org.oppia.android \
+  <version> \
+  "$(gcloud auth print-access-token)"
 ```
 
-**Manual fallback — edit directly in Play Console:**
+### Manual fallback — edit directly in Play Console
 
-Release notes can also be updated directly in the Play Console web UI:
-1. Go to [Play Console](https://play.google.com/console) → Oppia Android → the target track.
+1. Go to [Play Console](https://play.google.com/console) → Oppia Android → target track.
 2. Click **Manage release** on the live release → **Edit release**.
 3. Update the **Release notes** field and click **Save**.
 4. Submit the release for review or publish directly as appropriate.
 
-> **Note:** The script will fail if the version is not yet live on Play Console — this is by
-> design to prevent a race with the initial binary upload.
+### Common failure causes and fixes
+
+| Symptom | Fix |
+|---|---|
+| `"Target version 'X' is not currently live"` (manual) | Confirm the binary was deployed via `deploy_to_play_console.yml` before running |
+| Automatic run skipped — version not live | Expected; the push guard ran before the binary was live. Use `workflow_dispatch` once the release is deployed |
+| `"No changelog file found for version X"` | Ensure `config/changelogs/<version>[_<track>].md` exists and is merged to `develop` |
+| Active edit session conflict | The `play-console-edit-session` concurrency lock is held by another workflow — wait and retry |
+| `version.bzl` guard triggered | The push included a version bump; use `workflow_dispatch` after the release is live |
 
 ---
 
