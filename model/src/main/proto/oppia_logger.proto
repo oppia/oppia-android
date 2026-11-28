@@ -38,9 +38,8 @@ message EventLog {
   // The audio language selection context at the time of this event's creation.
   AudioTranslationLanguageSelection audio_translation_language_selection = 7;
 
-  // The profileId and profileType to which this event corresponds, or empty if this event is not tied to a particular
-  // profile. This is only used for diagnostic purposes as events are only ever logged anonymously
-  // at source.
+  // Profile metadata captured when an eligible analytics event is created. Omitted for sensitive
+  // events and events without an acting profile. Cached events retain these captured values.
   ProfileContext profile_context = 9;
 
   // Structure of an activity context.
@@ -250,12 +249,10 @@ message EventLog {
   // Structure of a ProfileContext which contains the profileId and profileType to which this event
   // corresponds.
   message ProfileContext {
-    // The profile to which this event corresponds, or empty if this event is not tied to a particular
-    // profile. This is only used for diagnostic purposes as events are only ever logged anonymously
-    // at source.
+    // The acting profile's installation-local identifier.
     LegacyProfileId profile_id = 1;
 
-    // Represents the type of user profile.
+    // The known profile type when Onboarding V2 is enabled, otherwise unspecified.
     ProfileType profile_type = 2;
   }
 

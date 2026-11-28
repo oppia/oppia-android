@@ -70,6 +70,7 @@ import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext
 import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric
@@ -85,6 +86,7 @@ import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.app.model.SyncStatus
@@ -177,6 +179,130 @@ class EventBundleCreatorTest {
   @After
   fun tearDown() {
     TestPlatformParameterModule.reset()
+  }
+
+  @Test
+  @Iteration("sole", "name=SOLE_LEARNER", "expNameStr=sole_learner")
+  @Iteration("supervisor", "name=SUPERVISOR", "expNameStr=supervisor")
+  @Iteration("additional", "name=ADDITIONAL_LEARNER", "expNameStr=additional_learner")
+  fun testFillEventBundle_eligibleProfile_includesInstallationLocalIdAndKnownType() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val event = EventLog.newBuilder()
+      .setContext(EventLog.Context.newBuilder().setOpenInfoTab(TopicContext.getDefaultInstance()))
+      .setProfileContext(
+        EventLog.ProfileContext.newBuilder()
+          .setProfileId(LegacyProfileId.newBuilder().setInternalId(0))
+          .setProfileType(ProfileType.valueOf(name))
+      ).build()
+
+    eventBundleCreator.fillEventBundle(event, bundle)
+
+    assertThat(bundle.getInt("profile_id", -1)).isEqualTo(0)
+    assertThat(bundle.getString("profile_type")).isEqualTo(expNameStr)
+  }
+
+  @Test
+  fun testFillEventBundle_eligibleProfile_unknownType_omitsType() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val event = EventLog.newBuilder()
+      .setContext(EventLog.Context.newBuilder().setOpenInfoTab(TopicContext.getDefaultInstance()))
+      .setProfileContext(
+        EventLog.ProfileContext.newBuilder()
+          .setProfileId(LegacyProfileId.newBuilder().setInternalId(1))
+          .setProfileTypeValue(100)
+      ).build()
+
+    eventBundleCreator.fillEventBundle(event, bundle)
+
+    assertThat(bundle.getInt("profile_id", -1)).isEqualTo(1)
+    assertThat(bundle.containsKey("profile_type")).isFalse()
+  }
+
+  @Test
+  fun testFillEventBundle_sensitiveEvent_evenWithProfileContext_omitsNewMetadata() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val event = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder().setSubmitAnswerContext(SubmitAnswerContext.getDefaultInstance())
+      ).setProfileContext(
+        EventLog.ProfileContext.newBuilder()
+          .setProfileId(LegacyProfileId.newBuilder().setInternalId(1))
+          .setProfileType(ProfileType.SUPERVISOR)
+      ).build()
+
+    eventBundleCreator.fillEventBundle(event, bundle)
+
+    assertThat(bundle.containsKey("profile_id")).isFalse()
+    assertThat(bundle.containsKey("profile_type")).isFalse()
+  }
+
+  @Test
+  fun testFillEventBundle_invalidProfileId_omitsMetadata() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val event = EventLog.newBuilder()
+      .setContext(EventLog.Context.newBuilder().setOpenInfoTab(TopicContext.getDefaultInstance()))
+      .setProfileContext(
+        EventLog.ProfileContext.newBuilder()
+          .setProfileId(LegacyProfileId.newBuilder().setInternalId(-1))
+          .setProfileType(ProfileType.SUPERVISOR)
+      ).build()
+
+    eventBundleCreator.fillEventBundle(event, bundle)
+
+    assertThat(bundle.containsKey("profile_id")).isFalse()
+    assertThat(bundle.containsKey("profile_type")).isFalse()
+  }
+
+  @Test
+  fun testFillEventBundle_profileTypeWithoutProfileId_omitsMetadata() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val event = EventLog.newBuilder()
+      .setContext(EventLog.Context.newBuilder().setOpenInfoTab(TopicContext.getDefaultInstance()))
+      .setProfileContext(
+        EventLog.ProfileContext.newBuilder().setProfileType(ProfileType.SUPERVISOR)
+      ).build()
+
+    eventBundleCreator.fillEventBundle(event, bundle)
+
+    assertThat(bundle.containsKey("profile_id")).isFalse()
+    assertThat(bundle.containsKey("profile_type")).isFalse()
+  }
+
+  @Test
+  fun testFillEventBundle_profileWithUnspecifiedType_omitsType() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val event = EventLog.newBuilder()
+      .setContext(EventLog.Context.newBuilder().setOpenInfoTab(TopicContext.getDefaultInstance()))
+      .setProfileContext(
+        EventLog.ProfileContext.newBuilder()
+          .setProfileId(LegacyProfileId.newBuilder().setInternalId(0))
+      ).build()
+
+    eventBundleCreator.fillEventBundle(event, bundle)
+
+    assertThat(bundle.getInt("profile_id", -1)).isEqualTo(0)
+    assertThat(bundle.containsKey("profile_type")).isFalse()
+  }
+
+  @Test
+  fun testFillEventBundle_legacyEventWithOnlyDiagnosticProfileId_omitsMetadata() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val event = EventLog.newBuilder()
+      .setContext(EventLog.Context.newBuilder().setOpenInfoTab(TopicContext.getDefaultInstance()))
+      .setProfileId(LegacyProfileId.newBuilder().setInternalId(1))
+      .build()
+
+    eventBundleCreator.fillEventBundle(event, bundle)
+
+    assertThat(bundle.containsKey("profile_id")).isFalse()
+    assertThat(bundle.containsKey("profile_type")).isFalse()
   }
 
   @Test

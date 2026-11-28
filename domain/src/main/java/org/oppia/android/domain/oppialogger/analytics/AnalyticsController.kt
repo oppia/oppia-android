@@ -1,5 +1,6 @@
 package org.oppia.android.domain.oppialogger.analytics
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -19,23 +20,27 @@ import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileCacheStore
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.logging.EventProfileContextPolicy
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
@@ -66,6 +71,9 @@ class AnalyticsController @Inject constructor(
   private val translationController: TranslationController,
   private val dataProviders: DataProviders,
   private val networkLoggingInterceptor: NetworkLoggingInterceptor,
+  private val profileCacheStore: ProfileCacheStore,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
   @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int,
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
@@ -158,6 +166,29 @@ class AnalyticsController @Inject constructor(
       this.priority = priority
       this.context = context
       profileId?.let { this.profileId = it }
+      if (profileId != null && profileId.internalId >= 0 &&
+        EventProfileContextPolicy.canIncludeProfileContext(context)
+      ) {
+        val profileContext = EventLog.ProfileContext.newBuilder().setProfileId(profileId)
+        if (enableOnboardingFlowV2.value) {
+          val profileType = try {
+            profileCacheStore.store.readDataAsync().await()
+              .profilesMap[profileId.internalId]?.profileType
+          } catch (e: CancellationException) {
+            throw e
+          } catch (e: Exception) {
+            consoleLogger.w("AnalyticsController", "Failed to read analytics profile type.", e)
+            null
+          }
+          if (profileType != null &&
+            profileType != ProfileType.PROFILE_TYPE_UNSPECIFIED &&
+            profileType != ProfileType.UNRECOGNIZED
+          ) {
+            profileContext.profileType = profileType
+          }
+        }
+        this.profileContext = profileContext.build()
+      }
       resolveProfileOperation(
         profileId?.toProfileIdPreservingZero(),
         translationController::getAppLanguageSelection
