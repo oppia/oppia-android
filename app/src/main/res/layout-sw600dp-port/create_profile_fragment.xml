@@ -28,7 +28,7 @@
       android:id="@+id/create_profile_background"
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      app:customBackgroundColor="@{@color/component_color_onboarding_shared_white_color}"
+      app:customBackgroundColor="@{@color/component_color_shared_white_background_color}"
       app:layout_constraintTop_toTopOf="@id/create_profile_picture_guide" />
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -143,6 +143,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/tablet_shared_margin_xl"
       android:text="@string/onboarding_navigation_back"
+      android:textColor="@color/component_color_onboarding_create_profile_back_button_text_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@id/onboarding_navigation_continue"
       app:layout_constraintStart_toStartOf="parent" />

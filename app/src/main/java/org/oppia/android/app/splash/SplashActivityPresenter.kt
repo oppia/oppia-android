@@ -298,8 +298,10 @@ class SplashActivityPresenter @Inject constructor(
       // Second, prepare to route the user to the correct destination.
       startupMode = initState.appStartupState.startupMode
 
-      // Third, show any dismissible notices (if the app isn't deprecated).
-      if (startupMode != StartupMode.APP_IS_DEPRECATED) {
+      // Third, show any dismissible notices (if the app isn't deprecated or expired).
+      if (startupMode != StartupMode.APP_IS_DEPRECATED &&
+        startupMode != StartupMode.APP_IS_EXPIRED
+      ) {
         when (initState.appStartupState.buildFlavorNoticeMode) {
           BuildFlavorNoticeMode.FLAVOR_NOTICE_MODE_UNSPECIFIED, BuildFlavorNoticeMode.NO_NOTICE,
           BuildFlavorNoticeMode.UNRECOGNIZED, null -> {
@@ -331,7 +333,12 @@ class SplashActivityPresenter @Inject constructor(
     }
 
     private fun processStartupMode() {
-      if (enableAppAndOsDeprecationProvider.value) {
+      if (startupMode == StartupMode.APP_IS_EXPIRED) {
+        showDialog(
+          AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
+          AutomaticAppDeprecationNoticeDialogFragment::newInstance
+        )
+      } else if (enableAppAndOsDeprecationProvider.value) {
         processAppAndOsDeprecationEnabledStartUpMode()
       } else {
         processLegacyStartupMode()
@@ -372,12 +379,6 @@ class SplashActivityPresenter @Inject constructor(
     private fun processLegacyStartupMode() {
       when (startupMode) {
         StartupMode.USER_IS_ONBOARDED -> handleUserOnboarded()
-        StartupMode.APP_IS_DEPRECATED -> {
-          showDialog(
-            AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
-            AutomaticAppDeprecationNoticeDialogFragment::newInstance
-          )
-        }
         StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfile()
         else -> {
           // In all other cases (including errors when the startup state fails to load or is

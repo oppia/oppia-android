@@ -20,6 +20,7 @@ kt_jvm_library(
     name = "frozen_release_config",
     srcs = ["FrozenReleaseConfig.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":play_console_client"],
 )
 
 kt_jvm_library(
@@ -139,6 +140,7 @@ kt_jvm_library(
 kt_jvm_library(
     name = "google_vertex_ai_client",
     srcs = ["GoogleVertexAiClient.kt"],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
         ":vertex_ai_client",

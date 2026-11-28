@@ -5,10 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileResetPinActivityParams
 import org.oppia.android.app.model.ScreenName.PROFILE_RESET_PIN_ACTIVITY
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Activity that allows user to change a profile's PIN. */
@@ -24,11 +26,12 @@ class ProfileResetPinActivity : InjectableAutoLocalizedAppCompatActivity() {
     fun createProfileResetPinActivity(context: Context, profileId: Int, isAdmin: Boolean): Intent {
 
       val args = ProfileResetPinActivityParams.newBuilder().apply {
-        this.internalProfileId = profileId
         this.isAdmin = isAdmin
       }.build()
+      val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(profileId).build()
       return Intent(context, ProfileResetPinActivity::class.java).apply {
         putProtoExtra(PROFILE_RESET_PIN_ACTIVITY_PARAMS_KEY, args)
+        decorateWithUserProfileId(legacyProfileId)
         decorateWithScreenName(PROFILE_RESET_PIN_ACTIVITY)
       }
     }

@@ -36,10 +36,12 @@ runs:
 
     - name: Download cmdline tools
       run: |
-        wget https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip
-        cp ./commandlinetools-linux-7302050_latest.zip $HOME/android-sdk
+        wget --tries=3 --retry-connrefused --retry-on-http-error=500,502,503,504 --waitretry=5 --timeout=60 https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip
+        # Move and delete the archive after extraction to save ~300MB of CI runner disk space.
+        mv ./commandlinetools-linux-7302050_latest.zip $HOME/android-sdk
         cd $HOME/android-sdk
         unzip commandlinetools-linux-7302050_latest.zip
+        rm -f commandlinetools-linux-7302050_latest.zip
         mkdir tools
         cd cmdline-tools/
         mv -i * ../tools && mv ../tools .
@@ -74,8 +76,47 @@ runs:
         $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;${{ env.BUILD_TOOLS_VERSION }}"
       shell: bash
 
-    - name: Configure Bazel to use specific sandbox tmpfs
+    - name: Configure Bazel for CI execution
       run: |
-        echo "build --enable_platform_specific_config" >> $HOME/.bazelrc
-        echo "build:linux --sandbox_tmpfs_path=/tmp" >> $HOME/.bazelrc
+        cat << 'EOF' > "$HOME/.bazel_downloader.cfg"
+        # Route Maven Central downloads through Google's GCS-backed Maven Central mirror first to
+        # avoid HTTP 429 rate-limiting on shared CI runner IPs, falling back to repo1.maven.org.
+        rewrite repo1\.maven\.org/maven2/(.*) https://maven-central.storage-download.googleapis.com/maven2/$1
+        rewrite repo1\.maven\.org/maven2/(.*) https://repo1.maven.org/maven2/$1
+        EOF
+        cat << EOF >> "$HOME/.bazelrc"
+        # Mount an isolated in-memory /tmp directory inside Linux sandboxes so actions cannot leak
+        # temporary files across builds or collide in the host runner's /tmp directory.
+        build --enable_platform_specific_config
+        build:linux --sandbox_tmpfs_path=/tmp
+
+        # Terminate all persistent build workers when a build finishes so compile and dex workers
+        # free their JVM memory before subsequent bazel test steps launch Robolectric test JVMs.
+        build --worker_quit_after_build
+
+        # Evict idle persistent workers once total worker memory exceeds 40% of host RAM (~6.4GB on
+        # 16GB GitHub runners). Without a cap, Bazel retains idle Kotlin, Kapt, and Javac workers
+        # while Android dexing and desugaring spawn new workers, exhausting runner RAM and swap.
+        build --experimental_total_worker_memory_limit_mb=HOST_RAM*.4
+
+        # Limit Desugar to 2 concurrent persistent workers (down from 4 on 4-vCPU runners) and
+        # override Bazel's default -Xms8g -Xmx8g per Desugar worker. Single-jar D8 desugaring needs
+        # <300MB, whereas 4 workers with 8GB initial heaps fault in ~10GB of RSS on unminified
+        # builds such as oppia_dev and instrumentation:oppia_test.
+        build --worker_max_instances=Desugar=2
+        build --worker_extra_flag=Desugar=--wrapper_script_flag=--jvm_flag=-Xms256m
+        build --worker_extra_flag=Desugar=--wrapper_script_flag=--jvm_flag=-Xmx2g
+
+        # Apply the URL rewrite rules in $HOME/.bazel_downloader.cfg to fetch Maven Central
+        # artifacts from Google's GCS mirror before falling back to repo1.maven.org.
+        common --experimental_downloader_config=$HOME/.bazel_downloader.cfg
+
+        # Retry failed external repository downloads up to 5 times (up from Bazel's default of 0)
+        # to tolerate transient HTTP and network failures on CI runners.
+        common --experimental_repository_downloader_retries=5
+
+        # Hardlink files from Bazel's repository cache into external repository directories instead
+        # of copying them, saving ~2GB of runner disk space across JDK, Maven, and Robolectric JARs.
+        common --experimental_repository_cache_hardlinks
+        EOF
       shell: bash

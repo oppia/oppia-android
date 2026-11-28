@@ -93,6 +93,10 @@ jobs:
       - name: Build Oppia ${{ matrix.flavor }} AAB
         run: |
           if [[ "${{ matrix.flavor }}" == "dev" ]]; then
+            # Build oppia_dev_binary_deploy.jar first, then shutdown Bazel to release compiler
+            # worker and server JVM memory before running unminified dexing and AAB packaging.
+            bazel build -- //:oppia_${{ matrix.flavor }}_binary_deploy.jar
+            bazel shutdown
             bazel build -- //:oppia_${{ matrix.flavor }}
           else
             # Build the oppia_flavor_binary_deploy.jar first (pre-Proguard-map), then shutdown Bazel to release

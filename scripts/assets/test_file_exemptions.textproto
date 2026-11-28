@@ -379,6 +379,10 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/interaction/NumberWithUnitsInputInteractionView.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt"
   test_file_not_required: true
 }
@@ -1641,8 +1645,12 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/parser/StringToNumberParser.kt"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/parser/NumberWithUnitsParsingUiError.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/parser/StringToNumberParser.kt"
+  source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/parser/StringToRatioParser.kt"
@@ -1830,6 +1838,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/NextButtonViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/NumberWithUnitsInputViewModel.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -2038,6 +2050,22 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AdminSettingsViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinActivity.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinActivityPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinFragment.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinFragmentPresenter.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -2675,6 +2703,10 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/NavigationDrawerTestActivity.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/NumberWithUnitsInputInteractionViewTestActivity.kt"
+  source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/PoliciesFragmentTestActivity.kt"
@@ -3925,10 +3957,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/ApplicationLifecycleLogger.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/ApplicationLifecycleObserver.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -4142,6 +4170,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/util/JsonExtensions.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/util/NumberWithUnitsExtensions.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -4952,4 +4984,3 @@ test_file_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/release/CloudSigner.kt"
   test_file_not_required: true
 }
-
