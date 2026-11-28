@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -87,7 +86,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private lateinit var binding: ProfileSelectionFragmentBinding
 
   private val isRtl by lazy {
-    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+    resourceHandler.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
   }
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */

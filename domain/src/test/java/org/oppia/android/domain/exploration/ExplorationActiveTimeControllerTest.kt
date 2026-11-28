@@ -2,6 +2,7 @@ package org.oppia.android.domain.exploration
 
 import android.app.Application
 import android.content.Context
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -119,7 +120,7 @@ class ExplorationActiveTimeControllerTest {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
-    applicationLifecycleObserver.onAppInForeground()
+    applicationLifecycleObserver.onStart(ProcessLifecycleOwner.get())
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
@@ -145,7 +146,7 @@ class ExplorationActiveTimeControllerTest {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
-    applicationLifecycleObserver.onAppInForeground()
+    applicationLifecycleObserver.onStart(ProcessLifecycleOwner.get())
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
@@ -156,7 +157,7 @@ class ExplorationActiveTimeControllerTest {
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
 
-    applicationLifecycleObserver.onAppInBackground()
+    applicationLifecycleObserver.onStop(ProcessLifecycleOwner.get())
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
@@ -211,7 +212,7 @@ class ExplorationActiveTimeControllerTest {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
-    applicationLifecycleObserver.onAppInForeground()
+    applicationLifecycleObserver.onStart(ProcessLifecycleOwner.get())
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
 
@@ -228,7 +229,7 @@ class ExplorationActiveTimeControllerTest {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
-    applicationLifecycleObserver.onAppInForeground()
+    applicationLifecycleObserver.onStart(ProcessLifecycleOwner.get())
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
@@ -270,7 +271,7 @@ class ExplorationActiveTimeControllerTest {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
-    applicationLifecycleObserver.onAppInBackground()
+    applicationLifecycleObserver.onStop(ProcessLifecycleOwner.get())
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
 
@@ -333,7 +334,7 @@ class ExplorationActiveTimeControllerTest {
     // Create the application after previous arrangement to simulate a re-creation.
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    applicationLifecycleObserver.onAppInForeground()
+    applicationLifecycleObserver.onStart(ProcessLifecycleOwner.get())
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.DAYS.toMillis(1))
 
     startPlayingNewExploration(
@@ -380,7 +381,7 @@ class ExplorationActiveTimeControllerTest {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.DAYS.toMillis(10))
-    applicationLifecycleObserver.onAppInForeground()
+    applicationLifecycleObserver.onStart(ProcessLifecycleOwner.get())
 
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
@@ -408,7 +409,7 @@ class ExplorationActiveTimeControllerTest {
   fun testTimerStopped_multipleOngoingTopics_correctTopicLearningTimeUpdated() {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    applicationLifecycleObserver.onAppInForeground()
+    applicationLifecycleObserver.onStart(ProcessLifecycleOwner.get())
 
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
@@ -453,7 +454,7 @@ class ExplorationActiveTimeControllerTest {
   fun testSessionStopped_multipleProfiles_sameTopicId_learningTimeUpdatedInCorrectProfile() {
     setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    applicationLifecycleObserver.onAppInForeground()
+    applicationLifecycleObserver.onStart(ProcessLifecycleOwner.get())
 
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,

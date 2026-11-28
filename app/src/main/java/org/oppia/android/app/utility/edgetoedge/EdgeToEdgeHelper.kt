@@ -162,7 +162,7 @@ object EdgeToEdgeHelper {
 
     ViewCompat.setOnApplyWindowInsetsListener(drawerRoot) { view, insets ->
       val bars = insets.systemBarsWithCutout()
-      val isRtl = ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
+      val isRtl = view.layoutDirection == View.LAYOUT_DIRECTION_RTL
       view.applyInsetPadding(
         bars,
         applyLeft = !isRtl,
@@ -232,7 +232,7 @@ object EdgeToEdgeHelper {
       )
     }
     WindowCompat.getInsetsController(window, rootLayout)
-      ?.isAppearanceLightStatusBars = statusBarLight
+      .isAppearanceLightStatusBars = statusBarLight
     disableNavBarContrast(window)
     ViewCompat.requestApplyInsets(contentRoot)
 

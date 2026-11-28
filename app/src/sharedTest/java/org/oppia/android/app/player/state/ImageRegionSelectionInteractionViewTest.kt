@@ -2,8 +2,8 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -353,7 +353,7 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_rtl_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        activity.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
@@ -379,7 +379,7 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_rtl_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        activity.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(

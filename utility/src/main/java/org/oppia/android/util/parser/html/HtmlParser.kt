@@ -12,7 +12,6 @@ import android.util.Patterns
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.util.LinkifyCompat
-import androidx.core.view.ViewCompat
 import org.oppia.android.util.R
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
@@ -60,7 +59,7 @@ class HtmlParser private constructor(
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
 
   private val isRtl by lazy {
-    displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+    displayLocale.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
   }
 
   /**

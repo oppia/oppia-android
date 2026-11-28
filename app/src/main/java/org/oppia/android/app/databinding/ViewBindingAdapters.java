@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
-import androidx.core.view.ViewCompat;
 import androidx.databinding.BindingAdapter;
 
 /** Holds all custom binding adapters that set miscellaneous values. */
@@ -62,6 +61,6 @@ public final class ViewBindingAdapters {
   }
 
   private static boolean isRtlLayout(View view) {
-    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL;
+    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
   }
 }

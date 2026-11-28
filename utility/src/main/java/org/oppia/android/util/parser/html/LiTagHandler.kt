@@ -7,8 +7,8 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
 import android.text.style.ImageSpan
+import android.view.View
 import android.widget.TextView
-import androidx.core.view.ViewCompat
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Stack
 
@@ -131,7 +131,7 @@ class LiTagHandler(
         )
         val totalMargin = leadingMargins.sumOf { it.getLeadingMargin(true) }
         val isRtl by lazy {
-          displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+          displayLocale.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
         }
 
         output.removeSpan(span)
